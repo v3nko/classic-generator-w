@@ -10,11 +10,12 @@ class CGApp extends App.AppBase {
         
     }
 
-    function onStop() {
+    function onStop(state) {
 
     }
 
     function getInitialView() {
-        return [new GeneratorView()];
+        var view = new GeneratorView();
+        return [view, new GeneratorView.GeneratorDelegate(view)];
     }
 }

@@ -22,7 +22,7 @@ class GeneratorView extends Ui.View {
         generateNewValue();
     }
 
-    hidden function generateNewValue() {
+    function generateNewValue() {
         generatorValue = Math.rand() % 100;
     }
 
@@ -50,4 +50,22 @@ class GeneratorView extends Ui.View {
     function onHide() {
         // no-op
 	}
+
+    class GeneratorDelegate extends Ui.BehaviorDelegate {
+
+        var generatorView;
+
+        // Constructor
+        function initialize(view) {
+            generatorView = view;
+            Ui.BehaviorDelegate.initialize();
+        }
+
+        function onKey(keyEvent) {
+            if (keyEvent.getKey() == Ui.KEY_ENTER) {
+                generatorView.generateNewValue();
+                Ui.requestUpdate();
+            }
+        }
+    }
 }
