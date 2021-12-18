@@ -17,7 +17,7 @@ class GeneratorView extends Ui.View {
     function onLayout(dc) {
 		centerX = dc.getWidth() / 2;
 		centerY = dc.getHeight() / 2;
-        me.valueOffset = me.centerY - (Gfx.getFontHeight(Gfx.FONT_LARGE) / 2);
+        me.valueOffset = me.centerY - (Gfx.getFontHeight(Gfx.FONT_NUMBER_THAI_HOT) / 2);
 
         generateNewValue();
     }
@@ -37,7 +37,7 @@ class GeneratorView extends Ui.View {
         dc.drawText(
             me.centerX, 
             me.valueOffset, 
-            Gfx.FONT_LARGE, 
+            Gfx.FONT_NUMBER_THAI_HOT, 
             me.generatorValue, 
             Gfx.TEXT_JUSTIFY_CENTER
         );
