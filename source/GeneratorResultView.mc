@@ -22,6 +22,9 @@ class GeneratorResultView extends Ui.View {
     private var primaryValueColor = Gfx.COLOR_YELLOW;
     private var altValueColor = Gfx.COLOR_DK_RED;
 
+    // Fonts
+    private var generatorValueFont;
+
     // Animation-related values
 
     private const ANIMATION_DURATION_MILLIS = 170;
@@ -39,7 +42,8 @@ class GeneratorResultView extends Ui.View {
         self.centerY = centerY;
         animationTimer = new Timer.Timer();
 
-        valueHeight = Gfx.getFontHeight(Gfx.FONT_NUMBER_THAI_HOT);
+        generatorValueFont = Ui.loadResource(Rez.Fonts.rajdhani_bold_104);
+        valueHeight = Gfx.getFontHeight(generatorValueFont);
         valuePositionY = centerY - (valueHeight / 2);
 
         topTranslateTheshold = valuePositionY;
@@ -58,7 +62,7 @@ class GeneratorResultView extends Ui.View {
         dc.drawText(
             centerX, 
             valuePositionY + valuePositionOffsetY,
-            Gfx.FONT_NUMBER_THAI_HOT, 
+            generatorValueFont, 
             generatorValue,
             Gfx.TEXT_JUSTIFY_CENTER
         );
@@ -71,7 +75,7 @@ class GeneratorResultView extends Ui.View {
         dc.drawText(
             centerX, 
             valuePositionY - (valueHeight - valuePositionOffsetY), 
-            Gfx.FONT_NUMBER_THAI_HOT, 
+            generatorValueFont,
             prevValue,
             Gfx.TEXT_JUSTIFY_CENTER
         );
