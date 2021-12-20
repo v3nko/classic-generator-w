@@ -40,21 +40,4 @@ class GeneratorView extends Ui.View {
     function onHide() {
         // no-op
 	}
-
-    class GeneratorDelegate extends Ui.BehaviorDelegate {
-
-        var generatorView;
-
-        function initialize(view) {
-            generatorView = view;
-            Ui.BehaviorDelegate.initialize();
-        }
-
-        function onKey(keyEvent) {
-            if (keyEvent.getKey() == Ui.KEY_ENTER) {
-                generatorView.generateNewValue();
-                Ui.requestUpdate();
-            }
-        }
-    }
 }

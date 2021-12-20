@@ -16,6 +16,6 @@ class CGApp extends App.AppBase {
 
     function getInitialView() {
         var view = new GeneratorView();
-        return [view, new GeneratorView.GeneratorDelegate(view)];
+        return [view, new GeneratorDelegate(view)];
     }
 }
