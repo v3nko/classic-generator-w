@@ -10,7 +10,7 @@ class GeneratorView extends Ui.View {
 	private var centerX;
 	private var centerY;
 
-    private var generatorResultView;
+    private var generatorResultView as GeneratorResultView;
 
     function initialize() {
 		View.initialize();
@@ -24,7 +24,7 @@ class GeneratorView extends Ui.View {
     }
 
     function generateNewValue() {
-        generatorResultView.pushNewResult(Math.rand() % 100);
+        generatorResultView.pushNewResult((Math.rand() % 100).toString());
     }
 
     function onUpdate(dc) {

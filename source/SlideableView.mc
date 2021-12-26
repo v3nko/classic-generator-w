@@ -18,8 +18,8 @@ class SlideableView extends Ui.View {
 
     // General color scheme
 
-    private var primaryValueColor = Gfx.COLOR_YELLOW;
-    private var altValueColor = Gfx.COLOR_DK_RED;
+    private var primaryValueColor = Gfx.COLOR_WHITE;
+    private var altValueColor = Gfx.COLOR_WHITE;
 
     // Animation-related values
 
@@ -123,5 +123,22 @@ class SlideableView extends Ui.View {
             applyAltColor = true;
         }
         currentDrawable.setColor(getCurrentDrawableColor());
+    }
+
+    function setPrimaryColor(color as Graphics.ColorType) {
+        primaryValueColor = color;
+        if (currentDrawable != null && !applyAltColor) {
+            currentDrawable.setColor(color);
+        }
+        if (prevDrawable != null) {
+            prevDrawable.setColor(color);
+        }
+    }    
+    
+    function setAltColor(color as Graphics.ColorType) {
+        altValueColor = color;
+        if (currentDrawable != null && applyAltColor) {
+            currentDrawable.setColor(color);
+        }
     }
 }
