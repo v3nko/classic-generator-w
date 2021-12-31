@@ -1,3 +1,8 @@
 <strings>
-    <string id="appName">Classic Generator</string>
+    <string id="app_name">Classic Generator</string>
+    <string id="gen_title_num">Numeric</string>
+    <string id="gen_title_alphanum">Alphanumeric</string>
+    <string id="gen_title_num_range">Range</string>
+    <string id="gen_title_num_fixed">Numeric fixed</string>
+    <string id="gen_title_hex">Hexadecimal</string>
 </strings>

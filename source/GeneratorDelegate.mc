@@ -16,7 +16,8 @@ class GeneratorDelegate extends Ui.BehaviorDelegate {
                 Ui.requestUpdate();
                 break;
             case Ui.KEY_DOWN:
-                // TODO: switch generator mode
+                generatorView.switchMode();
+                Ui.requestUpdate();
                 break;
         }
     }
