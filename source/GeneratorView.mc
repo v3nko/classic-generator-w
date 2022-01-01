@@ -13,6 +13,8 @@ class GeneratorView extends Ui.View {
     private var generatorResultView as GeneratorResultView;
     private var generatorModeView as GeneratorModeView;
 
+    private var generator as Generator;
+
     function initialize() {
 		View.initialize();
 	}
@@ -23,11 +25,19 @@ class GeneratorView extends Ui.View {
         generatorResultView = new GeneratorResultView(centerX, centerY);
         var modePositionY = dc.getHeight() * 0.25;
         generatorModeView = new GeneratorModeView(centerX, modePositionY);
+
+        generator = new RandomGenerator();
+
         generateNewValue();
     }
 
     function generateNewValue() {
-        generatorResultView.pushNewResult((Math.rand() % 100).toString());
+        generator.generateHex1(6)
+            .onSuccess(method(:updateResult));
+    }
+
+    function updateResult(result) {
+        generatorResultView.pushNewResult(result);
     }
 
     function onUpdate(dc) {
