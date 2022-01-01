@@ -26,18 +26,28 @@ class GeneratorView extends Ui.View {
         var modePositionY = dc.getHeight() * 0.25;
         generatorModeView = new GeneratorModeView(centerX, modePositionY);
 
-        generator = new RandomGenerator();
+        generator = new RandomGenerator(new GeneratorOptionsValidator());
 
         generateNewValue();
     }
 
     function generateNewValue() {
-        generator.generateHex1(6)
-            .onSuccess(method(:updateResult));
+        generator.generateHex(6)
+            .onSuccess(method(:updateResult))
+            .onError(method(:handleError));
     }
 
     function updateResult(result) {
         generatorResultView.pushNewResult(result);
+    }
+
+    function handleError(arg) {
+        // TODO: indicate error on UI
+        if (arg instanceof InvalidArgumentError) {
+            System.println("Generator error occured: " + arg.reason);
+        } else {
+            System.println("Unknown generator error occured");
+        }
     }
 
     function onUpdate(dc) {

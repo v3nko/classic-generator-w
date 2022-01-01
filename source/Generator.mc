@@ -8,11 +8,25 @@ typedef Generator as interface {
     function generateHex(len as Integer) as Result;
 };
 
+enum GeneratorType {
+    GENERATOR_NUM,
+    GENERATOR_RANGE,
+    GENERATOR_NUM_FIXED,
+    GENERATOR_ALPHANUM,
+    GENARATOR_HEX
+}
+
 class RandomGenerator {
 
     private const CHARS = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz".toCharArray();
     private const HEX_CHARS_SUBSTRING_LENGTH = 16;
-    private const FIXED_VALUE_THRESHOLD = 5;
+    private const FIXED_VALUE_THRESHOLD = 10;
+
+    private var validator;
+
+    function initialize(validator as GeneratorOptionsValidator) {
+        me.validator = validator;
+    }
 
     function generateNum(max as Integer) as Result {
         return null;
@@ -30,13 +44,17 @@ class RandomGenerator {
         return null;
     }
 
-    function generateHex1(len as Integer) as Result {
-        // TODO add validation
-        var result = new Array<Char>[len];
-        for (var i = 0; i < result.size(); i++) {
-            result[i] = generateCharFromPool(CHARS, HEX_CHARS_SUBSTRING_LENGTH);
+    function generateHex(len as Integer) as Result {
+        var validationResult = validator.validateHex(len);
+        if (validationResult == VALIDATION_OK) {
+            var result = new Array<Char>[len];
+            for (var i = 0; i < result.size(); i++) {
+                result[i] = generateCharFromPool(CHARS, HEX_CHARS_SUBSTRING_LENGTH);
+            }
+            return new Success(StringUtil.charArrayToString(result));
+        } else {
+            return new Error(new InvalidArgumentError(validationResult));
         }
-        return new Success(StringUtil.charArrayToString(result));
     }
 
     private function generateCharFromPool(pool as Array<Char>, poolLenLimit as Integer) as Char {
@@ -47,4 +65,12 @@ class RandomGenerator {
         return Math.rand() % limit;
     }
 
+}
+
+class InvalidArgumentError {
+    var reason as ValidationResult;
+
+    function initialize(reason) {
+        me.reason = reason;
+    }
 }
