@@ -33,7 +33,12 @@ class RandomGenerator {
     }
 
     function generateRange(min as Integer, max as Integer) as Result {
-        return null;
+        var validationResult = validator.validateRange(min, max);
+        if (validationResult == VALIDATION_OK) {
+            return new Success((nextInt(max - min + 1) + min).toString());
+        } else {
+            return new Error(new InvalidArgumentError(validationResult));
+        }
     }
     
     function generateNumFixed(len as Integer) as Result {

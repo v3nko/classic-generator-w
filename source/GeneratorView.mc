@@ -32,7 +32,7 @@ class GeneratorView extends Ui.View {
     }
 
     function generateNewValue() {
-        generator.generateNumFixed(2)
+        generator.generateRange(-69, 18)
             .onSuccess(method(:updateResult))
             .onError(method(:handleError));
     }

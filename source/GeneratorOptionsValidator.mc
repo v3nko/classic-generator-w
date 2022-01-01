@@ -2,7 +2,8 @@ enum ValidationResult {
     VALIDATION_OK,
     VALIDATION_ERROR_NULL,
     VALIDATION_ERROR_ZERO_OR_LESS_LENGTH,
-    VALIDATION_ERROR_LENGTH_EXCESS
+    VALIDATION_ERROR_LENGTH_EXCESS,
+    VALIDATION_INVALID_RANGE
 }
 
 class GeneratorOptionsValidator {
@@ -19,5 +20,19 @@ class GeneratorOptionsValidator {
         } else {
             return VALIDATION_OK;
         }
+    }
+
+    function validateRange(min as Integer, max as Integer) as validationResult {
+        if (min >= max) {
+            return VALIDATION_INVALID_RANGE;
+        } else if (getLength(min) > MAX_ARG_LENGTH || getLength(max) > MAX_ARG_LENGTH) {
+            return VALIDATION_ERROR_LENGTH_EXCESS;
+        } else {
+            return VALIDATION_OK;
+        }
+    }
+
+    private function getLength(value as Integer) as Integer {
+        return Math.floor(1 + Math.log(value.abs(), 10));
     }
 }
