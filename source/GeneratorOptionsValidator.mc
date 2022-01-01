@@ -23,7 +23,9 @@ class GeneratorOptionsValidator {
     }
 
     function validateRange(min as Integer, max as Integer) as validationResult {
-        if (min >= max) {
+        if (min == null || max == null) {
+            return VALIDATION_ERROR_NULL;
+        } else if (min >= max) {
             return VALIDATION_INVALID_RANGE;
         } else if (getLength(min) > MAX_ARG_LENGTH || getLength(max) > MAX_ARG_LENGTH) {
             return VALIDATION_ERROR_LENGTH_EXCESS;
