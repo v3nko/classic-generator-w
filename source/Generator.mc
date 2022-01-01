@@ -37,7 +37,16 @@ class RandomGenerator {
     }
     
     function generateNumFixed(len as Integer) as Result {
-        return null;
+        var validationResult = validator.validateFixedLen(len);
+        if (validationResult == VALIDATION_OK) {
+            var result = "";
+            for (var i = 0; i < len; i++) {
+                result += nextInt(FIXED_VALUE_THRESHOLD).toString();
+            }
+            return new Success(result);
+        } else {
+            return new Error(new InvalidArgumentError(validationResult));
+        }
     }
 
     function generateAlphanum(len as Integer) as Result {
@@ -45,7 +54,7 @@ class RandomGenerator {
     }
 
     function generateHex(len as Integer) as Result {
-        var validationResult = validator.validateHex(len);
+        var validationResult = validator.validateFixedLen(len);
         if (validationResult == VALIDATION_OK) {
             var result = new Array<Char>[len];
             for (var i = 0; i < result.size(); i++) {

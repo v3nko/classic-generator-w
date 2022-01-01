@@ -9,7 +9,7 @@ class GeneratorOptionsValidator {
 
     private const MAX_ARG_LENGTH = 6;
 
-    function validateHex(len as Integer) as ValidationResult {
+    function validateFixedLen(len as Integer) as ValidationResult {
         if (len == null) {
             return VALIDATION_ERROR_NULL;
         } else if (len <= 0) {

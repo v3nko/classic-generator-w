@@ -32,7 +32,7 @@ class GeneratorView extends Ui.View {
     }
 
     function generateNewValue() {
-        generator.generateHex(6)
+        generator.generateNumFixed(2)
             .onSuccess(method(:updateResult))
             .onError(method(:handleError));
     }
