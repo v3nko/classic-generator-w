@@ -42,7 +42,7 @@ class GeneratorView extends Ui.View {
     }
 
     function handleError(arg) {
-        // TODO: indicate error on UI
+        generatorResultView.shake();
         if (arg instanceof InvalidArgumentError) {
             System.println("Generator error occured: " + arg.reason);
         } else {
