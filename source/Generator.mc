@@ -29,7 +29,7 @@ class RandomGenerator {
     }
 
     function generateNum(max as Integer) as Result {
-        return null;
+        return generateRange(0, max);
     }
 
     function generateRange(min as Integer, max as Integer) as Result {
