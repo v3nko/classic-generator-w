@@ -32,7 +32,7 @@ class GeneratorView extends Ui.View {
     }
 
     function generateNewValue() {
-        generator.generateRange(-69, 18)
+        generator.generateAlphanum(2)
             .onSuccess(method(:updateResult))
             .onError(method(:handleError));
     }

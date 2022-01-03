@@ -55,15 +55,23 @@ class RandomGenerator {
     }
 
     function generateAlphanum(len as Integer) as Result {
-        return null;
+        return generateFixedLenFromPool(len, CHARS, CHARS.size());
     }
 
     function generateHex(len as Integer) as Result {
+        return generateFixedLenFromPool(len, CHARS, HEX_CHARS_SUBSTRING_LENGTH);
+    }
+
+    private function generateFixedLenFromPool(
+        len as Integer, 
+        pool as Array<Char>, 
+        poolUpBoundary as Integer
+    ) as Result {
         var validationResult = validator.validateFixedLen(len);
         if (validationResult == VALIDATION_OK) {
             var result = new Array<Char>[len];
             for (var i = 0; i < result.size(); i++) {
-                result[i] = generateCharFromPool(CHARS, HEX_CHARS_SUBSTRING_LENGTH);
+                result[i] = generateCharFromPool(pool, poolUpBoundary);
             }
             return new Success(StringUtil.charArrayToString(result));
         } else {
@@ -71,8 +79,8 @@ class RandomGenerator {
         }
     }
 
-    private function generateCharFromPool(pool as Array<Char>, poolLenLimit as Integer) as Char {
-        return pool[nextInt(poolLenLimit)];
+    private function generateCharFromPool(pool as Array<Char>, poolUpBoundary as Integer) as Char {
+        return pool[nextInt(poolUpBoundary)];
     }
 
     private function nextInt(limit as Integer) as Integer {
