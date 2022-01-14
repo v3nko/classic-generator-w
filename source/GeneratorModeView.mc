@@ -12,11 +12,10 @@ class GeneratorModeView extends SlideableView {
         modeTitleHeight = Gfx.getFontHeight(MODE_TITLE_FONT);
     }
     
-    // TODO: pass generator mode
-    function pushNewMode() {
+    function pushNewMode(generatorMode as GeneratorType) {
         var textIndicator = new Ui.Text(
             {
-                :text => Application.loadResource(Rez.Strings.gen_title_alphanum),
+                :text => resolveTitle(generatorMode),
                 :font => MODE_TITLE_FONT,
                 :locX => WatchUi.LAYOUT_HALIGN_CENTER,
                 :locY => WatchUi.LAYOUT_VALIGN_CENTER,
@@ -25,12 +24,68 @@ class GeneratorModeView extends SlideableView {
             }
         );
 
-        var iconIndicator = Application.loadResource(Rez.Drawables.ic_alphanum);
+        var iconIndicator = resolveIndicator(generatorMode);
 
         var indicatorGroup = new IndicatorDrawable();
         indicatorGroup.setIndicators(textIndicator, iconIndicator);
     
         pushNewDrawable(indicatorGroup);
+    }
+
+    private function resolveIndicator(generatorMode as GeneratorType) {
+        var resource;
+        switch (generatorMode) {
+            case GENERATOR_NUM:
+                resource = Rez.Drawables.ic_num;
+                break;
+            case GENERATOR_RANGE:
+                resource = Rez.Drawables.ic_range;
+                break;
+            case GENERATOR_NUM_FIXED:
+                resource = Rez.Drawables.ic_num_fixed;
+                break;
+            case GENERATOR_ALPHANUM:
+                resource = Rez.Drawables.ic_alphanum;
+                break;
+            case GENARATOR_HEX:
+                resource = Rez.Drawables.ic_hex;
+                break;
+            default:
+                resource = null;
+        }
+        if (resource != null) {
+            return Application.loadResource(resource);
+        } else {
+            return null;
+        }
+    }
+
+    private function resolveTitle(generatorMode as GeneratorType) {
+        var resource;
+        switch (generatorMode) {
+            case GENERATOR_NUM:
+                resource = Rez.Strings.gen_title_num;
+                break;
+            case GENERATOR_RANGE:
+                resource = Rez.Strings.gen_title_num_range;
+                break;
+            case GENERATOR_NUM_FIXED:
+                resource = Rez.Strings.gen_title_num_fixed;
+                break;
+            case GENERATOR_ALPHANUM:
+                resource = Rez.Strings.gen_title_alphanum;
+                break;
+            case GENARATOR_HEX:
+                resource = Rez.Strings.gen_title_hex;
+                break;
+            default:
+                resource = null;
+        }
+        if (resource != null) {
+            return Application.loadResource(resource);
+        } else {
+            return null;
+        }
     }
 
     class IndicatorDrawable extends Ui.Drawable {

@@ -13,7 +13,7 @@ class GeneratorView extends Ui.View {
     private var generatorResultView as GeneratorResultView;
     private var generatorModeView as GeneratorModeView;
 
-    private var generator as Generator;
+    private var generatorController as GeneratorController;
     
     private const MODE_POSITION_FACTOR = 0.16;
 
@@ -28,22 +28,26 @@ class GeneratorView extends Ui.View {
         var modePositionY = dc.getHeight() * MODE_POSITION_FACTOR;
         generatorModeView = new GeneratorModeView(centerX, modePositionY);
 
-        generator = new RandomGenerator(new GeneratorOptionsValidator());
+        var generator = new RandomGenerator(new GeneratorOptionsValidator());
+        generatorController = new GeneratorController(generator);
+        generatorController.loadSettings();
+
+        updateMode(generatorController.getCurrentMode());
 
         generateNewValue();
     }
 
     function generateNewValue() {
-        generator.generateNum(73718)
+        generatorController.generate()
             .onSuccess(method(:updateResult))
-            .onError(method(:handleError));
+            .onError(method(:handleGenerationError));
     }
 
     function updateResult(result) {
         generatorResultView.pushNewResult(result);
     }
 
-    function handleError(arg) {
+    function handleGenerationError(arg) {
         generatorResultView.shake();
         if (arg instanceof InvalidArgumentError) {
             System.println("Generator error occured: " + arg.reason);
@@ -60,8 +64,22 @@ class GeneratorView extends Ui.View {
     }
 
     function switchMode() {
-        // TODO: switch actual generator mode
-        generatorModeView.pushNewMode();
+        generatorController.switchToNextMode()
+            .onSuccess(method(:updateMode))
+            .onError(method(:handleModeSwitchError));
+    }
+
+    function updateMode(generatorMode as GeneratorType) {
+        generatorModeView.pushNewMode(generatorMode);
+    }
+
+    function handleModeSwitchError(arg) {
+        generatorModeView.shake();
+        var argText = "null";
+        if (arg != null) {
+            argText = arg.toString();
+        }
+        System.println("Unable to swtich generator mode: " + argText);
     }
 
 	function onShow() {

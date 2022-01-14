@@ -16,9 +16,12 @@ enum GeneratorType {
     GENARATOR_HEX
 }
 
+const GENERATOR_TYPES_COUNT = GENARATOR_HEX + 1;
+
 class RandomGenerator {
 
-    private const CHARS = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz".toCharArray();
+    private const CHARS = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
+        .toCharArray();
     private const HEX_CHARS_SUBSTRING_LENGTH = 16;
     private const FIXED_VALUE_THRESHOLD = 10;
 
