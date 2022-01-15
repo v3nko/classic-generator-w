@@ -24,28 +24,25 @@ class SlideableView extends Ui.View {
     // Animation-related values
 
     private var animationTimer;
-    private var isAnimationActive = false;
+    private var slideAnimator;
+    private var shakeAnimator;
+    private var applyAltColor = false;
 
-    // Slide animation
+    // Temp shake animation
+    // TODO: remove
     private const ANIMATION_DURATION_MILLIS = 170;
     private const ANIMATION_FREQUENCY = 50;
-    private var topTranslateTheshold;
-    private var drawablePositionOffsetY;
-    private var applyAltColor = false;
-    private var frameStep = null;
-    private var pushAnimation as PushAnimation;
-
-    // Shake animation
     private const ANIMATION_SHAKE_ITERATIONS = 4;
     private const ANIMATION_SHAKE_TRANSLATE = 9;
     private var shakeOffsetX = 0;
     private var shakeIteration = 0;
-    
+
     function initialize(centerX, centerY) {
         View.initialize();
         self.centerX = centerX;
         self.centerY = centerY;
         animationTimer = new Timer.Timer();
+        slideAnimator = new SlideAnimator(animationTimer, method(:onFinishSlideAnimation));
     }
 
     function onUpdate(dc) {
@@ -60,12 +57,13 @@ class SlideableView extends Ui.View {
     private function drawCurrentDrawable(dc) {
         dc.setClip(0, currentDrawablePositionY, dc.getWidth(), currentDrawable.height);
         var positionY = currentDrawablePositionY;
-        switch (pushAnimation) {
+        var offsetY = slideAnimator.getDrawablePositionOffsetY();
+        switch (slideAnimator.getAnimation()) {
             case SLIDE_UP:
-                positionY += drawablePositionOffsetY;
+                positionY += offsetY;
                 break;
             case SLIDE_DOWN:
-                positionY -= drawablePositionOffsetY;
+                positionY -= offsetY;
                 break;
         }
         currentDrawable.setLocation(centerX + shakeOffsetX, positionY);
@@ -75,8 +73,8 @@ class SlideableView extends Ui.View {
 
     private function drawPrevDrawable(dc) {
         var positionY = currentDrawablePositionY;
-        var offsetY = prevDrawable.height - drawablePositionOffsetY;
-        switch (pushAnimation) {
+        var offsetY = prevDrawable.height - slideAnimator.getDrawablePositionOffsetY();
+        switch (slideAnimator.getAnimation()) {
             case SLIDE_UP:
                 positionY -= offsetY;
                 break;
@@ -100,31 +98,7 @@ class SlideableView extends Ui.View {
         }
     }
 
-    private function evaluateSlideFrameStep() {
-        if (frameStep == null || frameStep == 0) {
-            var transitionLength = drawableHeight;
-            frameStep = (transitionLength / (ANIMATION_DURATION_MILLIS / ANIMATION_FREQUENCY))
-                .toNumber();
-        }
-    }
-
-    function requestSlideFrameUpdate() {
-        evaluateSlideFrameStep();
-        if (drawablePositionOffsetY <= 0) {
-            finishSlideAnimation();
-        } else {
-            drawablePositionOffsetY = drawablePositionOffsetY - frameStep;
-            if (drawablePositionOffsetY <= 0) {
-                drawablePositionOffsetY = 0;
-                finishSlideAnimation();
-            }
-        }
-        Ui.requestUpdate();
-    }
-
-    private function finishSlideAnimation() {
-        animationTimer.stop();
-        isAnimationActive = false;
+    function onFinishSlideAnimation() {
         applyAltColor = false;
         currentDrawable.setColor(getCurrentDrawableColor());
     }
@@ -133,20 +107,16 @@ class SlideableView extends Ui.View {
         var prevDrawableBuffer = currentDrawable;
         currentDrawable = newDrawable;
         drawableHeight = currentDrawable.height;
-        if (!isAnimationActive) {
-            pushAnimation = animation;
+        if (!slideAnimator.isAnimationActive()) {
             prevDrawable = prevDrawableBuffer;
             if (prevDrawable != null) {
                 prevDrawable.setColor(primaryValueColor);
             }
             currentDrawablePositionY = centerY - (drawableHeight / 2);
             if (animation != SLIDE_NONE) {
-                drawablePositionOffsetY = drawableHeight;
-                animationTimer.start(method(:requestSlideFrameUpdate), ANIMATION_FREQUENCY, true);
-                isAnimationActive = true;
+                slideAnimator.start(animation, drawableHeight);
             } else {
-                drawablePositionOffsetY = 0;
-                Ui.requestUpdate();
+                slideAnimator.reset();
             }
         } else {
             applyAltColor = true;
@@ -193,7 +163,82 @@ class SlideableView extends Ui.View {
         Ui.requestUpdate();
     }
 
-    enum PushAnimation {
+    static enum PushAnimation {
         SLIDE_NONE, SLIDE_DOWN, SLIDE_UP
+    }
+
+    class SlideAnimator {
+        private const ANIMATION_DURATION_MILLIS = 170;
+        private const ANIMATION_FREQUENCY = 50;
+        private var topTranslateTheshold;
+        private var drawablePositionOffsetY;
+        private var frameStep = null;
+        private var animation as PushAnimation;
+        private var animationActive = false;
+        private var animationTimer;
+
+        private var drawableHeight;
+
+        private var finishCallback as Method();
+
+        function initialize(animationTimer, finishCallback as Method()) {
+            me.animationTimer = animationTimer;
+        }
+
+        function getAnimation() as PushAnimation {
+            return animation;
+        }
+
+        function getDrawablePositionOffsetY() {
+            return drawablePositionOffsetY;
+        }
+
+        private function evaluateSlideFrameStep() {
+            if (frameStep == null || frameStep == 0) {
+                var transitionLength = drawableHeight;
+                frameStep = (transitionLength / (ANIMATION_DURATION_MILLIS / ANIMATION_FREQUENCY))
+                    .toNumber();
+            }
+        }
+
+        function requestSlideFrameUpdate() {
+            evaluateSlideFrameStep();
+            if (drawablePositionOffsetY <= 0) {
+                finishSlideAnimation();
+            } else {
+                drawablePositionOffsetY = drawablePositionOffsetY - frameStep;
+                if (drawablePositionOffsetY <= 0) {
+                    drawablePositionOffsetY = 0;
+                    finishSlideAnimation();
+                }
+            }
+            Ui.requestUpdate();
+        }
+
+        private function finishSlideAnimation() {
+            animationTimer.stop();
+            animationActive = false;
+            if (finishCallback != null) {
+                finishCallback.invoke();
+            }
+        }
+
+        function isAnimationActive() as Boolean {
+            return animationActive;
+        }
+
+        function start(animation, drawableHeight) {
+            me.drawableHeight = drawableHeight;
+            me.animation = animation;
+            drawablePositionOffsetY = drawableHeight;
+            animationTimer.start(method(:requestSlideFrameUpdate), ANIMATION_FREQUENCY, true);
+            animationActive = true;
+        }
+
+        function reset() {
+            animation = SLIDE_NONE;
+            drawablePositionOffsetY = 0;
+            Ui.requestUpdate();
+        }
     }
 }
