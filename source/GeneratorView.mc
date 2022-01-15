@@ -29,7 +29,7 @@ class GeneratorView extends Ui.View {
         generatorModeView = new GeneratorModeView(centerX, modePositionY);
 
         var generator = new RandomGenerator(new GeneratorOptionsValidator());
-        generatorController = new GeneratorController(generator);
+        generatorController = new GeneratorController(generator, new SettingsStore());
         generatorController.loadSettings();
 
         updateMode(generatorController.getCurrentMode(), SlideableView.SLIDE_NONE);

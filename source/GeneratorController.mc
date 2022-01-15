@@ -1,19 +1,25 @@
 class GeneratorController {
+
+    private static const DEFAULT_GENERATOR_MODE = GENERATOR_NUM_FIXED;
     
     private var generator;
+    private var settings;
 
     private var currentMode as GeneratorType;
 
-    function initialize(generator as Generator) {
+    function initialize(generator as Generator, settings as SettingsStore) {
         me.generator = generator;
+        me.settings = settings;
     }
 
     function loadSettings() {
-        currentMode = GENERATOR_NUM_FIXED;
+        currentMode = settings.getGeneratorMode();
+        if (currentMode == null) {
+            currentMode = DEFAULT_GENERATOR_MODE;
+        }
     }
 
     function generate() as Result<String> {
-        // TODO: use loaded settings for generator options
         switch (currentMode) {
             case GENERATOR_NUM:
                 return generator.generateNum(5);
@@ -35,6 +41,7 @@ class GeneratorController {
         if (currentMode >= GENERATOR_TYPES_COUNT) {
             currentMode = 0;
         }
+        settings.saveGeneratorMode(currentMode);
         return new Success(currentMode);
     }
     
@@ -43,6 +50,7 @@ class GeneratorController {
         if (currentMode < 0) {
             currentMode = GENERATOR_TYPES_COUNT - 1;
         }
+        settings.saveGeneratorMode(currentMode);
         return new Success(currentMode);
     }
 
