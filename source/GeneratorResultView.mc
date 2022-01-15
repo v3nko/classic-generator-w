@@ -28,7 +28,8 @@ class GeneratorResultView extends SlideableView {
                     :justification => Gfx.TEXT_JUSTIFY_CENTER,
                     :height => valueHeight
                 }
-            )
+            ),
+            SlideableView.SLIDE_UP
         );
     }
 }

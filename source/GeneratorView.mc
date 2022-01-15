@@ -32,7 +32,7 @@ class GeneratorView extends Ui.View {
         generatorController = new GeneratorController(generator);
         generatorController.loadSettings();
 
-        updateMode(generatorController.getCurrentMode());
+        updateMode(generatorController.getCurrentMode(), SlideableView.SLIDE_NONE);
 
         generateNewValue();
     }
@@ -65,18 +65,26 @@ class GeneratorView extends Ui.View {
 
     function switchToPreviousMode() {
         generatorController.switchToPreviousMode()
-            .onSuccess(method(:updateMode))
+            .onSuccess(method(:updateModePrevious))
             .onError(method(:handleModeSwitchError));
     }
 
     function switchToNextMode() {
         generatorController.switchToNextMode()
-            .onSuccess(method(:updateMode))
+            .onSuccess(method(:updateModeNext))
             .onError(method(:handleModeSwitchError));
     }
 
-    function updateMode(generatorMode as GeneratorType) {
-        generatorModeView.pushNewMode(generatorMode);
+    function updateModeNext(generatorMode as GeneratorType) {
+        updateMode(generatorMode, SlideableView.SLIDE_UP);
+    }
+
+    function updateModePrevious(generatorMode as GeneratorType) {
+        updateMode(generatorMode, SlideableView.SLIDE_DOWN);
+    }
+
+    private function updateMode(generatorMode as GeneratorType, animation as PushAnimation) {
+        generatorModeView.pushNewMode(generatorMode, animation);
     }
 
     function handleModeSwitchError(arg) {

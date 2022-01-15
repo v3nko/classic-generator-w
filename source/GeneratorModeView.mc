@@ -12,7 +12,7 @@ class GeneratorModeView extends SlideableView {
         modeTitleHeight = Gfx.getFontHeight(MODE_TITLE_FONT);
     }
     
-    function pushNewMode(generatorMode as GeneratorType) {
+    function pushNewMode(generatorMode as GeneratorType, animation as PushAimation) {
         var textIndicator = new Ui.Text(
             {
                 :text => resolveTitle(generatorMode),
@@ -29,7 +29,7 @@ class GeneratorModeView extends SlideableView {
         var indicatorGroup = new IndicatorDrawable();
         indicatorGroup.setIndicators(textIndicator, iconIndicator);
     
-        pushNewDrawable(indicatorGroup);
+        pushNewDrawable(indicatorGroup, animation);
     }
 
     private function resolveIndicator(generatorMode as GeneratorType) {

@@ -33,6 +33,7 @@ class SlideableView extends Ui.View {
     private var drawablePositionOffsetY;
     private var applyAltColor = false;
     private var frameStep = null;
+    private var pushAnimation as PushAnimation;
 
     // Shake animation
     private const ANIMATION_SHAKE_ITERATIONS = 4;
@@ -58,20 +59,35 @@ class SlideableView extends Ui.View {
 
     private function drawCurrentDrawable(dc) {
         dc.setClip(0, currentDrawablePositionY, dc.getWidth(), currentDrawable.height);
-        currentDrawable.setLocation(
-            centerX + shakeOffsetX,
-            currentDrawablePositionY + drawablePositionOffsetY
-        );
+        var positionY = currentDrawablePositionY;
+        switch (pushAnimation) {
+            case SLIDE_UP:
+                positionY += drawablePositionOffsetY;
+                break;
+            case SLIDE_DOWN:
+                positionY -= drawablePositionOffsetY;
+                break;
+        }
+        currentDrawable.setLocation(centerX + shakeOffsetX, positionY);
         currentDrawable.draw(dc);
         dc.clearClip();
     }
 
     private function drawPrevDrawable(dc) {
+        var positionY = currentDrawablePositionY;
+        var offsetY = prevDrawable.height - drawablePositionOffsetY;
+        switch (pushAnimation) {
+            case SLIDE_UP:
+                positionY -= offsetY;
+                break;
+            case SLIDE_DOWN:
+                positionY += offsetY;
+                break;
+            default:
+                return;
+        }
         dc.setClip(0, currentDrawablePositionY, dc.getWidth(), prevDrawable.height);
-        prevDrawable.setLocation(
-            centerX,
-            currentDrawablePositionY - (prevDrawable.height - drawablePositionOffsetY)
-        );
+        prevDrawable.setLocation(centerX, positionY);
         prevDrawable.draw(dc);
         dc.clearClip();
     }
@@ -113,19 +129,25 @@ class SlideableView extends Ui.View {
         currentDrawable.setColor(getCurrentDrawableColor());
     }
 
-    function pushNewDrawable(newDrawable) {
+    function pushNewDrawable(newDrawable, animation as PushAnimation) {
         var prevDrawableBuffer = currentDrawable;
         currentDrawable = newDrawable;
         drawableHeight = currentDrawable.height;
         if (!isAnimationActive) {
+            pushAnimation = animation;
             prevDrawable = prevDrawableBuffer;
             if (prevDrawable != null) {
                 prevDrawable.setColor(primaryValueColor);
             }
             currentDrawablePositionY = centerY - (drawableHeight / 2);
-            drawablePositionOffsetY = drawableHeight;
-            animationTimer.start(method(:requestSlideFrameUpdate), ANIMATION_FREQUENCY, true);
-            isAnimationActive = true;
+            if (animation != SLIDE_NONE) {
+                drawablePositionOffsetY = drawableHeight;
+                animationTimer.start(method(:requestSlideFrameUpdate), ANIMATION_FREQUENCY, true);
+                isAnimationActive = true;
+            } else {
+                drawablePositionOffsetY = 0;
+                Ui.requestUpdate();
+            }
         } else {
             applyAltColor = true;
         }
@@ -169,5 +191,9 @@ class SlideableView extends Ui.View {
             }
         }
         Ui.requestUpdate();
+    }
+
+    enum PushAnimation {
+        SLIDE_NONE, SLIDE_DOWN, SLIDE_UP
     }
 }
