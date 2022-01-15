@@ -63,7 +63,13 @@ class GeneratorView extends Ui.View {
         generatorModeView.onUpdate(dc);
     }
 
-    function switchMode() {
+    function switchToPreviousMode() {
+        generatorController.switchToPreviousMode()
+            .onSuccess(method(:updateMode))
+            .onError(method(:handleModeSwitchError));
+    }
+
+    function switchToNextMode() {
         generatorController.switchToNextMode()
             .onSuccess(method(:updateMode))
             .onError(method(:handleModeSwitchError));

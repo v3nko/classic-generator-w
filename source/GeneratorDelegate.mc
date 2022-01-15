@@ -13,11 +13,12 @@ class GeneratorDelegate extends Ui.BehaviorDelegate {
         switch(keyEvent.getKey()) {
             case Ui.KEY_ENTER:
                 generatorView.generateNewValue();
-                Ui.requestUpdate();
+                break;
+            case Ui.KEY_UP:
+                generatorView.switchToPreviousMode();
                 break;
             case Ui.KEY_DOWN:
-                generatorView.switchMode();
-                Ui.requestUpdate();
+                generatorView.switchToNextMode();
                 break;
         }
     }
