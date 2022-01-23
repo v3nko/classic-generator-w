@@ -1,5 +1,6 @@
 using Toybox.WatchUi as Ui;
 using Toybox.Graphics as Gfx;
+using Generator as Gen;
 
 class GeneratorModeView extends SlideableView {
 
@@ -12,7 +13,7 @@ class GeneratorModeView extends SlideableView {
         modeTitleHeight = Gfx.getFontHeight(MODE_TITLE_FONT);
     }
     
-    function pushNewMode(generatorMode as GeneratorType, animation as PushAimation) {
+    function pushNewMode(generatorMode as Gen.GeneratorType, animation as PushAimation) {
         var textIndicator = new Ui.Text(
             {
                 :text => resolveTitle(generatorMode),
@@ -32,22 +33,22 @@ class GeneratorModeView extends SlideableView {
         pushNewDrawable(indicatorGroup, animation);
     }
 
-    private function resolveIndicator(generatorMode as GeneratorType) {
+    private function resolveIndicator(generatorMode as Gen.GeneratorType) {
         var resource;
         switch (generatorMode) {
-            case GENERATOR_NUM:
+            case Gen.GENERATOR_NUM:
                 resource = Rez.Drawables.ic_num;
                 break;
-            case GENERATOR_RANGE:
+            case Gen.GENERATOR_RANGE:
                 resource = Rez.Drawables.ic_range;
                 break;
-            case GENERATOR_NUM_FIXED:
+            case Gen.GENERATOR_NUM_FIXED:
                 resource = Rez.Drawables.ic_num_fixed;
                 break;
-            case GENERATOR_ALPHANUM:
+            case Gen.GENERATOR_ALPHANUM:
                 resource = Rez.Drawables.ic_alphanum;
                 break;
-            case GENARATOR_HEX:
+            case Gen.GENARATOR_HEX:
                 resource = Rez.Drawables.ic_hex;
                 break;
             default:
@@ -63,19 +64,19 @@ class GeneratorModeView extends SlideableView {
     private function resolveTitle(generatorMode as GeneratorType) {
         var resource;
         switch (generatorMode) {
-            case GENERATOR_NUM:
+            case Gen.GENERATOR_NUM:
                 resource = Rez.Strings.gen_title_num;
                 break;
-            case GENERATOR_RANGE:
+            case Gen.GENERATOR_RANGE:
                 resource = Rez.Strings.gen_title_num_range;
                 break;
-            case GENERATOR_NUM_FIXED:
+            case Gen.GENERATOR_NUM_FIXED:
                 resource = Rez.Strings.gen_title_num_fixed;
                 break;
-            case GENERATOR_ALPHANUM:
+            case Gen.GENERATOR_ALPHANUM:
                 resource = Rez.Strings.gen_title_alphanum;
                 break;
-            case GENARATOR_HEX:
+            case Gen.GENARATOR_HEX:
                 resource = Rez.Strings.gen_title_hex;
                 break;
             default:

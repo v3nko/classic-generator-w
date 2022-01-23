@@ -1,64 +1,108 @@
+using Generator as Gen;
+
 class GeneratorController {
 
-    private static const DEFAULT_GENERATOR_MODE = GENERATOR_NUM_FIXED;
-    
     private var generator;
+    private var generatorMode as GeneratorMode;
     private var settings;
 
-    private var currentMode as GeneratorType;
-
-    function initialize(generator as Generator, settings as SettingsStore) {
+    function initialize(generator as Gen.Generator, settings as SettingsStore) {
         me.generator = generator;
+        generatorMode = new GeneratorMode();
         me.settings = settings;
     }
 
     function loadSettings() {
-        currentMode = settings.getGeneratorMode();
-        if (currentMode == null) {
-            currentMode = DEFAULT_GENERATOR_MODE;
-        }
+        generatorMode.setCurrentMode(settings.getGeneratorMode());
     }
 
     function generate() as Result<String> {
-        switch (currentMode) {
-            case GENERATOR_NUM:
+        switch (generatorMode.getCurrentMode()) {
+            case Gen.GENERATOR_NUM:
                 return generator.generateNum(5);
-            case GENERATOR_RANGE:
+            case Gen.GENERATOR_RANGE:
                 return generator.generateRange(99, 195);
-            case GENERATOR_NUM_FIXED:
+            case Gen.GENERATOR_NUM_FIXED:
                 return generator.generateNumFixed(5);
-            case GENERATOR_ALPHANUM:
+            case Gen.GENERATOR_ALPHANUM:
                 return generator.generateAlphanum(1);
-            case GENARATOR_HEX:
+            case Gen.GENARATOR_HEX:
                 return generator.generateHex(1);
             default:
-                return new Error(new UnsupportedGenearatorType());
+                return new Error(new UnsupportedGeneratorType());
         }
     }
 
     function switchToNextMode() as Result {
-        currentMode++;
-        if (currentMode >= GENERATOR_TYPES_COUNT) {
-            currentMode = 0;
-        }
-        settings.saveGeneratorMode(currentMode);
-        return new Success(currentMode);
+        var newMode = generatorMode.switchToNextMode();
+        settings.saveGeneratorMode(newMode);
+        return new Success(newMode);
     }
     
     function switchToPreviousMode() as Result {
-        currentMode--;
-        if (currentMode < 0) {
-            currentMode = GENERATOR_TYPES_COUNT - 1;
+        var newMode = generatorMode.switchToPreviousMode();
+        settings.saveGeneratorMode(newMode);
+        return new Success(newMode);
+    }
+
+    function getCurrentMode() as Gen.GeneratorType {
+        return generatorMode.getCurrentMode();
+    }
+    
+    class GeneratorMode {
+        private const DEFAULT_GENERATOR_MODE = Gen.GENERATOR_NUM_FIXED;
+        private var generatorModes = [
+           Gen.GENERATOR_NUM,
+           Gen.GENERATOR_RANGE,
+           Gen.GENERATOR_NUM_FIXED,
+           Gen.GENERATOR_ALPHANUM,
+           Gen.GENARATOR_HEX
+        ];
+        private var currentMode as Gen.GeneratorType;
+        private var currentModeIndex as Integer;
+
+        function getCurrentMode() as GeneratorType {
+            ensureModeSet();
+            return currentMode;
         }
-        settings.saveGeneratorMode(currentMode);
-        return new Success(currentMode);
-    }
 
-    function getCurrentMode() as GeneratorType {
-        return currentMode;
+        private function ensureModeSet() {
+            if (currentMode == null || currentModeIndex == null) {
+                setCurrentMode(DEFAULT_GENERATOR_MODE);
+            }
+        }
+
+        function setCurrentMode(mode as Gen.GeneratorType) {
+            var modeIndex = generatorModes.indexOf(mode);
+            if (modeIndex != -1) {
+                currentMode = mode;
+                currentModeIndex = modeIndex;
+            } else {
+                currentMode = DEFAULT_GENERATOR_MODE;
+                currentModeIndex = generatorModes.indexOf(currentMode);
+            }
+        }
+
+        function switchToNextMode() as Gen.GeneratorType {
+            ensureModeSet();
+            currentModeIndex++;
+            if (currentModeIndex >= generatorModes.size()) {
+                currentModeIndex = 0;
+            }
+            currentMode = generatorModes[currentModeIndex];
+            return currentMode;
+        }
+
+        function switchToPreviousMode() as Gen.GeneratorType {
+            ensureModeSet();
+            currentModeIndex--;
+            if (currentModeIndex < 0) {
+                currentModeIndex = generatorModes.size() - 1;
+            }
+            currentMode = generatorModes[currentModeIndex];
+            return currentMode;
+        }
     }
 }
 
-class UnsupportedGenearatorType {
-
-}
+class UnsupportedGeneratorType { }

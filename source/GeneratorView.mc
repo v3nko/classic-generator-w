@@ -2,6 +2,7 @@ using Toybox.WatchUi as Ui;
 using Toybox.Graphics as Gfx;
 using Toybox.System as System;
 using Toybox.Timer;
+using Generator as Gen;
 
 class GeneratorView extends Ui.View {
 
@@ -28,7 +29,7 @@ class GeneratorView extends Ui.View {
         var modePositionY = dc.getHeight() * MODE_POSITION_FACTOR;
         generatorModeView = new GeneratorModeView(centerX, modePositionY);
 
-        var generator = new RandomGenerator(new GeneratorOptionsValidator());
+        var generator = new Gen.RandomGenerator(new GeneratorOptionsValidator());
         generatorController = new GeneratorController(generator, new SettingsStore());
         generatorController.loadSettings();
 
@@ -49,7 +50,7 @@ class GeneratorView extends Ui.View {
 
     function handleGenerationError(arg) {
         generatorResultView.shake();
-        if (arg instanceof InvalidArgumentError) {
+        if (arg instanceof Gen.InvalidArgumentError) {
             System.println("Generator error occured: " + arg.reason);
         } else {
             System.println("Unknown generator error occured");
@@ -75,15 +76,15 @@ class GeneratorView extends Ui.View {
             .onError(method(:handleModeSwitchError));
     }
 
-    function updateModeNext(generatorMode as GeneratorType) {
+    function updateModeNext(generatorMode as Gen.GeneratorType) {
         updateMode(generatorMode, SlideableView.SLIDE_UP);
     }
 
-    function updateModePrevious(generatorMode as GeneratorType) {
+    function updateModePrevious(generatorMode as Gen.GeneratorType) {
         updateMode(generatorMode, SlideableView.SLIDE_DOWN);
     }
 
-    private function updateMode(generatorMode as GeneratorType, animation as PushAnimation) {
+    private function updateMode(generatorMode as Gen.GeneratorType, animation as PushAnimation) {
         generatorModeView.pushNewMode(generatorMode, animation);
     }
 
