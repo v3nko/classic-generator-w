@@ -28,21 +28,13 @@ class SlideableView extends Ui.View {
     private var shakeAnimator;
     private var applyAltColor = false;
 
-    // Temp shake animation
-    // TODO: remove
-    private const ANIMATION_DURATION_MILLIS = 170;
-    private const ANIMATION_FREQUENCY = 50;
-    private const ANIMATION_SHAKE_ITERATIONS = 4;
-    private const ANIMATION_SHAKE_TRANSLATE = 9;
-    private var shakeOffsetX = 0;
-    private var shakeIteration = 0;
-
     function initialize(centerX, centerY) {
         View.initialize();
         self.centerX = centerX;
         self.centerY = centerY;
         animationTimer = new Timer.Timer();
         slideAnimator = new SlideAnimator(animationTimer, method(:onFinishSlideAnimation));
+        shakeAnimator = new ShakeAnimator(animationTimer);
     }
 
     function onUpdate(dc) {
@@ -66,7 +58,7 @@ class SlideableView extends Ui.View {
                 positionY -= offsetY;
                 break;
         }
-        currentDrawable.setLocation(centerX + shakeOffsetX, positionY);
+        currentDrawable.setLocation(centerX + shakeAnimator.getShakeOffsetX(), positionY);
         currentDrawable.draw(dc);
         dc.clearClip();
     }
@@ -142,25 +134,9 @@ class SlideableView extends Ui.View {
     }
 
     function shake() {
-        if (!isAnimationActive) {
-            animationTimer.start(method(:requestShakeFrameUpdate), ANIMATION_FREQUENCY, true);
+        if (!slideAnimator.isAnimationActive()) {
+            shakeAnimator.start();
         }
-    }
-
-    function requestShakeFrameUpdate() {
-        if (shakeIteration >= ANIMATION_SHAKE_ITERATIONS) {
-            animationTimer.stop();
-            shakeOffsetX = 0;
-            shakeIteration = 0;
-        } else {
-            shakeIteration++;
-            if (shakeOffsetX < 0) {
-                shakeOffsetX = ANIMATION_SHAKE_TRANSLATE;
-            } else {
-                shakeOffsetX = ANIMATION_SHAKE_TRANSLATE * -1;
-            }
-        }
-        Ui.requestUpdate();
     }
 
     static enum PushAnimation {
@@ -183,6 +159,7 @@ class SlideableView extends Ui.View {
 
         function initialize(animationTimer, finishCallback as Method()) {
             me.animationTimer = animationTimer;
+            me.finishCallback = finishCallback;
         }
 
         function getAnimation() as PushAnimation {
@@ -239,6 +216,44 @@ class SlideableView extends Ui.View {
             animation = SLIDE_NONE;
             drawablePositionOffsetY = 0;
             Ui.requestUpdate();
+        }
+    }
+
+    class ShakeAnimator {
+        private const ANIMATION_DURATION_MILLIS = 170;
+        private const ANIMATION_FREQUENCY = 50;
+        private const ANIMATION_SHAKE_ITERATIONS = 4;
+        private const ANIMATION_SHAKE_TRANSLATE = 9;
+        private var shakeOffsetX = 0;
+        private var shakeIteration = 0;
+        private var animationTimer;
+
+        function initialize(animationTimer) {
+            me.animationTimer = animationTimer;
+        }
+
+        function getShakeOffsetX() {
+            return shakeOffsetX;
+        }
+
+        function requestShakeFrameUpdate() {
+            if (shakeIteration >= ANIMATION_SHAKE_ITERATIONS) {
+                animationTimer.stop();
+                shakeOffsetX = 0;
+                shakeIteration = 0;
+            } else {
+                shakeIteration++;
+                if (shakeOffsetX < 0) {
+                    shakeOffsetX = ANIMATION_SHAKE_TRANSLATE;
+                } else {
+                    shakeOffsetX = ANIMATION_SHAKE_TRANSLATE * -1;
+                }
+            }
+            Ui.requestUpdate();
+        }
+
+        function start() {
+            animationTimer.start(method(:requestShakeFrameUpdate), ANIMATION_FREQUENCY, true);
         }
     }
 }
