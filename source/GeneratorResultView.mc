@@ -1,7 +1,7 @@
 using Toybox.WatchUi as Ui;
 using Toybox.Graphics as Gfx;
 
-class GeneratorResultView extends SlideableView {
+class GeneratorResultView extends SlidableView {
 
     private const COLOR_PRIMARY = Gfx.COLOR_YELLOW;
     private const COLOR_ALT = Gfx.COLOR_DK_RED;
@@ -10,7 +10,7 @@ class GeneratorResultView extends SlideableView {
     private var valueHeight;
 
     function initialize(centerX, centerY) {
-        SlideableView.initialize(centerX, centerY);
+        SlidableView.initialize(centerX, centerY);
         setPrimaryColor(COLOR_PRIMARY);
         setAltColor(COLOR_ALT);
         generatorValueFont = Ui.loadResource(Rez.Fonts.rajdhani_bold_104);
@@ -29,7 +29,7 @@ class GeneratorResultView extends SlideableView {
                     :height => valueHeight
                 }
             ),
-            SlideableView.SLIDE_UP
+            SlidableView.SLIDE_UP
         );
     }
 }

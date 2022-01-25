@@ -2,7 +2,7 @@ using Toybox.WatchUi as Ui;
 using Toybox.Graphics as Gfx;
 using Toybox.Timer;
 
-class SlideableView extends Ui.View {
+class SlidableView extends Ui.View {
     
     // Slideable drawables
     

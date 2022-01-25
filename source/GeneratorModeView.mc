@@ -2,14 +2,14 @@ using Toybox.WatchUi as Ui;
 using Toybox.Graphics as Gfx;
 using Generator as Gen;
 
-class GeneratorModeView extends SlideableView {
+class GeneratorModeView extends SlidableView {
 
     private const MODE_TITLE_FONT = Gfx.FONT_TINY;
 
     private var modeTitleHeight;
 
     function initialize(centerX, centerY) {
-        SlideableView.initialize(centerX, centerY);
+        SlidableView.initialize(centerX, centerY);
         modeTitleHeight = Gfx.getFontHeight(MODE_TITLE_FONT);
     }
     

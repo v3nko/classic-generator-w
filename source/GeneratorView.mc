@@ -33,7 +33,7 @@ class GeneratorView extends Ui.View {
         generatorController = new GeneratorController(generator, new SettingsStore());
         generatorController.loadSettings();
 
-        updateMode(generatorController.getCurrentMode(), SlideableView.SLIDE_NONE);
+        updateMode(generatorController.getCurrentMode(), SlidableView.SLIDE_NONE);
 
         generateNewValue();
     }
@@ -77,11 +77,11 @@ class GeneratorView extends Ui.View {
     }
 
     function updateModeNext(generatorMode as Gen.GeneratorType) {
-        updateMode(generatorMode, SlideableView.SLIDE_UP);
+        updateMode(generatorMode, SlidableView.SLIDE_UP);
     }
 
     function updateModePrevious(generatorMode as Gen.GeneratorType) {
-        updateMode(generatorMode, SlideableView.SLIDE_DOWN);
+        updateMode(generatorMode, SlidableView.SLIDE_DOWN);
     }
 
     private function updateMode(generatorMode as Gen.GeneratorType, animation as PushAnimation) {

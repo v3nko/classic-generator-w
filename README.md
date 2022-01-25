@@ -10,7 +10,22 @@ This app is developed as a playground for applying various interesting technolog
 
 ## Features
 
-TBD
+There are 5 generator modes available:
+
+* numeric (from 0 to your value)
+* range (supports negative values)
+* numeric fixed (non-normalized numeric with fixed length)
+* alphanumeric (supports custom symbols)
+* hexadecimal
+
+The generator mode can be switched by the "up"/"down" buttons. The "Start" button generates a new value. The last used generator mode is preserved between app launches.
+
+App contains custom `SlidableView` view with a couple animation modes:
+
+* slide (up/down) animation
+* shake animation
+
+Slide animation is used for generator mode switching and generated result reveal. Shake animation is used for mode switching and generation errors indication.
 
 ## License
 
