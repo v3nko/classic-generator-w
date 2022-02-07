@@ -1,5 +1,6 @@
 using Toybox.Application as App;
 using Toybox.Timer as Timer;
+using Di;
 
 class CGApp extends App.AppBase {
     function initialize() {
@@ -15,7 +16,9 @@ class CGApp extends App.AppBase {
     }
 
     function getInitialView() {
-        var view = new GeneratorView();
+        var registry = Di.provideServiceRegistry();
+
+        var view = new GeneratorView(registry.getGeneratorController());
         return [view, new GeneratorDelegate(view)];
     }
 }

@@ -18,8 +18,9 @@ class GeneratorView extends Ui.View {
     
     private const MODE_POSITION_FACTOR = 0.16;
 
-    function initialize() {
+    function initialize(generatorController) {
 		View.initialize();
+        me.generatorController = generatorController;
 	}
 
     function onLayout(dc) {
@@ -28,9 +29,6 @@ class GeneratorView extends Ui.View {
         generatorResultView = new GeneratorResultView(centerX, centerY);
         var modePositionY = dc.getHeight() * MODE_POSITION_FACTOR;
         generatorModeView = new GeneratorModeView(centerX, modePositionY);
-
-        var generator = new Gen.RandomGenerator(new GeneratorOptionsValidator());
-        generatorController = new GeneratorController(generator, new SettingsStore());
         generatorController.loadSettings();
 
         updateMode(generatorController.getCurrentMode(), SlidableView.SLIDE_NONE);
