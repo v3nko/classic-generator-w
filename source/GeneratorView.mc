@@ -13,10 +13,16 @@ class GeneratorView extends Ui.View {
 
     private var generatorResultView as GeneratorResultView;
     private var generatorModeView as GeneratorModeView;
+    private var buttonIndicatorDrawer as ButtonIndicatorDrawer;
 
     private var generatorController as GeneratorController;
     
     private const MODE_POSITION_FACTOR = 0.16;
+    private const BUTTON_INDICATOR_WIDTH = 12;
+    private const BUTTON_INDICATOR_THIKNESS = 4;
+    private const BUTTON_INDICATOR_ANGLE_START = 30;
+    private const BUTTON_INDICATOR_ANGLE_UP = 180;
+    private const BUTTON_INDICATOR_ANGLE_DOWN = 210;
 
     function initialize(generatorController) {
 		View.initialize();
@@ -29,6 +35,7 @@ class GeneratorView extends Ui.View {
         generatorResultView = new GeneratorResultView(centerX, centerY);
         var modePositionY = dc.getHeight() * MODE_POSITION_FACTOR;
         generatorModeView = new GeneratorModeView(centerX, modePositionY);
+        buttonIndicatorDrawer = new ButtonIndicatorDrawer(centerX, centerY);
         generatorController.loadSettings();
 
         updateMode(generatorController.getCurrentMode(), SlidableView.SLIDE_NONE);
@@ -60,6 +67,31 @@ class GeneratorView extends Ui.View {
         dc.clear();
         generatorResultView.onUpdate(dc);
         generatorModeView.onUpdate(dc);
+        drawButtonIndicators(dc);
+    }
+
+    private function drawButtonIndicators(dc) {
+        buttonIndicatorDrawer.drawIndicator(
+            dc,
+            BUTTON_INDICATOR_ANGLE_START,
+            Gfx.COLOR_YELLOW,
+            BUTTON_INDICATOR_THIKNESS,
+            BUTTON_INDICATOR_WIDTH
+        );
+        buttonIndicatorDrawer.drawIndicator(
+            dc,
+            BUTTON_INDICATOR_ANGLE_UP,
+            Gfx.COLOR_WHITE,
+            BUTTON_INDICATOR_THIKNESS,
+            BUTTON_INDICATOR_WIDTH
+        );
+        buttonIndicatorDrawer.drawIndicator(
+            dc,
+            BUTTON_INDICATOR_ANGLE_DOWN,
+            Gfx.COLOR_WHITE,
+            BUTTON_INDICATOR_THIKNESS,
+            BUTTON_INDICATOR_WIDTH
+        );
     }
 
     function switchToPreviousMode() {
@@ -102,4 +134,28 @@ class GeneratorView extends Ui.View {
     function onHide() {
         // no-op
 	}
+
+    class ButtonIndicatorDrawer {
+        private var centerX;
+	    private var centerY;
+
+        function initialize(centerX, centerY) {
+            me.centerX = centerX;
+            me.centerY = centerY;
+        }
+
+        function drawIndicator(dc, angle, color, thikness, width) {
+            dc.setColor(color, Gfx.COLOR_BLACK);
+            dc.setPenWidth(thikness);
+            var halfWidth = width / 2;
+            dc.drawArc(
+                centerX,
+                centerY,
+                (dc.getWidth() / 2) - thikness,
+                Gfx.ARC_COUNTER_CLOCKWISE,
+                angle - halfWidth,
+                angle + halfWidth
+            );
+        }
+    }
 }
