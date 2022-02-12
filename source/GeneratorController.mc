@@ -19,15 +19,15 @@ class GeneratorController {
     function generate() as Result<String> {
         switch (generatorMode.getCurrentMode()) {
             case Gen.GENERATOR_NUM:
-                return generator.generateNum(5);
+                return generator.generateNum(settings.getNumMax());
             case Gen.GENERATOR_RANGE:
-                return generator.generateRange(99, 195);
+                return generator.generateRange(settings.getRangeMin(), settings.getRangeMax());
             case Gen.GENERATOR_NUM_FIXED:
-                return generator.generateNumFixed(5);
+                return generator.generateNumFixed(settings.getNumFixedLen());
             case Gen.GENERATOR_ALPHANUM:
-                return generator.generateAlphanum(1);
+                return generator.generateAlphanum(settings.getAlphanumLen());
             case Gen.GENARATOR_HEX:
-                return generator.generateHex(1);
+                return generator.generateHex(settings.getHexLen());
             default:
                 return new Error(new UnsupportedGeneratorType());
         }

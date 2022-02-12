@@ -1,8 +1,16 @@
 <strings>
     <string id="app_name">Classic Generator</string>
+
     <string id="gen_title_num">Numeric</string>
     <string id="gen_title_alphanum">Alphanumeric</string>
     <string id="gen_title_num_range">Range</string>
     <string id="gen_title_num_fixed">Numeric fixed</string>
     <string id="gen_title_hex">Hexadecimal</string>
+
+    <string id="settings_num_max">Numeric max</string>
+    <string id="settings_range_min">Range min</string>
+    <string id="settings_range_max">Range max</string>
+    <string id="settings_num_fixed_len">Numeric fixed length</string>
+    <string id="settings_alphanum_len">Alphanumeric length</string>
+    <string id="settings_hex_len">Hexadecimal length</string>
 </strings>
