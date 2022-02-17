@@ -2,7 +2,7 @@ using Toybox.WatchUi as Ui;
 using Toybox.Graphics as Gfx;
 using Toybox.Timer;
 
-class SlidableView extends Ui.View {
+class SlidableView extends Ui.Drawable {
     
     // Slideable drawables
     
@@ -28,16 +28,16 @@ class SlidableView extends Ui.View {
     private var shakeAnimator;
     private var applyAltColor = false;
 
-    function initialize(centerX, centerY) {
-        View.initialize();
-        self.centerX = centerX;
-        self.centerY = centerY;
+    function initialize(identifier, centerX, centerY) {
+        Drawable.initialize({:identifier => identifier});
+        me.centerX = centerX;
+        me.centerY = centerY;
         animationTimer = new Timer.Timer();
         slideAnimator = new SlideAnimator(animationTimer, method(:onFinishSlideAnimation));
         shakeAnimator = new ShakeAnimator(animationTimer);
     }
 
-    function onUpdate(dc) {
+    function draw(dc) {
         if (currentDrawable != null) {
             drawCurrentDrawable(dc);
         }

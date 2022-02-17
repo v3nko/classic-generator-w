@@ -17,7 +17,6 @@ class GeneratorView extends Ui.View {
 
     private var generatorController as GeneratorController;
     
-    private const MODE_POSITION_FACTOR = 0.16;
     private const BUTTON_INDICATOR_WIDTH = 12;
     private const BUTTON_INDICATOR_THIKNESS = 4;
     private const BUTTON_INDICATOR_ANGLE_START = 30;
@@ -30,11 +29,11 @@ class GeneratorView extends Ui.View {
 	}
 
     function onLayout(dc) {
+        View.setLayout(Rez.Layouts.generator(dc));
 		centerX = dc.getWidth() / 2;
 		centerY = dc.getHeight() / 2;
-        generatorResultView = new GeneratorResultView(centerX, centerY);
-        var modePositionY = dc.getHeight() * MODE_POSITION_FACTOR;
-        generatorModeView = new GeneratorModeView(centerX, modePositionY);
+        generatorResultView = View.findDrawableById("generator_result");
+        generatorModeView = View.findDrawableById("generator_mode");
         buttonIndicatorDrawer = new ButtonIndicatorDrawer(centerX, centerY);
         generatorController.loadSettings();
 
@@ -63,10 +62,7 @@ class GeneratorView extends Ui.View {
     }
 
     function onUpdate(dc) {
-        dc.setColor(Gfx.COLOR_TRANSPARENT, Gfx.COLOR_BLACK);
-        dc.clear();
-        generatorResultView.onUpdate(dc);
-        generatorModeView.onUpdate(dc);
+        View.onUpdate(dc);
         drawButtonIndicators(dc);
     }
 

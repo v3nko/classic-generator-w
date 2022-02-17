@@ -1,0 +1,10 @@
+<layout id="generator">
+    <drawable id="generator_result" class="GeneratorResultView">
+        <param name="horizontalBias">0.5</param>
+        <param name="verticalBias">0.5</param>
+    </drawable>
+    <drawable id="generator_mode" class="GeneratorModeView">
+        <param name="horizontalBias">0.5</param>
+        <param name="verticalBias">0.16</param>
+    </drawable>
+</layout>

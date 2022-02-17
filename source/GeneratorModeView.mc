@@ -8,8 +8,16 @@ class GeneratorModeView extends SlidableView {
 
     private var modeTitleHeight;
 
-    function initialize(centerX, centerY) {
-        SlidableView.initialize(centerX, centerY);
+    function initialize(params as Dictionary) {
+        var horizontalBias = params.get(:horizontalBias);
+        var verticalBias = params.get(:verticalBias);
+        var width = System.getDeviceSettings().screenWidth;
+        var height = System.getDeviceSettings().screenHeight;
+        SlidableView.initialize(
+            params.get(:identifier),
+            width * horizontalBias,
+            height * verticalBias
+        );
         modeTitleHeight = Gfx.getFontHeight(MODE_TITLE_FONT);
     }
     

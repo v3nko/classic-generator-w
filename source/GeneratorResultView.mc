@@ -9,8 +9,16 @@ class GeneratorResultView extends SlidableView {
     private var generatorValueFont;
     private var valueHeight;
 
-    function initialize(centerX, centerY) {
-        SlidableView.initialize(centerX, centerY);
+    function initialize(params as Dictionary) {
+        var horizontalBias = params.get(:horizontalBias);
+        var verticalBias = params.get(:verticalBias);
+        var width = System.getDeviceSettings().screenWidth;
+        var height = System.getDeviceSettings().screenHeight;
+        SlidableView.initialize(
+            params.get(:identifier),
+            width * horizontalBias,
+            height * verticalBias
+        );
         setPrimaryColor(COLOR_PRIMARY);
         setAltColor(COLOR_ALT);
         generatorValueFont = Ui.loadResource(Rez.Fonts.rajdhani_bold_104);
