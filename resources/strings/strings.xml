@@ -13,4 +13,9 @@
     <string id="settings_num_fixed_len">Numeric fixed length</string>
     <string id="settings_alphanum_len">Alphanumeric length</string>
     <string id="settings_hex_len">Hexadecimal length</string>
+
+    <string id="error_general">Something went wrong</string>
+    <string id="error_invalid_generator_arguments">Invalid generator arguments</string>
+    <string id="error_generator_general">Unkown generator error</string>
+    <string id="error_mode_switch_general">Unable to switch mode</string>
 </strings>

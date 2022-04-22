@@ -53,12 +53,16 @@ class GeneratorView extends Ui.View {
     }
 
     function handleGenerationError(arg) {
-        generatorResultView.shake();
+        var messageId;
         if (arg instanceof Gen.InvalidArgumentError) {
             System.println("Generator error occured: " + arg.reason);
+            messageId = Rez.Strings.error_invalid_generator_arguments;
         } else {
             System.println("Unknown generator error occured");
+            messageId = Rez.Strings.error_generator_general;
         }
+        var alert = new Alert({:text => Application.loadResource(messageId)});
+        alert.pushView(Ui.SLIDE_IMMEDIATE);
     }
 
     function onUpdate(dc) {
@@ -115,12 +119,16 @@ class GeneratorView extends Ui.View {
     }
 
     function handleModeSwitchError(arg) {
-        generatorModeView.shake();
         var argText = "null";
         if (arg != null) {
             argText = arg.toString();
         }
         System.println("Unable to swtich generator mode: " + argText);
+
+        var alert = new Alert(
+            {:text => Application.loadResource(Rez.Strings.error_mode_switch_general)}
+        );
+        alert.pushView(Ui.SLIDE_IMMEDIATE);
     }
 
 	function onShow() {
