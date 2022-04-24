@@ -28,8 +28,10 @@ class Alert extends Ui.View {
     private const TIMEOUT_DEFAULT = 2000;
     private const FG_COLOR_DEFAULT = Gfx.COLOR_WHITE;
     private const BG_COLOR_DEFAULT = Gfx.COLOR_BLACK;
-    private const VERTICAL_OFFSET = 35;
+    private const VERTICAL_OFFSET_PERCENT = 0.12;
     private const BOTTOM_PADDING = 10;
+
+    private var verticalOffset;
 
     hidden var timer;
     hidden var timeout;
@@ -88,12 +90,14 @@ class Alert extends Ui.View {
         msgLayer = new Ui.Layer({});
         addLayer(msgLayer);
         textArea = new WrapText();
+
+        verticalOffset = dc.getHeight() * VERTICAL_OFFSET_PERCENT;
     }
 
     function onUpdate(dc) {
         var msgDc = msgLayer.getDc();
         msgDc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_BLACK);
-        var posY = textArea.writeLines(msgDc, text, font, VERTICAL_OFFSET);
+        var posY = textArea.writeLines(msgDc, text, font, verticalOffset);
         var settings = System.getDeviceSettings();
 		var screenWidth = settings.screenWidth;
 		var screenHeight = settings.screenHeight;
