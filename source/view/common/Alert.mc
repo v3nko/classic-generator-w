@@ -26,8 +26,9 @@ class Alert extends Ui.View {
     private const TEXT_DEFAULT = "Something went wrong";
     private const FONT_DEFAULT = Gfx.FONT_SYSTEM_TINY;
     private const TIMEOUT_DEFAULT = 2000;
-    private const FG_COLOR_DEFAULT = Gfx.COLOR_WHITE;
+    private const TEXT_COLOR_DEFAULT = Gfx.COLOR_WHITE;
     private const BG_COLOR_DEFAULT = Gfx.COLOR_BLACK;
+    private const STROKE_COLOR_DEFAULT = TEXT_COLOR_DEFAULT;
     private const VERTICAL_OFFSET_PERCENT = 0.12;
     private const BOTTOM_PADDING = 10;
 
@@ -37,8 +38,9 @@ class Alert extends Ui.View {
     hidden var timeout;
     hidden var text;
     hidden var font;
-    hidden var fgcolor;
-    hidden var bgcolor;
+    hidden var textColor;
+    hidden var backgroundColor;
+    hidden var strokeColor;
 
     hidden var textArea;
 
@@ -58,24 +60,29 @@ class Alert extends Ui.View {
             font = FONT_DEFAULT;
         }
 
-        fgcolor = params.get(:fgcolor);
-        if (fgcolor == null) {
-            fgcolor = FG_COLOR_DEFAULT;
+        textColor = params.get(:textColor);
+        if (textColor == null) {
+            textColor = TEXT_COLOR_DEFAULT;
         }
 
-        bgcolor = params.get(:bgcolor);
-        if (bgcolor == null) {
-            bgcolor = BG_COLOR_DEFAULT;
+        backgroundColor = params.get(:backgroundColor);
+        if (backgroundColor == null) {
+            backgroundColor = BG_COLOR_DEFAULT;
+        }
+
+        strokeColor = params.get(:strokeColor);
+        if (strokeColor == null) {
+            strokeColor = STROKE_COLOR_DEFAULT;
         }
 
         timeout = params.get(:timeout);
         if (timeout == null) {
             timeout = TIMEOUT_DEFAULT;
-        }
 
         timer = new Timer.Timer();
     }
 
+        }
     function onShow() {
         timer.start(method(:dismiss), timeout, false);
     }
@@ -96,7 +103,7 @@ class Alert extends Ui.View {
 
     function onUpdate(dc) {
         var msgDc = msgLayer.getDc();
-        msgDc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_BLACK);
+        msgDc.setColor(textColor, backgroundColor);
         var posY = textArea.writeLines(msgDc, text, font, verticalOffset);
         var settings = System.getDeviceSettings();
 		var screenWidth = settings.screenWidth;
@@ -104,10 +111,10 @@ class Alert extends Ui.View {
 
         var bgDc = bgLayer.getDc();
         var alertHeight = posY + BOTTOM_PADDING;
-        bgDc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_TRANSPARENT);
+        bgDc.setColor(strokeColor, Graphics.COLOR_TRANSPARENT);
         bgDc.setPenWidth(1);
         bgDc.drawLine(0, alertHeight, screenWidth, alertHeight);
-        bgDc.setColor(Graphics.COLOR_BLACK, Graphics.COLOR_TRANSPARENT);
+        bgDc.setColor(backgroundColor, Graphics.COLOR_TRANSPARENT);
         bgDc.fillRectangle(0, 0, screenWidth, alertHeight);
     }
 
