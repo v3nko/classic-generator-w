@@ -44,9 +44,6 @@ class Alert extends Ui.View {
 
     hidden var textArea;
 
-    hidden var bgLayer;
-    hidden var msgLayer;
-
     function initialize(params) {
         View.initialize();
 
@@ -92,37 +89,32 @@ class Alert extends Ui.View {
     }
 
     function onLayout(dc) {
-        bgLayer = new Ui.Layer({});
-        addLayer(bgLayer);
-        msgLayer = new Ui.Layer({});
-        addLayer(msgLayer);
-        textArea = new WrapText();
+        textArea = new WrapText({:backgroundColor => backgroundColor});
 
         verticalOffset = dc.getHeight() * VERTICAL_OFFSET_PERCENT;
     }
 
     function onUpdate(dc) {
-        var msgDc = msgLayer.getDc();
-        msgDc.setColor(textColor, backgroundColor);
-        var posY = textArea.writeLines(msgDc, text, font, verticalOffset);
         var settings = System.getDeviceSettings();
 		var screenWidth = settings.screenWidth;
 		var screenHeight = settings.screenHeight;
+        dc.setColor(backgroundColor, backgroundColor);
+        dc.fillRectangle(0, 0, screenWidth, verticalOffset);
+        var posY = textArea.writeLines(dc, text, font, verticalOffset);
 
-        var bgDc = bgLayer.getDc();
         var alertHeight = posY + BOTTOM_PADDING;
-        bgDc.setColor(strokeColor, Graphics.COLOR_TRANSPARENT);
-        bgDc.setPenWidth(1);
-        bgDc.drawLine(0, alertHeight, screenWidth, alertHeight);
-        bgDc.setColor(backgroundColor, Graphics.COLOR_TRANSPARENT);
-        bgDc.fillRectangle(0, 0, screenWidth, alertHeight);
+        dc.setColor(backgroundColor, backgroundColor);
+        dc.fillRectangle(0, posY, screenWidth, BOTTOM_PADDING);
+        dc.setColor(strokeColor, backgroundColor);
+        dc.setPenWidth(1);
+        dc.drawLine(0, alertHeight, screenWidth, alertHeight);
     }
 
     function dismiss() {
-        Ui.popView(SLIDE_IMMEDIATE);
+        Ui.popView(Ui.SLIDE_UP);
     }
 
-    function pushView(transition) {
-        Ui.pushView(self, new AlertDelegate(self), transition);
+    function pushView() {
+        Ui.pushView(self, new AlertDelegate(self), Ui.SLIDE_DOWN);
     }
 }

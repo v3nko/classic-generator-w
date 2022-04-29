@@ -11,6 +11,9 @@ using Toybox.Math;
 using Toybox.Timer;
 
 class WrapText {
+	private const TEXT_COLOR_DEFAULT = Graphics.COLOR_WHITE;
+	private const BACKGROUND_COLOR_DEFAULT = Graphics.COLOR_TRANSPARENT;
+
 	hidden var screenWidth;
 	hidden var screenHeight;
 	hidden var screenShape;
@@ -25,11 +28,25 @@ class WrapText {
 	private var timer;
 	private var overflow = false;
 
-	function initialize() {
+	hidden var textColor = Graphics.COLOR_WHITE;
+	hidden var backgroundColor = Graphics.COLOR_TRANSPARENT;
+
+	function initialize(params) {
 		var settings = System.getDeviceSettings();
 		screenWidth = settings.screenWidth;
 		screenHeight = settings.screenHeight;
 		screenShape = settings.screenShape;
+
+        textColor = params.get(:textColor);
+        if (textColor == null) {
+            textColor = TEXT_COLOR_DEFAULT;
+        }
+
+        backgroundColor = params.get(:backgroundColor);
+        if (backgroundColor == null) {
+            backgroundColor = BACKGROUND_COLOR_DEFAULT;
+        }
+
 		offset = 0;
 	}
 
@@ -54,6 +71,9 @@ class WrapText {
 			// Now calculate how much fits on the line
 			parts = lineSplit(dc, parts[1], font, width);
 			if (offset <= skipped) {
+				dc.setColor(backgroundColor, Graphics.COLOR_TRANSPARENT);
+				dc.fillRectangle(0, posY, screenWidth, height + linePadding);
+				dc.setColor(textColor, Graphics.COLOR_TRANSPARENT);
 				drawText(dc, width, posY, font, parts[0]);
 				posY += height + linePadding;
 			} else {

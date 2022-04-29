@@ -62,7 +62,7 @@ class GeneratorView extends Ui.View {
             messageId = Rez.Strings.error_generator_general;
         }
         var alert = new Alert({:text => Application.loadResource(messageId)});
-        alert.pushView(Ui.SLIDE_IMMEDIATE);
+        alert.pushView();
     }
 
     function onUpdate(dc) {
@@ -128,7 +128,7 @@ class GeneratorView extends Ui.View {
         var alert = new Alert(
             {:text => Application.loadResource(Rez.Strings.error_mode_switch_general)}
         );
-        alert.pushView(Ui.SLIDE_IMMEDIATE);
+        alert.pushView();
     }
 
 	function onShow() {
