@@ -13,6 +13,8 @@ using Toybox.Timer;
 class WrapText {
 	private const TEXT_COLOR_DEFAULT = Graphics.COLOR_WHITE;
 	private const BACKGROUND_COLOR_DEFAULT = Graphics.COLOR_TRANSPARENT;
+	private const PADDING_TOP_DEFAULT = 0;
+	private const PADDING_BOTTOM_DEFAULT = 0;
 
 	hidden var screenWidth;
 	hidden var screenHeight;
@@ -31,6 +33,9 @@ class WrapText {
 	hidden var textColor = Graphics.COLOR_WHITE;
 	hidden var backgroundColor = Graphics.COLOR_TRANSPARENT;
 
+	hidden var paddingTop;
+	hidden var paddingBottom;
+
 	function initialize(params) {
 		var settings = System.getDeviceSettings();
 		screenWidth = settings.screenWidth;
@@ -46,6 +51,16 @@ class WrapText {
         if (backgroundColor == null) {
             backgroundColor = BACKGROUND_COLOR_DEFAULT;
         }
+		
+		paddingTop = params.get(:paddingTop);
+        if (paddingTop == null) {
+            paddingTop = PADDING_TOP_DEFAULT;
+        }		
+		
+		paddingBottom = params.get(:paddingBottom);
+        if (paddingBottom == null) {
+            paddingBottom = PADDING_BOTTOM_DEFAULT;
+        }
 
 		offset = 0;
 	}
@@ -56,10 +71,18 @@ class WrapText {
 		if (posY >= screenHeight) {
 			return posY;
 		}
-		// Should have some space above
-		if (posY == 0) {
-			posY = linePadding;
+
+		// Top padding handling
+		if (paddingTop >= 0) {
+			dc.setColor(backgroundColor, backgroundColor);
+			var verticalInset = posY + paddingTop + linePadding;
+			dc.fillRectangle(0, posY, screenWidth, verticalInset);
+			posY += verticalInset;
+		} else {
+			// Should have some space above
+			posY += linePadding;	
 		}
+
 		// On round screens, needs more space from top, otherwise always zero width
 		if (screenShape == System.SCREEN_SHAPE_ROUND && posY < roundMargin) {
 			posY = roundMargin;
@@ -71,15 +94,23 @@ class WrapText {
 			// Now calculate how much fits on the line
 			parts = lineSplit(dc, parts[1], font, width);
 			if (offset <= skipped) {
-				dc.setColor(backgroundColor, Graphics.COLOR_TRANSPARENT);
+				dc.setColor(backgroundColor, backgroundColor);
 				dc.fillRectangle(0, posY, screenWidth, height + linePadding);
-				dc.setColor(textColor, Graphics.COLOR_TRANSPARENT);
+				dc.setColor(textColor, backgroundColor);
 				drawText(dc, width, posY, font, parts[0]);
 				posY += height + linePadding;
 			} else {
 				skipped++;
 			}
 		}
+
+		// Bottom padding handling
+		if (paddingBottom >= 0) {
+			dc.setColor(backgroundColor, backgroundColor);
+			dc.fillRectangle(0, posY, screenWidth, paddingBottom);
+			posY += paddingBottom;
+		}
+
 		return posY;
 	}
 

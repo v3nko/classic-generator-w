@@ -25,14 +25,14 @@ class Alert extends Ui.View {
     
     private const TEXT_DEFAULT = "Something went wrong";
     private const FONT_DEFAULT = Gfx.FONT_SYSTEM_TINY;
-    private const TIMEOUT_DEFAULT = 2000;
+    private const TIMEOUT_DEFAULT = 5800;
     private const TEXT_COLOR_DEFAULT = Gfx.COLOR_WHITE;
     private const BG_COLOR_DEFAULT = Gfx.COLOR_BLACK;
     private const STROKE_COLOR_DEFAULT = TEXT_COLOR_DEFAULT;
     private const VERTICAL_OFFSET_PERCENT = 0.12;
-    private const BOTTOM_PADDING = 10;
+    private const PADDING_BOTTOM = 10;
 
-    private var verticalOffset;
+    hidden var paddingTop;
 
     hidden var timer;
     hidden var timeout;
@@ -77,9 +77,9 @@ class Alert extends Ui.View {
             timeout = TIMEOUT_DEFAULT;
 
         timer = new Timer.Timer();
+        }
     }
 
-        }
     function onShow() {
         timer.start(method(:dismiss), timeout, false);
     }
@@ -89,25 +89,27 @@ class Alert extends Ui.View {
     }
 
     function onLayout(dc) {
-        textArea = new WrapText({:backgroundColor => backgroundColor});
+        paddingTop = dc.getHeight() * VERTICAL_OFFSET_PERCENT;
 
-        verticalOffset = dc.getHeight() * VERTICAL_OFFSET_PERCENT;
+        textArea = new WrapText(
+            {
+                :backgroundColor => backgroundColor,
+                :textColor => textColor,
+                :paddingTop => paddingTop,
+                :paddingBottom => PADDING_BOTTOM
+            }
+        );
     }
 
     function onUpdate(dc) {
         var settings = System.getDeviceSettings();
 		var screenWidth = settings.screenWidth;
-		var screenHeight = settings.screenHeight;
-        dc.setColor(backgroundColor, backgroundColor);
-        dc.fillRectangle(0, 0, screenWidth, verticalOffset);
-        var posY = textArea.writeLines(dc, text, font, verticalOffset);
+        var textHeight = textArea.writeLines(dc, text, font, 0);
 
-        var alertHeight = posY + BOTTOM_PADDING;
-        dc.setColor(backgroundColor, backgroundColor);
-        dc.fillRectangle(0, posY, screenWidth, BOTTOM_PADDING);
+        // Draw bottom border line
         dc.setColor(strokeColor, backgroundColor);
         dc.setPenWidth(1);
-        dc.drawLine(0, alertHeight, screenWidth, alertHeight);
+        dc.drawLine(0, textHeight, screenWidth, textHeight);
     }
 
     function dismiss() {
