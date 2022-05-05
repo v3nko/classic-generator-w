@@ -10,9 +10,10 @@ using Toybox.Graphics as Gfx;
 using Toybox.Math;
 using Toybox.Timer;
 
-class WrapText {
+class WrapText extends Ui.Drawable {
 	private const TEXT_COLOR_DEFAULT = Graphics.COLOR_WHITE;
 	private const BACKGROUND_COLOR_DEFAULT = Graphics.COLOR_TRANSPARENT;
+	private const FONT_DEFAULT = Graphics.FONT_SYSTEM_TINY;
 	private const PADDING_TOP_DEFAULT = 0;
 	private const PADDING_BOTTOM_DEFAULT = 0;
 
@@ -32,11 +33,15 @@ class WrapText {
 
 	hidden var textColor = Graphics.COLOR_WHITE;
 	hidden var backgroundColor = Graphics.COLOR_TRANSPARENT;
+	hidden var font;
 
 	hidden var paddingTop;
 	hidden var paddingBottom;
 
+	hidden var text;
+
 	function initialize(params) {
+		Drawable.initialize(params);
 		var settings = System.getDeviceSettings();
 		screenWidth = settings.screenWidth;
 		screenHeight = settings.screenHeight;
@@ -62,14 +67,23 @@ class WrapText {
             paddingBottom = PADDING_BOTTOM_DEFAULT;
         }
 
+		font = params.get(:font);
+		if (font == null) {
+			font = FONT_DEFAULT;
+		}
+
 		offset = 0;
 	}
 
-	// Write the text in lines fit on the screen,
-	// return posY for next line
-	function writeLines(dc, text, font, posY) {
+	function setText(text) {
+		me.text = text;
+		offset = 0;
+	}
+
+	function draw(dc) {
+		var posY = locY;
 		if (posY >= screenHeight) {
-			return posY;
+			return;
 		}
 
 		// Top padding handling
@@ -111,7 +125,7 @@ class WrapText {
 			posY += paddingBottom;
 		}
 
-		return posY;
+		me.height = posY;
 	}
 
 	function reset() {

@@ -44,6 +44,9 @@ class Alert extends Ui.View {
 
     hidden var textArea;
 
+    hidden var width;
+    hidden var height;
+
     function initialize(params) {
         View.initialize();
 
@@ -75,8 +78,7 @@ class Alert extends Ui.View {
         timeout = params.get(:timeout);
         if (timeout == null) {
             timeout = TIMEOUT_DEFAULT;
-
-        timer = new Timer.Timer();
+            timer = new Timer.Timer();
         }
     }
 
@@ -96,20 +98,26 @@ class Alert extends Ui.View {
                 :backgroundColor => backgroundColor,
                 :textColor => textColor,
                 :paddingTop => paddingTop,
-                :paddingBottom => PADDING_BOTTOM
+                :paddingBottom => PADDING_BOTTOM,
+                :font => font
             }
         );
+        textArea.setLocation(0, 0);
+        textArea.setText(text);
+        var settings = System.getDeviceSettings();
+		me.width = settings.screenWidth;
+		me.height = settings.screenHeight;
+        textArea.width = me.width;
     }
 
     function onUpdate(dc) {
-        var settings = System.getDeviceSettings();
-		var screenWidth = settings.screenWidth;
-        var textHeight = textArea.writeLines(dc, text, font, 0);
+        textArea.draw(dc);
+        var textHeight = textArea.height;
 
         // Draw bottom border line
         dc.setColor(strokeColor, backgroundColor);
         dc.setPenWidth(1);
-        dc.drawLine(0, textHeight, screenWidth, textHeight);
+        dc.drawLine(0, textHeight, width, textHeight);
     }
 
     function dismiss() {
