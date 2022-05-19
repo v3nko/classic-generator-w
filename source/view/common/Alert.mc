@@ -83,11 +83,12 @@ class Alert extends Ui.View {
     }
 
     function onShow() {
-        timer.start(method(:dismiss), timeout, false);
+        timer.start(method(:scrollOrDismiss), timeout, false);
     }
 
     function onHide() {
         timer.stop();
+        textArea.reset();
     }
 
     function onLayout(dc) {
@@ -108,6 +109,11 @@ class Alert extends Ui.View {
 		me.width = settings.screenWidth;
 		me.height = settings.screenHeight;
         textArea.width = me.width;
+    }
+
+    function scrollOrDismiss() {
+        // TODO: dismiss if nothing to scroll or schedule dismiss after scrolling
+        textArea.scrollDown();
     }
 
     function onUpdate(dc) {

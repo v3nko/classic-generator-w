@@ -24,10 +24,9 @@ class WrapText extends Ui.Drawable {
 	private var sidePadding = 5; // Padding on the sides of the screen;
 	private var roundMargin = 15; // Minimal margin at the top of round screens;
 	private var rectangleAlignment = Gfx.TEXT_JUSTIFY_LEFT;
-	private var offset; // Nr of lines to skip when scrolling
-	private var skipped = 0; // Lines skipped
-	private var scrollDelay = 5000; // Scroll step time in ms
-	private var scrollStep = 3; // Number of lines to proceed on scroll
+	private var offset; // Number of pixels to skip when scrolling
+	private var scrollDelay = 60; // Scroll step time in ms
+	private var scrollStep = 6; // Number of pixels to proceed on scroll
 	private var timer;
 	private var overflow = false;
 
@@ -37,6 +36,8 @@ class WrapText extends Ui.Drawable {
 
 	hidden var paddingTop;
 	hidden var paddingBottom;
+
+	hidden var textDrawingSpec;
 
 	hidden var text;
 
@@ -78,6 +79,7 @@ class WrapText extends Ui.Drawable {
 	function setText(text) {
 		me.text = text;
 		offset = 0;
+		textDrawingSpec = null;
 	}
 
 	function draw(dc) {
@@ -101,31 +103,77 @@ class WrapText extends Ui.Drawable {
 		if (screenShape == System.SCREEN_SHAPE_ROUND && posY < roundMargin) {
 			posY = roundMargin;
 		}
-		var height = dc.getFontHeight(font);
-		var parts = ["", text];
-		while (parts.size() == 2) {
-			var width = getWidthForLine(posY, height);
-			// Now calculate how much fits on the line
-			parts = lineSplit(dc, parts[1], font, width);
-			if (offset <= skipped) {
-				dc.setColor(backgroundColor, backgroundColor);
-				dc.fillRectangle(0, posY, screenWidth, height + linePadding);
-				dc.setColor(textColor, backgroundColor);
-				drawText(dc, width, posY, font, parts[0]);
-				posY += height + linePadding;
-			} else {
-				skipped++;
-			}
+
+		if (textDrawingSpec == null) {
+			posY = createSpecAndDraw(dc, posY);
+		} else {
+			posY = drawTextSpec(dc, posY - offset);
 		}
 
 		// Bottom padding handling
 		if (paddingBottom >= 0) {
 			dc.setColor(backgroundColor, backgroundColor);
-			dc.fillRectangle(0, posY, screenWidth, paddingBottom);
+			var posYDelta = textDrawingSpec.getTextAreaHeight() - posY;
+			dc.fillRectangle(0, posY, screenWidth, paddingBottom + posYDelta);
 			posY += paddingBottom;
 		}
 
-		me.height = posY;
+		me.height = textDrawingSpec.getTextAreaHeight() + paddingBottom;
+	}
+
+	function createSpecAndDraw(dc, posY) {
+		var height = dc.getFontHeight(font);
+		var textPartsBuffer = ["", text];
+		var textParts = [];
+		var prevLineWidth = 0;
+		var skipBeforeFixWidth = 2;
+		var scrollTreshold = 0;
+		while (textPartsBuffer.size() == 2) {
+			var width = getWidthForLine(posY, height);
+			if (prevLineWidth > width) {
+				if (skipBeforeFixWidth == 0) {
+					// Fix line width on the second line after the widest one to make even width for 
+					// the remaining text as it can be scrolled
+					width = prevLineWidth;
+					if (scrollTreshold == 0) {
+						scrollTreshold = posY;
+					}
+				} else {
+					prevLineWidth = width;
+					skipBeforeFixWidth--;
+				}
+			} else {
+				prevLineWidth = width;
+			}
+			// Now calculate how much fits on the line
+			textPartsBuffer = lineSplit(dc, textPartsBuffer[1], font, width);
+			textParts.add(new TextLine(textPartsBuffer[0], width));
+			drawTextLine(dc, width, height, posY, textPartsBuffer[0]);
+			posY += height + linePadding;
+		}
+
+		textDrawingSpec = new TextDrawingSpec(textParts, height, posY, scrollTreshold);
+		return posY;
+	}
+
+	function drawTextSpec(dc, posY) {
+		var textParts = textDrawingSpec.getTextParts();
+		var height = textDrawingSpec.getlineHeight();
+		for (var i = 0; i < textParts.size(); i++) {
+			var line = textParts[i];
+			drawTextLine(dc, line.getWidth(), height, posY, line.getText());
+			posY += height + linePadding;
+		}
+		return posY;
+	}
+
+	function drawTextLine(dc, width, height, posY, text) {
+		if (posY < screenHeight && posY + height > 0) {
+			dc.setColor(backgroundColor, backgroundColor);
+			dc.fillRectangle(0, posY, screenWidth, height + linePadding);
+			dc.setColor(textColor, backgroundColor);
+			drawText(dc, width, posY, font, text);
+		}
 	}
 
 	function reset() {
@@ -137,29 +185,33 @@ class WrapText extends Ui.Drawable {
 	}
 
 	// Check if text fits on screen, if not, start scrolling
-	private function testFit(posY) {
-		overflow = posY > screenHeight;
+	private function testFit() {
+		overflow = textDrawingSpec != null && 
+			textDrawingSpec.getScrollTreshold() != 0 &&
+			me.height - offset > textDrawingSpec.getScrollTreshold();
 		if (timer == null && overflow) {
+			offset += scrollStep;
             timer = new Timer.Timer();
             timer.start(method(:scroll), scrollDelay, true);
+		} else if (timer != null && !overflow) {
+			timer.stop();
 		}
-		skipped = 0;
 	}
 
 	// Splits the text into a part that fits on the line, and the remaining text
 	private function lineSplit(dc, text, font, width) {
 		var os = 0;
-		var parts = wordSplit(text, os);
+		var textPartsBuffer = wordSplit(text, os);
 		var count = 0;
-		while (parts.size() == 2 && count < 10) {
-			var newParts = wordSplit(text, parts[0].length() + 1);
+		while (textPartsBuffer.size() == 2 && count < 10) {
+			var newParts = wordSplit(text, textPartsBuffer[0].length() + 1);
 			if (dc.getTextWidthInPixels(newParts[0], font) > width) {
                 break;
 			}
 			count++;
-			parts = newParts;
+			textPartsBuffer = newParts;
 		}
-		return parts;
+		return textPartsBuffer;
 	}
 
 	// Splits the subject into first word and remaining text (if exists)
@@ -169,7 +221,7 @@ class WrapText extends Ui.Drawable {
 		var ptr = substr.find(" ");
 		return ptr == null ? 
             [subject] : 
-            [subject.substring(0, ptr + start), subject.substring(ptr+start + 1, len)];
+            [subject.substring(0, ptr + start), subject.substring(ptr + start + 1, len)];
 	}
 
 	// Find alignment, draw the text
@@ -216,24 +268,71 @@ class WrapText extends Ui.Drawable {
 		return w.toNumber();
 	}
 
-	hidden function scroll() {
+	function scroll() {
 		if (overflow) {
 			offset += scrollStep;
 		} else {
 			offset = 0;
 		}
 		Ui.requestUpdate();
+		testFit();
 	}
 
-	private function scrollDown() {
+	public function scrollDown() {
+		testFit();
 		if (!overflow) {
 			return false;
 		}
-		offset += 3;
-		timer.stop();
-		timer.start(method(:scroll), scrollDelay, true);
 		Ui.requestUpdate();
 		return true;
+	}
+
+	class TextDrawingSpec {
+		private var textParts = [];
+		private var lineHeight;
+		private var scrollTreshold;
+		private var textAreaHeight;
+
+		function initialize(textParts, lineHeight, textAreaHeight, scrollTreshold) {
+			me.textParts = textParts;
+			me.lineHeight = lineHeight;
+			me.textAreaHeight = textAreaHeight;
+			me.scrollTreshold = scrollTreshold;
+		}
+
+		function getTextParts() {
+			return textParts;
+		}
+
+		function getlineHeight() {
+			return lineHeight;
+		}
+
+		function getTextAreaHeight() {
+			return textAreaHeight;
+		}
+
+		function getScrollTreshold() {
+			return scrollTreshold;
+		}
+	}
+
+	class TextLine {
+		private var text;
+		private var width;
+
+		function initialize(text, width) {
+			me.text = text;
+			me.width = width;
+		}
+
+		function getText() {
+			return text;
+		}
+
+		function getWidth() {
+			return width;
+		}
 	}
 
 }
