@@ -16,6 +16,9 @@ class WrapText extends Ui.Drawable {
 	private const FONT_DEFAULT = Graphics.FONT_SYSTEM_TINY;
 	private const PADDING_TOP_DEFAULT = 0;
 	private const PADDING_BOTTOM_DEFAULT = 0;
+	
+	/* Single scroll distance in percents relative to screen height */
+	private const MANUAL_SCROLL_DELTA_RATIO = 0.45;
 
 	hidden var screenWidth;
 	hidden var screenHeight;
@@ -24,11 +27,6 @@ class WrapText extends Ui.Drawable {
 	private var sidePadding = 5; // Padding on the sides of the screen;
 	private var roundMargin = 15; // Minimal margin at the top of round screens;
 	private var rectangleAlignment = Gfx.TEXT_JUSTIFY_LEFT;
-	private var offset; // Number of pixels to skip when scrolling
-	private var scrollDelay = 60; // Scroll step time in ms
-	private var scrollStep = 6; // Number of pixels to proceed on scroll
-	private var timer;
-	private var overflow = false;
 
 	hidden var textColor = Graphics.COLOR_WHITE;
 	hidden var backgroundColor = Graphics.COLOR_TRANSPARENT;
@@ -38,6 +36,8 @@ class WrapText extends Ui.Drawable {
 	hidden var paddingBottom;
 
 	hidden var textDrawingSpec;
+
+	hidden var scrollAnimSpec = new ScrollAnimationSpec();
 
 	hidden var text;
 
@@ -73,12 +73,13 @@ class WrapText extends Ui.Drawable {
 			font = FONT_DEFAULT;
 		}
 
-		offset = 0;
+		scrollAnimSpec.reset();
+		scrollAnimSpec.setCallback(method(:proceedScroll));
 	}
 
 	function setText(text) {
 		me.text = text;
-		offset = 0;
+		scrollAnimSpec.reset();
 		textDrawingSpec = null;
 	}
 
@@ -107,7 +108,7 @@ class WrapText extends Ui.Drawable {
 		if (textDrawingSpec == null) {
 			posY = createSpecAndDraw(dc, posY);
 		} else {
-			posY = drawTextSpec(dc, posY - offset);
+			posY = drawTextSpec(dc, posY - scrollAnimSpec.getOffset());
 		}
 
 		// Bottom padding handling
@@ -173,28 +174,6 @@ class WrapText extends Ui.Drawable {
 			dc.fillRectangle(0, posY, screenWidth, height + linePadding);
 			dc.setColor(textColor, backgroundColor);
 			drawText(dc, width, posY, font, text);
-		}
-	}
-
-	function reset() {
-		if (timer != null) {
-			timer.stop();
-			timer = null;
-		}
-		offset = 0;
-	}
-
-	// Check if text fits on screen, if not, start scrolling
-	private function testFit() {
-		overflow = textDrawingSpec != null && 
-			textDrawingSpec.getScrollTreshold() != 0 &&
-			me.height - offset > textDrawingSpec.getScrollTreshold();
-		if (timer == null && overflow) {
-			offset += scrollStep;
-            timer = new Timer.Timer();
-            timer.start(method(:scroll), scrollDelay, true);
-		} else if (timer != null && !overflow) {
-			timer.stop();
 		}
 	}
 
@@ -268,24 +247,82 @@ class WrapText extends Ui.Drawable {
 		return w.toNumber();
 	}
 
-	function scroll() {
-		if (overflow) {
-			offset += scrollStep;
-		} else {
-			offset = 0;
-		}
-		Ui.requestUpdate();
-		testFit();
+	function reset() {
+		scrollAnimSpec.reset();
 	}
 
-	public function scrollDown() {
-		testFit();
-		if (!overflow) {
+	private function invalidateAnimation() {
+		var animationActive = textDrawingSpec != null && 
+			textDrawingSpec.getScrollTreshold() != 0 &&
+			scrollAnimSpec.getScrollDistance() > 0;
+		scrollAnimSpec.updateAnimationState(animationActive);
+		return animationActive;
+	}
+
+	function proceedScroll() {
+		if (invalidateAnimation()) {
+			Ui.requestUpdate();
+		}
+	}
+
+	public function requestAutoScroll() {
+		scrollAnimSpec.setScrollDistance(me.height - textDrawingSpec.getScrollTreshold());
+		invalidateAnimation();
+		if (!scrollAnimSpec.isActive()) {
 			return false;
 		}
 		Ui.requestUpdate();
 		return true;
 	}
+
+	public function scrollDown() {
+		scrollToDirection(ScrollAnimationSpec.DIRECTION_DOWN);
+	}
+
+	public function scrollUp() {
+		scrollToDirection(ScrollAnimationSpec.DIRECTION_UP);
+	}
+
+	private function scrollToDirection(direction) {
+		if (scrollAnimSpec.isActive()) {
+			return false;
+		} else {
+			var distance = validateScrollDistance(
+				screenHeight * MANUAL_SCROLL_DELTA_RATIO, direction
+			);
+			if (distance > 0) {
+				scrollAnimSpec.setScrollDistance(distance);
+				scrollAnimSpec.setScrollDirection(direction);
+				proceedScroll();
+				return true;
+			} else {
+				return false;
+			}
+		}
+	}
+
+	private function validateScrollDistance(distance, direction) {
+		if (me.height < screenHeight) {
+			return 0;
+		}
+		var scrollEndPosition = (distance * direction) + scrollAnimSpec.getOffset();
+		var heightLimit = me.height - textDrawingSpec.getScrollTreshold();
+		if (scrollEndPosition > heightLimit) {
+			var availableDistance = max(distance - (scrollEndPosition - heightLimit), 0);
+			return availableDistance;
+		}
+		if (scrollEndPosition < 0) {
+			var availableDistance = max(distance + scrollEndPosition, 0);
+			return availableDistance;
+		} else {
+			return distance;
+		}
+		// return scrollEndPosition >= 0 && scrollEndPosition <= heightLimit;
+	}
+
+	private function max(left as Number, right as Number) as Number {
+		return left < right ? right : left;
+	}	
 
 	class TextDrawingSpec {
 		private var textParts = [];
@@ -317,6 +354,76 @@ class WrapText extends Ui.Drawable {
 		}
 	}
 
+	class ScrollAnimationSpec {
+		static const DIRECTION_UP = -1;
+		static const DIRECTION_DOWN = 1;
+
+		private var active = false;
+		private var offset; // Number of pixels to skip when scrolling
+		private var scrollDelay = 60; // Scroll step time in ms
+		private var scrollStep = 6; // Number of pixels to proceed on scroll
+		private var timer;
+		hidden var scrollCallback;
+
+		private var scrollDistance = 0; // Distance in pixel left 
+		private var scrollDirection = DIRECTION_DOWN;
+
+		function setCallback(callback) {
+			me.scrollCallback = callback;
+		}
+
+		function isActive() {
+			return active;
+		}
+
+		function getOffset() {
+			return offset;
+		}
+
+		function setOffset(offset) {
+			me.offset = offset;
+		}
+
+		function reset() {
+			if (timer != null) {
+				timer.stop();
+				timer = null;
+			}
+			offset = 0;
+		}
+
+		function updateAnimationState(active) {
+			me.active = active;
+			if (active) {
+				proceedAnimationFrame();
+				if (timer == null) {
+					timer = new Timer.Timer();
+					timer.start(scrollCallback, scrollDelay, true);
+				}
+			} else if (timer != null && !active) {
+				timer.stop();
+				timer = null;
+			}
+		}
+		
+		private function proceedAnimationFrame() {
+			offset += scrollStep * scrollDirection;
+			scrollDistance -= scrollStep;
+		}
+
+		function getScrollDistance() {
+			return scrollDistance;
+		}
+
+		function setScrollDistance(distance) {
+			scrollDistance = distance;
+		}
+
+		function setScrollDirection(direction) {
+			scrollDirection = direction;
+		}
+	}
+
 	class TextLine {
 		private var text;
 		private var width;
@@ -334,5 +441,4 @@ class WrapText extends Ui.Drawable {
 			return width;
 		}
 	}
-
 }

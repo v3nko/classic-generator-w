@@ -11,7 +11,16 @@ class AlertDelegate extends Ui.InputDelegate {
     }
 
     function onKey(evt) {
-        view.dismiss();
+        switch(evt.getKey()) {
+            case Ui.KEY_UP:
+                view.scrollUp();
+                break;
+            case Ui.KEY_DOWN:
+                view.scrollDown();
+                break;
+            default:
+                view.dismiss();
+        }
         return true;
     }
 
@@ -83,7 +92,7 @@ class Alert extends Ui.View {
     }
 
     function onShow() {
-        timer.start(method(:scrollOrDismiss), timeout, false);
+        // timer.start(method(:scrollOrDismiss), timeout, false);
     }
 
     function onHide() {
@@ -113,7 +122,7 @@ class Alert extends Ui.View {
 
     function scrollOrDismiss() {
         // TODO: dismiss if nothing to scroll or schedule dismiss after scrolling
-        textArea.scrollDown();
+        textArea.requestAutoScroll();
     }
 
     function onUpdate(dc) {
@@ -133,4 +142,12 @@ class Alert extends Ui.View {
     function pushView() {
         Ui.pushView(self, new AlertDelegate(self), Ui.SLIDE_DOWN);
     }
+
+    public function scrollDown() {
+        textArea.scrollDown();
+	}
+
+	public function scrollUp() {
+		textArea.scrollUp();
+	}
 }
