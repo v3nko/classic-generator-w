@@ -267,6 +267,7 @@ class WrapText extends Ui.Drawable {
 
 	public function requestAutoScroll() {
 		scrollAnimSpec.setScrollDistance(me.height - textDrawingSpec.getScrollTreshold());
+		scrollAnimSpec.setScrollStep(scrollAnimSpec.SCROLL_STEP_MEDIUM);
 		invalidateAnimation();
 		if (!scrollAnimSpec.isActive()) {
 			return false;
@@ -293,6 +294,7 @@ class WrapText extends Ui.Drawable {
 			if (distance > 0) {
 				scrollAnimSpec.setScrollDistance(distance);
 				scrollAnimSpec.setScrollDirection(direction);
+				scrollAnimSpec.setScrollStep(scrollAnimSpec.SCROLL_STEP_LARGE);
 				proceedScroll();
 				return true;
 			} else {
@@ -357,11 +359,13 @@ class WrapText extends Ui.Drawable {
 	class ScrollAnimationSpec {
 		static const DIRECTION_UP = -1;
 		static const DIRECTION_DOWN = 1;
+		static const SCROLL_STEP_MEDIUM = 6;
+		static const SCROLL_STEP_LARGE = 15;
 
 		private var active = false;
 		private var offset; // Number of pixels to skip when scrolling
 		private var scrollDelay = 60; // Scroll step time in ms
-		private var scrollStep = 6; // Number of pixels to proceed on scroll
+		private var scrollStep = SCROLL_STEP_MEDIUM; // Number of pixels to proceed on scroll
 		private var timer;
 		hidden var scrollCallback;
 
@@ -382,6 +386,10 @@ class WrapText extends Ui.Drawable {
 
 		function setOffset(offset) {
 			me.offset = offset;
+		}
+
+		function setScrollStep(scrollStep) {
+			me.scrollStep = scrollStep;
 		}
 
 		function reset() {
@@ -407,8 +415,13 @@ class WrapText extends Ui.Drawable {
 		}
 		
 		private function proceedAnimationFrame() {
-			offset += scrollStep * scrollDirection;
 			scrollDistance -= scrollStep;
+			if (scrollDistance < 0) {
+				offset += (scrollStep + scrollDistance) * scrollDirection;
+				scrollDistance = 0;
+			} else {
+				offset += scrollStep * scrollDirection;
+			}
 		}
 
 		function getScrollDistance() {
