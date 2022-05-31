@@ -9,6 +9,7 @@ using Toybox.System;
 using Toybox.Graphics as Gfx;
 using Toybox.Math;
 using Toybox.Timer;
+using Mathx;
 
 class WrapText extends Ui.Drawable {
 	private const TEXT_COLOR_DEFAULT = Graphics.COLOR_WHITE;
@@ -310,21 +311,16 @@ class WrapText extends Ui.Drawable {
 		var scrollEndPosition = (distance * direction) + scrollAnimSpec.getOffset();
 		var heightLimit = me.height - textDrawingSpec.getScrollTreshold();
 		if (scrollEndPosition > heightLimit) {
-			var availableDistance = max(distance - (scrollEndPosition - heightLimit), 0);
+			var availableDistance = Mathx.max(distance - (scrollEndPosition - heightLimit), 0);
 			return availableDistance;
 		}
 		if (scrollEndPosition < 0) {
-			var availableDistance = max(distance + scrollEndPosition, 0);
+			var availableDistance = Mathx.max(distance + scrollEndPosition, 0);
 			return availableDistance;
 		} else {
 			return distance;
 		}
-		// return scrollEndPosition >= 0 && scrollEndPosition <= heightLimit;
 	}
-
-	private function max(left as Number, right as Number) as Number {
-		return left < right ? right : left;
-	}	
 
 	class TextDrawingSpec {
 		private var textParts = [];
@@ -360,7 +356,8 @@ class WrapText extends Ui.Drawable {
 		static const DIRECTION_UP = -1;
 		static const DIRECTION_DOWN = 1;
 		static const SCROLL_STEP_MEDIUM = 6;
-		static const SCROLL_STEP_LARGE = 15;
+		static const SCROLL_STEP_LARGE = 18;
+		private static const MIN_INCREMENT_RATIO = 0.35;
 
 		private var active = false;
 		private var offset; // Number of pixels to skip when scrolling
@@ -369,7 +366,8 @@ class WrapText extends Ui.Drawable {
 		private var timer;
 		hidden var scrollCallback;
 
-		private var scrollDistance = 0; // Distance in pixel left 
+		private var scrollDistance = 0; // Distance in pixel left
+		private var baseDistance = 0;
 		private var scrollDirection = DIRECTION_DOWN;
 
 		function setCallback(callback) {
@@ -415,13 +413,20 @@ class WrapText extends Ui.Drawable {
 		}
 		
 		private function proceedAnimationFrame() {
-			scrollDistance -= scrollStep;
+			var increment = interpolateIncrement(scrollStep), MIN_INCREMENT;
+			scrollDistance -= increment;
 			if (scrollDistance < 0) {
-				offset += (scrollStep + scrollDistance) * scrollDirection;
+				offset += (increment + scrollDistance) * scrollDirection;
 				scrollDistance = 0;
 			} else {
-				offset += scrollStep * scrollDirection;
+				offset += increment * scrollDirection;
 			}
+		}
+
+		private function interpolateIncrement(value) {
+			var t = scrollDistance / baseDistance;
+			t--;
+			return Mathx.max((t * t * t + 1), MIN_INCREMENT_RATIO) *  value;
 		}
 
 		function getScrollDistance() {
@@ -429,6 +434,7 @@ class WrapText extends Ui.Drawable {
 		}
 
 		function setScrollDistance(distance) {
+			baseDistance = distance;
 			scrollDistance = distance;
 		}
 
