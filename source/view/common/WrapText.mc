@@ -263,18 +263,17 @@ class WrapText extends Ui.Drawable {
 	function proceedScroll() {
 		if (invalidateAnimation()) {
 			Ui.requestUpdate();
+			return true;
+		} else {
+			return false;
 		}
 	}
 
 	public function requestAutoScroll() {
 		scrollAnimSpec.setScrollDistance(me.height - textDrawingSpec.getScrollTreshold());
 		scrollAnimSpec.setScrollStep(scrollAnimSpec.SCROLL_STEP_MEDIUM);
-		invalidateAnimation();
-		if (!scrollAnimSpec.isActive()) {
-			return false;
-		}
-		Ui.requestUpdate();
-		return true;
+		scrollAnimSpec.setInterpolate(false);
+		return proceedScroll();
 	}
 
 	public function scrollDown() {
@@ -296,8 +295,8 @@ class WrapText extends Ui.Drawable {
 				scrollAnimSpec.setScrollDistance(distance);
 				scrollAnimSpec.setScrollDirection(direction);
 				scrollAnimSpec.setScrollStep(scrollAnimSpec.SCROLL_STEP_LARGE);
-				proceedScroll();
-				return true;
+				scrollAnimSpec.setInterpolate(true);
+				return proceedScroll();
 			} else {
 				return false;
 			}
@@ -369,6 +368,7 @@ class WrapText extends Ui.Drawable {
 		private var scrollDistance = 0; // Distance in pixel left
 		private var baseDistance = 0;
 		private var scrollDirection = DIRECTION_DOWN;
+		private var interpolate = true;
 
 		function setCallback(callback) {
 			me.scrollCallback = callback;
@@ -413,7 +413,12 @@ class WrapText extends Ui.Drawable {
 		}
 		
 		private function proceedAnimationFrame() {
-			var increment = interpolateIncrement(scrollStep), MIN_INCREMENT;
+			var increment;
+			if (interpolate) {
+				increment = Mathx.max(interpolateIncrement(scrollStep), MIN_INCREMENT_RATIO);
+			} else {
+				increment = scrollStep;
+			}
 			scrollDistance -= increment;
 			if (scrollDistance < 0) {
 				offset += (increment + scrollDistance) * scrollDirection;
@@ -440,6 +445,10 @@ class WrapText extends Ui.Drawable {
 
 		function setScrollDirection(direction) {
 			scrollDirection = direction;
+		}
+
+		function setInterpolate(interpolate) {
+			me.interpolate = interpolate;
 		}
 	}
 
