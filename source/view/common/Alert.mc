@@ -34,7 +34,7 @@ class Alert extends Ui.View {
     
     private const TEXT_DEFAULT = "Something went wrong";
     private const FONT_DEFAULT = Gfx.FONT_SYSTEM_TINY;
-    private const TIMEOUT_DEFAULT = 5800;
+    private const TIMEOUT_DEFAULT = 60 * 1000;
     private const TEXT_COLOR_DEFAULT = Gfx.COLOR_WHITE;
     private const BG_COLOR_DEFAULT = Gfx.COLOR_BLACK;
     private const STROKE_COLOR_DEFAULT = TEXT_COLOR_DEFAULT;
@@ -92,7 +92,7 @@ class Alert extends Ui.View {
     }
 
     function onShow() {
-        // timer.start(method(:scrollOrDismiss), timeout, false);
+        resetDismissTimer();
     }
 
     function onHide() {
@@ -114,15 +114,24 @@ class Alert extends Ui.View {
         );
         textArea.setLocation(0, 0);
         textArea.setText(text);
+        textArea.setOnScrollEnd(method(:onScrollEnd));
         var settings = System.getDeviceSettings();
 		me.width = settings.screenWidth;
 		me.height = settings.screenHeight;
         textArea.width = me.width;
     }
 
-    function scrollOrDismiss() {
-        // TODO: dismiss if nothing to scroll or schedule dismiss after scrolling
-        textArea.requestAutoScroll();
+    private function resetDismissTimer() {
+        timer.stop();
+        timer.start(method(:dismiss), timeout, false);
+    }
+
+    private function stopDismissTimer() {
+        timer.stop();
+    }
+
+    function onScrollEnd() {
+        resetDismissTimer();
     }
 
     function onUpdate(dc) {
@@ -144,10 +153,18 @@ class Alert extends Ui.View {
     }
 
     public function scrollDown() {
-        textArea.scrollDown();
+        handleScrollAction(textArea.scrollDown());
 	}
 
 	public function scrollUp() {
-		textArea.scrollUp();
+		handleScrollAction(textArea.scrollUp());
 	}
+
+    private function handleScrollAction(activated) {
+        if (activated) {
+            stopDismissTimer();
+        } else {
+            resetDismissTimer();
+        }
+    }
 }

@@ -40,6 +40,8 @@ class WrapText extends Ui.Drawable {
 
 	hidden var scrollAnimSpec = new ScrollAnimationSpec();
 
+	hidden var onScrollEnd;
+
 	hidden var text;
 
 	function initialize(params) {
@@ -124,7 +126,11 @@ class WrapText extends Ui.Drawable {
 		me.height = textDrawingSpec.getTextAreaHeight() + paddingBottom;
 	}
 
-	function createSpecAndDraw(dc, posY) {
+	function setOnScrollEnd(callback) {
+		me.onScrollEnd = callback;
+	}
+
+	hidden function createSpecAndDraw(dc, posY) {
 		var height = dc.getFontHeight(font);
 		var textPartsBuffer = ["", text];
 		var textParts = [];
@@ -159,7 +165,7 @@ class WrapText extends Ui.Drawable {
 		return posY;
 	}
 
-	function drawTextSpec(dc, posY) {
+	hidden function drawTextSpec(dc, posY) {
 		var textParts = textDrawingSpec.getTextParts();
 		var height = textDrawingSpec.getlineHeight();
 		for (var i = 0; i < textParts.size(); i++) {
@@ -170,7 +176,7 @@ class WrapText extends Ui.Drawable {
 		return posY;
 	}
 
-	function drawTextLine(dc, width, height, posY, text) {
+	hidden function drawTextLine(dc, width, height, posY, text) {
 		if (posY < screenHeight && posY + height > 0) {
 			dc.setColor(backgroundColor, backgroundColor);
 			dc.fillRectangle(0, posY, screenWidth, height + linePadding);
@@ -270,6 +276,9 @@ class WrapText extends Ui.Drawable {
 			Ui.requestUpdate();
 			return true;
 		} else {
+			if (onScrollEnd != null) {
+				onScrollEnd.invoke();
+			}
 			return false;
 		}
 	}
@@ -281,11 +290,11 @@ class WrapText extends Ui.Drawable {
 	}
 
 	public function scrollDown() {
-		scrollPage(ScrollAnimationSpec.DIRECTION_DOWN);
+		return scrollPage(ScrollAnimationSpec.DIRECTION_DOWN);
 	}
 
 	public function scrollUp() {
-		scrollPage(ScrollAnimationSpec.DIRECTION_UP);
+		return scrollPage(ScrollAnimationSpec.DIRECTION_UP);
 	}
 
 	private function scrollPage(direction) {
