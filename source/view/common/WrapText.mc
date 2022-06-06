@@ -19,7 +19,7 @@ class WrapText extends Ui.Drawable {
 	private const PADDING_BOTTOM_DEFAULT = 0;
 	
 	/* Single scroll distance in percents relative to screen height */
-	private const MANUAL_SCROLL_DELTA_RATIO = 0.45;
+	private const SCROLL_PAGE_RATIO = 0.45;
 
 	hidden var screenWidth;
 	hidden var screenHeight;
@@ -75,6 +75,7 @@ class WrapText extends Ui.Drawable {
 		}
 
 		scrollAnimSpec.reset();
+		scrollAnimSpec.setInterpolationDistance(getPageScrollDistance());
 		scrollAnimSpec.setCallback(method(:proceedScroll));
 	}
 
@@ -260,6 +261,10 @@ class WrapText extends Ui.Drawable {
 		return animationActive;
 	}
 
+	private function getPageScrollDistance() {
+		return screenHeight * SCROLL_PAGE_RATIO;
+	}
+
 	function proceedScroll() {
 		if (invalidateAnimation()) {
 			Ui.requestUpdate();
@@ -272,34 +277,31 @@ class WrapText extends Ui.Drawable {
 	public function requestAutoScroll() {
 		scrollAnimSpec.setScrollDistance(me.height - textDrawingSpec.getScrollTreshold());
 		scrollAnimSpec.setScrollStep(scrollAnimSpec.SCROLL_STEP_MEDIUM);
-		scrollAnimSpec.setInterpolate(false);
 		return proceedScroll();
 	}
 
 	public function scrollDown() {
-		scrollToDirection(ScrollAnimationSpec.DIRECTION_DOWN);
+		scrollPage(ScrollAnimationSpec.DIRECTION_DOWN);
 	}
 
 	public function scrollUp() {
-		scrollToDirection(ScrollAnimationSpec.DIRECTION_UP);
+		scrollPage(ScrollAnimationSpec.DIRECTION_UP);
 	}
 
-	private function scrollToDirection(direction) {
-		if (scrollAnimSpec.isActive()) {
-			return false;
+	private function scrollPage(direction) {
+		var pageDistance = getPageScrollDistance();
+
+		// Prevent stacking manaul scroll requests for distance larger than two pages
+		var targetDistance = 
+			pageDistance + Mathx.min(scrollAnimSpec.getScrollDistance(), pageDistance);
+		var distance = validateScrollDistance(targetDistance, direction);
+		if (distance > 0) {
+			scrollAnimSpec.setScrollDistance(distance);
+			scrollAnimSpec.setScrollDirection(direction);
+			scrollAnimSpec.setScrollStep(scrollAnimSpec.SCROLL_STEP_LARGE);
+			return proceedScroll();
 		} else {
-			var distance = validateScrollDistance(
-				screenHeight * MANUAL_SCROLL_DELTA_RATIO, direction
-			);
-			if (distance > 0) {
-				scrollAnimSpec.setScrollDistance(distance);
-				scrollAnimSpec.setScrollDirection(direction);
-				scrollAnimSpec.setScrollStep(scrollAnimSpec.SCROLL_STEP_LARGE);
-				scrollAnimSpec.setInterpolate(true);
-				return proceedScroll();
-			} else {
-				return false;
-			}
+			return false;
 		}
 	}
 
@@ -366,7 +368,7 @@ class WrapText extends Ui.Drawable {
 		hidden var scrollCallback;
 
 		private var scrollDistance = 0; // Distance in pixel left
-		private var baseDistance = 0;
+		private var interpolationDistance = 0; // Distance for which interpolation is applied
 		private var scrollDirection = DIRECTION_DOWN;
 		private var interpolate = true;
 
@@ -414,7 +416,7 @@ class WrapText extends Ui.Drawable {
 		
 		private function proceedAnimationFrame() {
 			var increment;
-			if (interpolate) {
+			if (interpolate && interpolationDistance >= scrollDistance) {
 				increment = Mathx.max(interpolateIncrement(scrollStep), MIN_INCREMENT_RATIO);
 			} else {
 				increment = scrollStep;
@@ -429,7 +431,7 @@ class WrapText extends Ui.Drawable {
 		}
 
 		private function interpolateIncrement(value) {
-			var t = scrollDistance / baseDistance;
+			var t = scrollDistance / interpolationDistance;
 			t--;
 			return Mathx.max((t * t * t + 1), MIN_INCREMENT_RATIO) *  value;
 		}
@@ -438,9 +440,12 @@ class WrapText extends Ui.Drawable {
 			return scrollDistance;
 		}
 
-		function setScrollDistance(distance) {
-			baseDistance = distance;
-			scrollDistance = distance;
+		function setInterpolationDistance(interpolationDistance) {
+			me.interpolationDistance = interpolationDistance;
+		}
+
+		function setScrollDistance(scrollDistance) {
+			me.scrollDistance = scrollDistance;
 		}
 
 		function setScrollDirection(direction) {
