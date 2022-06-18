@@ -3,22 +3,25 @@ using Toybox.Timer as Timer;
 using Di;
 
 class CGApp extends App.AppBase {
+    private var registry;
+    private var lifecycleHandler;
+
     function initialize() {
         AppBase.initialize();
-    }
-    
-    function onStart(state) {
-        
+        registry = Di.provideServiceRegistry();
+        lifecycleHandler = registry.getViewLifecycleHandler();
     }
 
     function onStop(state) {
-
+        AppBase.onStop(state);
+        lifecycleHandler.onAppExit();
     }
 
     function getInitialView() {
-        var registry = Di.provideServiceRegistry();
-
-        var view = new GeneratorView(registry.getGeneratorController());
+        var view = new GeneratorView(
+            registry.getGeneratorController(), 
+            registry.getViewLifecycleHandler()
+        );
         return [view, new GeneratorDelegate(view)];
     }
 }

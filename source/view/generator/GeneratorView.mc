@@ -4,7 +4,7 @@ using Toybox.System as System;
 using Toybox.Timer;
 using Generator as Gen;
 
-class GeneratorView extends Ui.View {
+class GeneratorView extends BaseView {
 
     // General positioning values
 
@@ -23,8 +23,8 @@ class GeneratorView extends Ui.View {
     private const BUTTON_INDICATOR_ANGLE_UP = 180;
     private const BUTTON_INDICATOR_ANGLE_DOWN = 210;
 
-    function initialize(generatorController) {
-		View.initialize();
+    function initialize(generatorController, lifecycleHandler) {
+		BaseView.initialize(lifecycleHandler);
         me.generatorController = generatorController;
 	}
 
@@ -61,7 +61,7 @@ class GeneratorView extends Ui.View {
             System.println("Unknown generator error occured");
             messageId = Rez.Strings.error_generator_general;
         }
-        var alert = new Alert({:text => Application.loadResource(messageId)});
+        var alert = new Alert(lifecycleHandler,  {:text => Application.loadResource(messageId)});
         alert.pushView();
     }
 
@@ -126,18 +126,11 @@ class GeneratorView extends Ui.View {
         System.println("Unable to swtich generator mode: " + argText);
 
         var alert = new Alert(
+            lifecycleHandler,
             {:text => Application.loadResource(Rez.Strings.error_mode_switch_general)}
         );
         alert.pushView();
     }
-
-	function onShow() {
-        // no-op
-	}
-
-    function onHide() {
-        // no-op
-	}
 
     class ButtonIndicatorDrawer {
         private var centerX;

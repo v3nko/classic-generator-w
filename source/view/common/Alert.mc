@@ -30,7 +30,7 @@ class AlertDelegate extends Ui.InputDelegate {
     }
 }
 
-class Alert extends Ui.View {
+class Alert extends BaseView {
     
     private const TEXT_DEFAULT = "Something went wrong";
     private const FONT_DEFAULT = Gfx.FONT_SYSTEM_TINY;
@@ -56,8 +56,8 @@ class Alert extends Ui.View {
     hidden var width;
     hidden var height;
 
-    function initialize(params) {
-        View.initialize();
+    function initialize(viewLifecycleHandler, params) {
+        BaseView.initialize(viewLifecycleHandler);
 
         text = params.get(:text);
         if (text == null) {
@@ -92,11 +92,13 @@ class Alert extends Ui.View {
     }
 
     function onShow() {
+        BaseView.onShow();
         resetDismissTimer();
     }
 
     function onHide() {
         timer.stop();
+        BaseView.onHide();
         textArea.reset();
     }
 
