@@ -1,5 +1,4 @@
 using Toybox.Application as App;
-using Toybox.Timer as Timer;
 using Di;
 
 class CGApp extends App.AppBase {
