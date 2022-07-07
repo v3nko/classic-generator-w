@@ -102,7 +102,7 @@ module UniTimer {
             }
 
             function incrementNextTick() {
-                nextTick += delay;
+                nextTick =  System.getTimer() + delay;
                 return nextTick;
             }
 
