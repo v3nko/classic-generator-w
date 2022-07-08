@@ -1,9 +1,9 @@
 using Toybox.WatchUi as Ui;
 using Toybox.Graphics as Gfx;
-using Toybox.Timer;
+using UniTimer;
 
 class SlidableView extends Ui.Drawable {
-    
+
     // Slideable drawables
     
     private var prevDrawable as Drawable = null;
@@ -32,7 +32,7 @@ class SlidableView extends Ui.Drawable {
         Drawable.initialize({:identifier => identifier});
         me.centerX = centerX;
         me.centerY = centerY;
-        animationTimer = new Timer.Timer();
+        animationTimer = UniTimer.getTimer();
         slideAnimator = new SlideAnimator(animationTimer, method(:onFinishSlideAnimation));
         shakeAnimator = new ShakeAnimator(animationTimer);
     }
@@ -146,6 +146,7 @@ class SlidableView extends Ui.Drawable {
     class SlideAnimator {
         private const ANIMATION_DURATION_MILLIS = 170;
         private const ANIMATION_FREQUENCY = 50;
+        private var timerKey = "sliadable_animation_slide_" + hashCode();
         private var topTranslateTheshold;
         private var drawablePositionOffsetY;
         private var frameStep = null;
@@ -193,7 +194,7 @@ class SlidableView extends Ui.Drawable {
         }
 
         private function finishSlideAnimation() {
-            animationTimer.stop();
+            animationTimer.stop(timerKey);
             animationActive = false;
             if (finishCallback != null) {
                 finishCallback.invoke();
@@ -208,7 +209,12 @@ class SlidableView extends Ui.Drawable {
             me.drawableHeight = drawableHeight;
             me.animation = animation;
             drawablePositionOffsetY = drawableHeight;
-            animationTimer.start(method(:requestSlideFrameUpdate), ANIMATION_FREQUENCY, true);
+            animationTimer.start(
+                timerKey, 
+                method(:requestSlideFrameUpdate), 
+                ANIMATION_FREQUENCY, 
+                true
+            );
             animationActive = true;
         }
 
@@ -224,6 +230,7 @@ class SlidableView extends Ui.Drawable {
         private const ANIMATION_FREQUENCY = 50;
         private const ANIMATION_SHAKE_ITERATIONS = 4;
         private const ANIMATION_SHAKE_TRANSLATE = 9;
+        private var timerKey = "sliadable_animation_shake_" + hashCode();
         private var shakeOffsetX = 0;
         private var shakeIteration = 0;
         private var animationTimer;
@@ -238,7 +245,7 @@ class SlidableView extends Ui.Drawable {
 
         function requestShakeFrameUpdate() {
             if (shakeIteration >= ANIMATION_SHAKE_ITERATIONS) {
-                animationTimer.stop();
+                animationTimer.stop(timerKey);
                 shakeOffsetX = 0;
                 shakeIteration = 0;
             } else {
@@ -253,7 +260,12 @@ class SlidableView extends Ui.Drawable {
         }
 
         function start() {
-            animationTimer.start(method(:requestShakeFrameUpdate), ANIMATION_FREQUENCY, true);
+            animationTimer.start(
+                timerKey, 
+                method(:requestShakeFrameUpdate), 
+                ANIMATION_FREQUENCY, 
+                true
+            );
         }
     }
 }

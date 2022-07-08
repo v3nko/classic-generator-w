@@ -1,6 +1,6 @@
 using Toybox.Graphics as Gfx;
 using Toybox.WatchUi as Ui;
-using Toybox.Timer as Timer;
+using UniTimer;
 
 class AlertDelegate extends Ui.InputDelegate {
     hidden var view;
@@ -40,6 +40,7 @@ class Alert extends BaseView {
     private const STROKE_COLOR_DEFAULT = TEXT_COLOR_DEFAULT;
     private const VERTICAL_OFFSET_PERCENT = 0.12;
     private const PADDING_BOTTOM = 10;
+    private var timerKey = "altert_" + hashCode();
 
     hidden var paddingTop;
 
@@ -87,7 +88,7 @@ class Alert extends BaseView {
         timeout = params.get(:timeout);
         if (timeout == null) {
             timeout = TIMEOUT_DEFAULT;
-            timer = new Timer.Timer();
+            timer = UniTimer.getTimer();
         }
     }
 
@@ -97,7 +98,7 @@ class Alert extends BaseView {
     }
 
     function onHide() {
-        timer.stop();
+        stopDismissTimer();
         BaseView.onHide();
         textArea.reset();
     }
@@ -124,12 +125,16 @@ class Alert extends BaseView {
     }
 
     private function resetDismissTimer() {
-        timer.stop();
-        timer.start(method(:dismiss), timeout, false);
+        if (timer != null) {
+            timer.stop(timerKey);
+            timer.start(timerKey, method(:dismiss), timeout, false);
+        }
     }
 
     private function stopDismissTimer() {
-        timer.stop();
+        if (timer != null) {
+            timer.stop(timerKey);
+        }
     }
 
     function onScrollEnd() {

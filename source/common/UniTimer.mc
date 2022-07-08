@@ -32,6 +32,10 @@ module UniTimer {
             }
         }
 
+        function isActive(key as String) {
+            return scheduledTimers.hasKey(key);
+        }
+
         function onTick() {
             var expiredTimers = [];
             var minDelay = null;

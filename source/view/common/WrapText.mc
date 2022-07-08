@@ -8,8 +8,8 @@ using Toybox.WatchUi as Ui;
 using Toybox.System;
 using Toybox.Graphics as Gfx;
 using Toybox.Math;
-using Toybox.Timer;
 using Mathx;
+using UniTimer;
 
 class WrapText extends Ui.Drawable {
 	private const TEXT_COLOR_DEFAULT = Graphics.COLOR_WHITE;
@@ -368,12 +368,13 @@ class WrapText extends Ui.Drawable {
 		static const SCROLL_STEP_MEDIUM = 6;
 		static const SCROLL_STEP_LARGE = 18;
 		private static const MIN_INCREMENT_RATIO = 0.35;
+		private var timerKey = "wrap_text_scroll_animation_" + hashCode();
 
 		private var active = false;
 		private var offset; // Number of pixels to skip when scrolling
 		private var scrollDelay = 60; // Scroll step time in ms
 		private var scrollStep = SCROLL_STEP_MEDIUM; // Number of pixels to proceed on scroll
-		private var timer;
+		private var timer = UniTimer.getTimer();
 		hidden var scrollCallback;
 
 		private var scrollDistance = 0; // Distance in pixel left
@@ -402,10 +403,7 @@ class WrapText extends Ui.Drawable {
 		}
 
 		function reset() {
-			if (timer != null) {
-				timer.stop();
-				timer = null;
-			}
+			timer.stop(timerKey);
 			offset = 0;
 		}
 
@@ -413,13 +411,11 @@ class WrapText extends Ui.Drawable {
 			me.active = active;
 			if (active) {
 				proceedAnimationFrame();
-				if (timer == null) {
-					timer = new Timer.Timer();
-					timer.start(scrollCallback, scrollDelay, true);
+				if (!timer.isActive(timerKey)) {
+					timer.start(timerKey, scrollCallback, scrollDelay, true);
 				}
-			} else if (timer != null && !active) {
-				timer.stop();
-				timer = null;
+			} else if (timer.isActive(timerKey) && !active) {
+				timer.stop(timerKey);
 			}
 		}
 		

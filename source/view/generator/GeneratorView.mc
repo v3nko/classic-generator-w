@@ -1,7 +1,6 @@
 using Toybox.WatchUi as Ui;
 using Toybox.Graphics as Gfx;
 using Toybox.System as System;
-using Toybox.Timer;
 using Generator as Gen;
 
 class GeneratorView extends BaseView {
