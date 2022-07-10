@@ -3,7 +3,7 @@ using Toybox.Timer;
 module UniTimer {
 
     class Timer {
-        private const BASE_TIMER_FREQUENCY = 50;
+        private const DELAY_MIN = 1;
         private var timer = new Timer.Timer();
 
         private var scheduledTimers = {};
@@ -12,7 +12,6 @@ module UniTimer {
 
         function start(key as String, callback as Method(), delay as Number, repeat as Boolean) {
             if (!scheduledTimers.hasKey(key)) {
-                // TODO: put weak reference
                 scheduledTimers.put(key, new TimerEntry(callback, delay, repeat));
                 if (scheduledTimers.size() == 1) {
                     startInternalTimer(delay);
@@ -38,12 +37,15 @@ module UniTimer {
 
         function onTick() {
             var expiredTimers = [];
-            var minDelay = null;
-            for (var i = 0; i < scheduledTimers.size(); i++) {
-                var entry = scheduledTimers.values()[i];
+            // Copy timer keys array to avoid possible concurrent moification of scheduledTimers 
+            // dictionary in case of timer stop by the consumer in callback while permofming tick 
+            // handling.
+            var ongoingTimerKeys = scheduledTimers.keys().slice(0, scheduledTimers.size());
+            for (var i = 0; i < ongoingTimerKeys.size(); i++) {
                 var currentTick = System.getTimer();
-                var expired = false;
-                if (entry.getNextTick() <= currentTick) {
+                var entry = scheduledTimers.get(ongoingTimerKeys[i]);
+                var expired = entry == null;
+                if (entry != null && entry.getNextTick() <= currentTick) {
                     entry.getCallback().invoke();
                     if (entry.getRepeat()) {
                         entry.incrementNextTick();
@@ -52,20 +54,23 @@ module UniTimer {
                         expired = true;
                     }
                 }
-
-                if (!expired) {
-                    var nextTickDelta = entry.getNextTick() - currentTick;
-                    if (minDelay == null || nextTickDelta < minDelay) {
-                        minDelay = nextTickDelta;
-                    }
-                }
             }
             for (var i = 0; i < expiredTimers.size(); i++) {
                 stop(expiredTimers[i]);
             }
 
+            // Run scheduling round separately to handle possible added timers during callbacks
+            var minDelay = null;
+            for (var i = 0; i < scheduledTimers.size(); i++) {
+                var currentTick = System.getTimer();
+                var nextTickDelta = scheduledTimers.values()[i].getNextTick() - currentTick;
+                if (minDelay == null || nextTickDelta < minDelay) {
+                    minDelay = nextTickDelta;
+                }
+            }
+
             if (!scheduledTimers.isEmpty() && minDelay != null) {
-                startInternalTimer(minDelay);
+                startInternalTimer(Mathx.max(minDelay, DELAY_MIN));
             }
         }
 
@@ -106,7 +111,7 @@ module UniTimer {
             }
 
             function incrementNextTick() {
-                nextTick =  System.getTimer() + delay;
+                nextTick += delay;
                 return nextTick;
             }
 
