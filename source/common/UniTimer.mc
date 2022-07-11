@@ -2,9 +2,28 @@ using Toybox.Timer;
 
 module UniTimer {
 
+    class UptimeClock {
+        private var baseTimer = 0l;
+        private var prevTimer;
+
+        function initialize() {
+            prevTimer = System.getTimer();
+        }
+
+        function getUptime() {
+            var currentTimer = System.getTimer();
+            if (currentTimer < prevTimer) {
+                baseTimer += prevTimer;
+            }
+            prevTimer = currentTimer;
+            return baseTimer + currentTimer;
+        }
+    }
+
     class Timer {
         private const DELAY_MIN = 1;
         private var timer = new Timer.Timer();
+        private var clock = new UptimeClock();
 
         private var scheduledTimers = {};
 
@@ -12,11 +31,14 @@ module UniTimer {
 
         function start(key as String, callback as Method(), delay as Number, repeat as Boolean) {
             if (!scheduledTimers.hasKey(key)) {
-                scheduledTimers.put(key, new TimerEntry(callback, delay, repeat));
+                scheduledTimers.put(
+                    key,
+                    new TimerEntry(callback, clock.getUptime(), delay, repeat)
+                );
                 if (scheduledTimers.size() == 1) {
                     startInternalTimer(delay);
                 } else {
-                    if (nextTick == null || nextTick > System.getTimer() + delay) {
+                    if (nextTick == null || nextTick > clock.getUptime() + delay) {
                         stopInternalTimer();
                         startInternalTimer(delay);
                     }
@@ -42,7 +64,7 @@ module UniTimer {
             // handling.
             var ongoingTimerKeys = scheduledTimers.keys().slice(0, scheduledTimers.size());
             for (var i = 0; i < ongoingTimerKeys.size(); i++) {
-                var currentTick = System.getTimer();
+                var currentTick = clock.getUptime();
                 var entry = scheduledTimers.get(ongoingTimerKeys[i]);
                 var expired = entry == null;
                 if (entry != null && entry.getNextTick() <= currentTick) {
@@ -62,7 +84,7 @@ module UniTimer {
             // Run scheduling round separately to handle possible added timers during callbacks
             var minDelay = null;
             for (var i = 0; i < scheduledTimers.size(); i++) {
-                var currentTick = System.getTimer();
+                var currentTick = clock.getUptime();
                 var nextTickDelta = scheduledTimers.values()[i].getNextTick() - currentTick;
                 if (minDelay == null || nextTickDelta < minDelay) {
                     minDelay = nextTickDelta;
@@ -81,7 +103,7 @@ module UniTimer {
 
         private function startInternalTimer(delay) {
             timer.start(method(:onTick), delay, false);
-            nextTick = System.getTimer() + delay;
+            nextTick = clock.getUptime() + delay;
         }
 
         class TimerEntry {
@@ -91,11 +113,11 @@ module UniTimer {
 
             private var nextTick as Long;
 
-            function initialize(callback as Method(), delay as Number, repeat as Boolean) {
+            function initialize(callback as Method(), uptime, delay as Number, repeat as Boolean) {
                 me.callback = callback;
                 me.delay = delay;
                 me.repeat = repeat;
-                nextTick = System.getTimer() + delay;
+                nextTick = uptime + delay;
             }
 
             function getCallback() {
