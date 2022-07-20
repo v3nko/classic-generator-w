@@ -22,12 +22,18 @@ module UniTimer {
 
     class Timer {
         private const DELAY_MIN = 1;
+        // Allowed delay delta tolerance value; if delta between requested delay and scheduled  
+        // current delay falls into this value, rescheduling will be skipped. Preventing 
+        // rescheduling leads to increase of performance by omitting overhead recreation of system 
+        // timer and reducing potential offset relative to actual scheduled delay.
+        private const DELTA_TOLERANCE = 15;
         private var timer = new Timer.Timer();
         private var clock = new UptimeClock();
 
         private var scheduledTimers = {};
 
         private var nextTick = null;
+        private var currentDelay = null;
 
         function start(key as String, callback as Method(), delay as Number, repeat as Boolean) {
             if (!scheduledTimers.hasKey(key)) {
@@ -99,11 +105,23 @@ module UniTimer {
         private function stopInternalTimer() {
             timer.stop();
             nextTick = null;
+            currentDelay = null;
         }
 
         private function startInternalTimer(delay) {
-            timer.start(method(:onTick), delay, false);
-            nextTick = clock.getUptime() + delay;
+            var delayDelta = 0;
+            if (currentDelay != null) {
+                delayDelta = currentDelay - delay;
+            }
+            if (
+                currentDelay == null || 
+                    delayDelta > DELTA_TOLERANCE || 
+                    (delayDelta < 0 && delay > DELTA_TOLERANCE)
+            ) {
+                currentDelay = delay;
+                timer.start(method(:onTick), delay, true);
+            }
+            nextTick = clock.getUptime() + currentDelay;
         }
 
         class TimerEntry {
