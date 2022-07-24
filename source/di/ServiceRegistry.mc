@@ -20,8 +20,12 @@ module Di {
             return new SettingsStore();
         }
 
+        function getGeneratorStore() {
+            return new GeneratorStore();
+        }
+
         function getGeneratorController() {
-            return new GeneratorController(getGenerator(), getSettingsStore());
+            return new GeneratorController(getGenerator(), getSettingsStore(), getGeneratorStore());
         }
 
         function getViewLifecycleHandler() {
@@ -31,6 +35,10 @@ module Di {
                 container.put(KEY_VIEW_LIFECYCLE_HANDLER, handler);
             }
             return handler;
+        }
+
+        function getDateTimeFormatter() {
+            return new DateTimerFormatter();
         }
     }
 

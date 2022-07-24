@@ -1,15 +1,25 @@
 using Generator as Gen;
+using Toybox.Time;
 
 class GeneratorController {
 
     private var generator;
     private var generatorMode as GeneratorMode;
     private var settings;
+    private var generatorStore;
 
-    function initialize(generator as Gen.Generator, settings as SettingsStore) {
+    // Consumer-configured fields
+    private var recentResultCallback = null;
+
+    function initialize(
+        generator as Gen.Generator, 
+        settings as SettingsStore, 
+        generatorStore as GeneratorStore
+    ) {
         me.generator = generator;
         generatorMode = new GeneratorMode();
         me.settings = settings;
+        me.generatorStore = generatorStore;
     }
 
     function loadSettings() {
@@ -17,20 +27,40 @@ class GeneratorController {
     }
 
     function generate() as Result<String> {
-        switch (generatorMode.getCurrentMode()) {
+        var result;
+        var mode = generatorMode.getCurrentMode();
+        switch (mode) {
             case Gen.GENERATOR_NUM:
-                return generator.generateNum(settings.getNumMax());
+                result = generator.generateNum(settings.getNumMax());
+                break;
             case Gen.GENERATOR_RANGE:
-                return generator.generateRange(settings.getRangeMin(), settings.getRangeMax());
+                result = generator.generateRange(settings.getRangeMin(), settings.getRangeMax());
+                break;
             case Gen.GENERATOR_NUM_FIXED:
-                return generator.generateNumFixed(settings.getNumFixedLen());
+                result = generator.generateNumFixed(settings.getNumFixedLen());
+                break;
             case Gen.GENERATOR_ALPHANUM:
-                return generator.generateAlphanum(settings.getAlphanumLen());
+                result = generator.generateAlphanum(settings.getAlphanumLen());
+                break;
             case Gen.GENARATOR_HEX:
-                return generator.generateHex(settings.getHexLen());
+                result = generator.generateHex(settings.getHexLen());
+                break;
             default:
-                return new Error(new UnsupportedGeneratorType());
+                result = new Error(new UnsupportedGeneratorType());
         }
+        if (result instanceof Success) {
+            generatorStore.appenHistoryRecord(result.data, mode, Time.now().value());
+
+            if (recentResultCallback != null) {
+                var history = generatorStore.getGeneratorHistory();
+                var recentResult = null;
+                if (history.size() >= 2) {
+                    recentResult = generatorStore.parseHistoryRecord(history[history.size() - 2]);
+                }
+                recentResultCallback.invoke(recentResult);
+            }
+        }
+        return result;
     }
 
     function switchToNextMode() as Result {
@@ -48,7 +78,11 @@ class GeneratorController {
     function getCurrentMode() as Gen.GeneratorType {
         return generatorMode.getCurrentMode();
     }
-    
+
+    function setOnRecentResultUpdate(callback as Method(result)) {
+        recentResultCallback = callback;
+    }
+
     class GeneratorMode {
         private const DEFAULT_GENERATOR_MODE = Gen.GENERATOR_NUM_FIXED;
         private var generatorModes = [

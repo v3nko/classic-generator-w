@@ -36,7 +36,7 @@ class GeneratorModeView extends SlidableView {
         var iconIndicator = resolveIndicator(generatorMode);
 
         var indicatorGroup = new IndicatorDrawable();
-        indicatorGroup.setIndicators(textIndicator, iconIndicator);
+        indicatorGroup.setup(textIndicator, iconIndicator);
     
         pushNewDrawable(indicatorGroup, animation);
     }
@@ -100,7 +100,7 @@ class GeneratorModeView extends SlidableView {
     class IndicatorDrawable extends Ui.Drawable {
 
         private var indicatorIcon as Drawable = null;
-        private var indicatorText as Ui.BitmapResource = null;
+        private var indicatorText as Drawable = null;
         private var spacing = 2;
         private var padding = 5;
 
@@ -121,7 +121,7 @@ class GeneratorModeView extends SlidableView {
             indicatorText.setColor(color);
         }
         
-        function setIndicators(text as Drawable, icon as Ui.BitmapResource) {
+        function setup(text as Drawable, icon as Ui.BitmapResource) {
             indicatorText = text;
             indicatorIcon = icon;
             setSize(

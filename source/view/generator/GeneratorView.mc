@@ -13,6 +13,7 @@ class GeneratorView extends BaseView {
     private var generatorResultView as GeneratorResultView;
     private var generatorModeView as GeneratorModeView;
     private var buttonIndicatorDrawer as ButtonIndicatorDrawer;
+    private var recentResultView as GeneratorRecentResultView;
 
     private var generatorController as GeneratorController;
     
@@ -34,7 +35,9 @@ class GeneratorView extends BaseView {
         generatorResultView = View.findDrawableById("generator_result");
         generatorModeView = View.findDrawableById("generator_mode");
         buttonIndicatorDrawer = new ButtonIndicatorDrawer(centerX, centerY);
+        recentResultView = View.findDrawableById("generator_recent_result");
         generatorController.loadSettings();
+        generatorController.setOnRecentResultUpdate(method(:onRecentResultUpdate));
 
         updateMode(generatorController.getCurrentMode(), SlidableView.SLIDE_NONE);
 
@@ -129,6 +132,13 @@ class GeneratorView extends BaseView {
             {:text => Application.loadResource(Rez.Strings.error_mode_switch_general)}
         );
         alert.pushView();
+    }
+
+    function onRecentResultUpdate(result) {
+        System.println("Recent result update: " + result);
+        if (result != null) {
+            recentResultView.pushRecentResult(result.type, result.time, result.data);
+        }
     }
 
     class ButtonIndicatorDrawer {

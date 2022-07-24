@@ -37,7 +37,7 @@ class GeneratorResultView extends SlidableView {
                     :height => valueHeight
                 }
             ),
-            SlidableView.SLIDE_UP
+            SlidableView.SLIDE_DOWN
         );
     }
 }

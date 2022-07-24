@@ -7,4 +7,8 @@
         <param name="horizontalBias">0.5</param>
         <param name="verticalBias">0.16</param>
     </drawable>
+    <drawable id="generator_recent_result" class="GeneratorRecentResultView">
+        <param name="horizontalBias">0.5</param>
+        <param name="verticalBias">0.76</param>
+    </drawable>
 </layout>
