@@ -21,7 +21,7 @@ class GeneratorModeView extends SlidableView {
         modeTitleHeight = Gfx.getFontHeight(MODE_TITLE_FONT);
     }
     
-    function pushNewMode(generatorMode as Gen.GeneratorType, animation as PushAimation) {
+    function pushMode(generatorMode as Gen.GeneratorType, animation as PushAimation) {
         var textIndicator = new Ui.Text(
             {
                 :text => resolveTitle(generatorMode),
@@ -38,7 +38,7 @@ class GeneratorModeView extends SlidableView {
         var indicatorGroup = new IndicatorDrawable();
         indicatorGroup.setup(textIndicator, iconIndicator);
     
-        pushNewDrawable(indicatorGroup, animation);
+        pushDrawable(indicatorGroup, animation);
     }
 
     private function resolveIndicator(generatorMode as Gen.GeneratorType) {

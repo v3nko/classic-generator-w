@@ -95,7 +95,7 @@ class SlidableView extends Ui.Drawable {
         currentDrawable.setColor(getCurrentDrawableColor());
     }
 
-    function pushNewDrawable(newDrawable, animation as PushAnimation) {
+    function pushDrawable(newDrawable, animation as PushAnimation) {
         var prevDrawableBuffer = currentDrawable;
         currentDrawable = newDrawable;
         drawableHeight = currentDrawable.height;

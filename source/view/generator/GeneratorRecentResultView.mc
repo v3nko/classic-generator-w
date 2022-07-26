@@ -51,7 +51,7 @@ class GeneratorRecentResultView extends SlidableView {
         var recentResult = new RecentResultDrawable();
         recentResult.setup(resultText, timeText, null);
     
-        pushNewDrawable(recentResult, SlidableView.SLIDE_DOWN);
+        pushDrawable(recentResult, SlidableView.SLIDE_DOWN);
     }
 
     class RecentResultDrawable extends Ui.Drawable {

@@ -51,7 +51,7 @@ class GeneratorView extends BaseView {
     }
 
     function updateResult(result) {
-        generatorResultView.pushNewResult(result);
+        generatorResultView.pushResult(result);
     }
 
     function handleGenerationError(arg) {
@@ -117,7 +117,7 @@ class GeneratorView extends BaseView {
     }
 
     private function updateMode(generatorMode as Gen.GeneratorType, animation as PushAnimation) {
-        generatorModeView.pushNewMode(generatorMode, animation);
+        generatorModeView.pushMode(generatorMode, animation);
     }
 
     function handleModeSwitchError(arg) {
