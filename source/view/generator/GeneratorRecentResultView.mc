@@ -26,32 +26,36 @@ class GeneratorRecentResultView extends SlidableView {
         dateTimeFormatter = Di.provideServiceRegistry().getDateTimeFormatter();
     }
 
-    function pushRecentResult(type as GeneratorType, time as Moment, result) {
-        var resultText = new Ui.Text(
-            {
-                :text => result,
-                :font => RESULT_FONT,
-                :locX => WatchUi.LAYOUT_HALIGN_CENTER,
-                :locY => WatchUi.LAYOUT_VALIGN_CENTER,
-                :justification => Gfx.TEXT_JUSTIFY_CENTER,
-                :height => resultHeight
-            }
-        );
-        var timeText = new Ui.Text(
-            {
-                :text => dateTimeFormatter.formatDateTimeNumeric(time),
-                :font => TIME_FONT,
-                :locX => WatchUi.LAYOUT_HALIGN_CENTER,
-                :locY => WatchUi.LAYOUT_VALIGN_CENTER,
-                :justification => Gfx.TEXT_JUSTIFY_CENTER,
-                :height => timeHeight
-            }
-        );
+    function pushRecentResult(result as GeneratorResult) {
+        if (result != null) {
+            var resultText = new Ui.Text(
+                {
+                    :text => result.data,
+                    :font => RESULT_FONT,
+                    :locX => WatchUi.LAYOUT_HALIGN_CENTER,
+                    :locY => WatchUi.LAYOUT_VALIGN_CENTER,
+                    :justification => Gfx.TEXT_JUSTIFY_CENTER,
+                    :height => resultHeight
+                }
+            );
+            var timeText = new Ui.Text(
+                {
+                    :text => dateTimeFormatter.formatDateTimeNumeric(result.time),
+                    :font => TIME_FONT,
+                    :locX => WatchUi.LAYOUT_HALIGN_CENTER,
+                    :locY => WatchUi.LAYOUT_VALIGN_CENTER,
+                    :justification => Gfx.TEXT_JUSTIFY_CENTER,
+                    :height => timeHeight
+                }
+            );
 
-        var recentResult = new RecentResultDrawable();
-        recentResult.setup(resultText, timeText, null);
-    
-        pushDrawable(recentResult, SlidableView.SLIDE_DOWN);
+            var recentResult = new RecentResultDrawable();
+            recentResult.setup(resultText, timeText, null);
+        
+            pushDrawable(recentResult, SlidableView.SLIDE_DOWN);
+        } else {
+            pushDrawable(null, SlidableView.SLIDE_DOWN);
+        }
     }
 
     class RecentResultDrawable extends Ui.Drawable {

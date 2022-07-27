@@ -6,20 +6,15 @@ class GeneratorStore {
     private static const KEY_GEN_HISTORY = "gen_history";
     private static const RAW_RESULT_DELIMITER = ";";
 
-    private var historyCache = null;
-
     function getGeneratorHistory() as Array {
-        if (historyCache == null) {
-            historyCache = Storage.getValue(KEY_GEN_HISTORY);
-            if (historyCache == null) {
-                historyCache = [];
-            }
+        var history = Storage.getValue(KEY_GEN_HISTORY);
+        if (history == null) {
+            history = [];
         }
-        return historyCache;
+        return history;
     }
 
     function saveGeneratorHistory(value as Array) {
-        historyCache = value;
         Storage.setValue(KEY_GEN_HISTORY, value);
     }
 

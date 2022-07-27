@@ -135,10 +135,7 @@ class GeneratorView extends BaseView {
     }
 
     function onRecentResultUpdate(result) {
-        System.println("Recent result update: " + result);
-        if (result != null) {
-            recentResultView.pushRecentResult(result.type, result.time, result.data);
-        }
+        recentResultView.pushRecentResult(result);
     }
 
     class ButtonIndicatorDrawer {

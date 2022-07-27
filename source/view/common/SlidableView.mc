@@ -92,14 +92,18 @@ class SlidableView extends Ui.Drawable {
 
     function onFinishSlideAnimation() {
         applyAltColor = false;
-        currentDrawable.setColor(getCurrentDrawableColor());
+        if (currentDrawable != null) {
+            currentDrawable.setColor(getCurrentDrawableColor());
+        }
     }
 
     function pushDrawable(newDrawable, animation as PushAnimation) {
         var prevDrawableBuffer = currentDrawable;
         currentDrawable = newDrawable;
-        drawableHeight = currentDrawable.height;
-        if (!slideAnimator.isAnimationActive()) {
+        if (newDrawable != null) {
+            drawableHeight = currentDrawable.height;
+        }
+        if (!slideAnimator.isAnimationActive() && drawableHeight != null) {
             prevDrawable = prevDrawableBuffer;
             if (prevDrawable != null) {
                 prevDrawable.setColor(primaryValueColor);
@@ -113,7 +117,9 @@ class SlidableView extends Ui.Drawable {
         } else {
             applyAltColor = true;
         }
-        currentDrawable.setColor(getCurrentDrawableColor());
+        if (currentDrawable != null) {
+            currentDrawable.setColor(getCurrentDrawableColor());
+        }
     }
 
     function setPrimaryColor(color as Graphics.ColorType) {
