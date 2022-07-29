@@ -9,7 +9,7 @@ class GeneratorController {
     private var generatorStore;
 
     // Consumer-configured fields
-    private var recentResultCallback = null;
+    private var resultUpdateCallback = null;
 
     function initialize(
         generator as Gen.Generator, 
@@ -51,13 +51,13 @@ class GeneratorController {
         if (result instanceof Success) {
             generatorStore.appenHistoryRecord(result.data, mode, Time.now().value());
 
-            if (recentResultCallback != null) {
-                var history = generatorStore.getGeneratorHistory();
-                var recentResult = null;
-                if (history.size() >= 2) {
-                    recentResult = generatorStore.parseHistoryRecord(history[history.size() - 2]);
+            if (resultUpdateCallback != null) {
+                var history = generatorStore.getGeneratorHistory().slice(-2, null);
+                var mappedHistory = [];
+                for (var i = 0; i < history.size(); i++) {
+                    mappedHistory.add(generatorStore.parseHistoryRecord(history[i]));
                 }
-                recentResultCallback.invoke(recentResult);
+                resultUpdateCallback.invoke(mappedHistory.reverse());
             }
         }
         return result;
@@ -79,8 +79,8 @@ class GeneratorController {
         return generatorMode.getCurrentMode();
     }
 
-    function setOnRecentResultUpdate(callback as Method(result)) {
-        recentResultCallback = callback;
+    function setOnResultUpdate(callback as Method(result)) {
+        resultUpdateCallback = callback;
     }
 
     class GeneratorMode {

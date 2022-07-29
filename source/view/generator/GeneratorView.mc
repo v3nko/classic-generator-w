@@ -10,8 +10,8 @@ class GeneratorView extends BaseView {
 	private var centerX;
 	private var centerY;
 
-    private var generatorResultView as GeneratorResultView;
-    private var generatorModeView as GeneratorModeView;
+    private var resultView as GeneratorResultView;
+    private var modeView as GeneratorModeView;
     private var buttonIndicatorDrawer as ButtonIndicatorDrawer;
     private var recentResultView as GeneratorRecentResultView;
 
@@ -32,12 +32,12 @@ class GeneratorView extends BaseView {
         View.setLayout(Rez.Layouts.generator(dc));
 		centerX = dc.getWidth() / 2;
 		centerY = dc.getHeight() / 2;
-        generatorResultView = View.findDrawableById("generator_result");
-        generatorModeView = View.findDrawableById("generator_mode");
+        resultView = View.findDrawableById("generator_result");
+        modeView = View.findDrawableById("generator_mode");
         buttonIndicatorDrawer = new ButtonIndicatorDrawer(centerX, centerY);
         recentResultView = View.findDrawableById("generator_recent_result");
         generatorController.loadSettings();
-        generatorController.setOnRecentResultUpdate(method(:onRecentResultUpdate));
+        generatorController.setOnResultUpdate(method(:onResultUpdate));
 
         updateMode(generatorController.getCurrentMode(), SlidableView.SLIDE_NONE);
 
@@ -46,12 +46,7 @@ class GeneratorView extends BaseView {
 
     function generateNewValue() {
         generatorController.generate()
-            .onSuccess(method(:updateResult))
             .onError(method(:handleGenerationError));
-    }
-
-    function updateResult(result) {
-        generatorResultView.pushResult(result);
     }
 
     function handleGenerationError(arg) {
@@ -117,7 +112,7 @@ class GeneratorView extends BaseView {
     }
 
     private function updateMode(generatorMode as Gen.GeneratorType, animation as PushAnimation) {
-        generatorModeView.pushMode(generatorMode, animation);
+        modeView.pushMode(generatorMode, animation);
     }
 
     function handleModeSwitchError(arg) {
@@ -134,8 +129,15 @@ class GeneratorView extends BaseView {
         alert.pushView();
     }
 
-    function onRecentResultUpdate(result) {
-        recentResultView.pushRecentResult(result);
+    function onResultUpdate(resultHistory) {
+        if (resultHistory.size() > 0) {
+            resultView.pushResult(resultHistory[0]);
+        }
+        if (resultHistory.size() > 1) {
+            recentResultView.pushRecentResult(resultHistory[1]);
+        } else {
+            recentResultView.pushRecentResult(null);
+        }
     }
 
     class ButtonIndicatorDrawer {

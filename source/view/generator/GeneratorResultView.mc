@@ -25,11 +25,11 @@ class GeneratorResultView extends SlidableView {
         valueHeight = Gfx.getFontHeight(generatorValueFont);
     }
 
-    function pushResult(resultValue as String) {
+    function pushResult(result as GeneratorResult) {
         pushDrawable(
             new Ui.Text(
                 {
-                    :text => resultValue,
+                    :text => result.data,
                     :font => generatorValueFont,
                     :locX => WatchUi.LAYOUT_HALIGN_CENTER,
                     :locY => WatchUi.LAYOUT_VALIGN_CENTER,
