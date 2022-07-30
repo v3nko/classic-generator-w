@@ -9,7 +9,7 @@ class GeneratorController {
     private var generatorStore;
 
     // Consumer-configured fields
-    private var resultUpdateCallback = null;
+    private var historyUpdateCallback = null;
 
     function initialize(
         generator as Gen.Generator, 
@@ -24,6 +24,10 @@ class GeneratorController {
 
     function loadSettings() {
         generatorMode.setCurrentMode(settings.getGeneratorMode());
+    }
+
+    function loadHistory() {
+        notifyHistoryUpdate();
     }
 
     function generate() as Result<String> {
@@ -50,17 +54,20 @@ class GeneratorController {
         }
         if (result instanceof Success) {
             generatorStore.appenHistoryRecord(result.data, mode, Time.now().value());
-
-            if (resultUpdateCallback != null) {
-                var history = generatorStore.getGeneratorHistory().slice(-2, null);
-                var mappedHistory = [];
-                for (var i = 0; i < history.size(); i++) {
-                    mappedHistory.add(generatorStore.parseHistoryRecord(history[i]));
-                }
-                resultUpdateCallback.invoke(mappedHistory.reverse());
-            }
+            notifyHistoryUpdate();
         }
         return result;
+    }
+
+    private function notifyHistoryUpdate() {
+        if (historyUpdateCallback != null) {
+            var history = generatorStore.getGeneratorHistory().slice(-2, null);
+            var mappedHistory = [];
+            for (var i = 0; i < history.size(); i++) {
+                mappedHistory.add(generatorStore.parseHistoryRecord(history[i]));
+            }
+            historyUpdateCallback.invoke(mappedHistory.reverse());
+        }
     }
 
     function switchToNextMode() as Result {
@@ -79,8 +86,8 @@ class GeneratorController {
         return generatorMode.getCurrentMode();
     }
 
-    function setOnResultUpdate(callback as Method(result)) {
-        resultUpdateCallback = callback;
+    function setOnHistoryUpdate(callback as Method(result)) {
+        historyUpdateCallback = callback;
     }
 
     class GeneratorMode {

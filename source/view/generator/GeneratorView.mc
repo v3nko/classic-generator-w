@@ -37,11 +37,10 @@ class GeneratorView extends BaseView {
         buttonIndicatorDrawer = new ButtonIndicatorDrawer(centerX, centerY);
         recentResultView = View.findDrawableById("generator_recent_result");
         generatorController.loadSettings();
-        generatorController.setOnResultUpdate(method(:onResultUpdate));
+        generatorController.setOnHistoryUpdate(method(:onHistoryUpdate));
+        generatorController.loadHistory();
 
         updateMode(generatorController.getCurrentMode(), SlidableView.SLIDE_NONE);
-
-        generateNewValue();
     }
 
     function generateNewValue() {
@@ -129,14 +128,16 @@ class GeneratorView extends BaseView {
         alert.pushView();
     }
 
-    function onResultUpdate(resultHistory) {
+    function onHistoryUpdate(resultHistory) {
         if (resultHistory.size() > 0) {
             resultView.pushResult(resultHistory[0]);
-        }
-        if (resultHistory.size() > 1) {
-            recentResultView.pushRecentResult(resultHistory[1]);
+            if (resultHistory.size() > 1) {
+                recentResultView.pushRecentResult(resultHistory[1]);
+            } else {
+                recentResultView.pushRecentResult(null);
+            }
         } else {
-            recentResultView.pushRecentResult(null);
+            generateNewValue();
         }
     }
 
