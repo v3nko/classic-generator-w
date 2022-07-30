@@ -26,18 +26,22 @@ class GeneratorResultView extends SlidableView {
     }
 
     function pushResult(result as GeneratorResult) {
-        pushDrawable(
-            new Ui.Text(
-                {
-                    :text => result.data,
-                    :font => generatorValueFont,
-                    :locX => WatchUi.LAYOUT_HALIGN_CENTER,
-                    :locY => WatchUi.LAYOUT_VALIGN_CENTER,
-                    :justification => Gfx.TEXT_JUSTIFY_CENTER,
-                    :height => valueHeight
-                }
-            ),
-            SlidableView.SLIDE_DOWN
-        );
+        if (result != null) {
+            pushDrawable(
+                new Ui.Text(
+                    {
+                        :text => result.data,
+                        :font => generatorValueFont,
+                        :locX => WatchUi.LAYOUT_HALIGN_CENTER,
+                        :locY => WatchUi.LAYOUT_VALIGN_CENTER,
+                        :justification => Gfx.TEXT_JUSTIFY_CENTER,
+                        :height => valueHeight
+                    }
+                ),
+                SlidableView.SLIDE_DOWN
+            );
+        } else {
+            pushDrawable(null, SlidableView.SLIDE_DOWN);
+        }
     }
 }
