@@ -124,7 +124,7 @@ class GeneratorView extends BaseView {
 
         var alert = new Alert(
             lifecycleHandler,
-            {:text => Application.loadResource(Rez.Strings.error_mode_switch_general)}
+            { :text => Application.loadResource(Rez.Strings.error_mode_switch_general) }
         );
         alert.pushView();
     }

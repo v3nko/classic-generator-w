@@ -9,6 +9,6 @@
     </drawable>
     <drawable id="generator_recent_result" class="GeneratorRecentResultView">
         <param name="horizontalBias">0.5</param>
-        <param name="verticalBias">0.76</param>
+        <param name="verticalBias">0.84</param>
     </drawable>
 </layout>

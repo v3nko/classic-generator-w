@@ -6,12 +6,8 @@ using Mathx;
 class GeneratorRecentResultView extends SlidableView {
     
     private const RESULT_FONT = Gfx.FONT_TINY;
-    private const TIME_FONT = Gfx.FONT_XTINY;
-
-    private var dateTimeFormatter;
 
     private var resultHeight;
-    private var timeHeight;
 
     function initialize(params as Dictionary) {
         var horizontalBias = params.get(:horizontalBias);
@@ -24,8 +20,6 @@ class GeneratorRecentResultView extends SlidableView {
             height * verticalBias
         );
         resultHeight = Gfx.getFontHeight(RESULT_FONT);
-        timeHeight = Gfx.getFontHeight(TIME_FONT);
-        dateTimeFormatter = Di.provideServiceRegistry().getDateTimeFormatter();
     }
 
     function pushRecentResult(result as GeneratorResult) {
@@ -38,17 +32,9 @@ class GeneratorRecentResultView extends SlidableView {
                     :height => resultHeight
                 }
             );
-            var timeText = new Ui.Text(
-                {
-                    :text => dateTimeFormatter.formatDateTimeNumeric(result.time),
-                    :font => TIME_FONT,
-                    :justification => Gfx.TEXT_JUSTIFY_CENTER,
-                    :height => timeHeight
-                }
-            );
 
             var recentResult = new RecentResultDrawable();
-            recentResult.setup(resultText, timeText, resolveIndicator(result.type));
+            recentResult.setup(resultText, resolveIndicator(result.type));
         
             pushDrawable(recentResult, SlidableView.SLIDE_DOWN);
         } else {
@@ -88,8 +74,6 @@ class GeneratorRecentResultView extends SlidableView {
 
         private var resultType as Drawable = null;
         private var resultText as Drawable = null;
-        private var timeText as Drawable = null;
-        private var vSpacing = 2;
         private var hSpacing = 7;
         private var padding = 5;
         private var headlineHeight;
@@ -104,8 +88,6 @@ class GeneratorRecentResultView extends SlidableView {
                 getHeadlineLocY(resultText.height)
             );
             resultText.draw(dc);
-            timeText.setLocation(me.locX, resultText.locY + resultText.height + vSpacing);
-            timeText.draw(dc);
             dc.drawBitmap(
                 resultText.locX - resultType.getWidth() - (resultText.width / 2f) - hSpacing,
                 getHeadlineLocY(resultType.getHeight()),
@@ -121,15 +103,11 @@ class GeneratorRecentResultView extends SlidableView {
             resultText.setColor(color);
         }
         
-        function setup(text as Drawable, time as Drawable, icon as Ui.BitmapResource) {
+        function setup(text as Drawable, icon as Ui.BitmapResource) {
             resultText = text;
-            timeText = time;
             resultType = icon;
             headlineHeight = Mathx.max(resultText.height, icon.getHeight());
-            setSize(
-                width,
-                headlineHeight + timeText.height + vSpacing + (padding * 2)
-            );
+            setSize(width, headlineHeight + (padding * 2));
         }
     }
 }
