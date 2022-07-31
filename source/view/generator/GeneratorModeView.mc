@@ -60,13 +60,9 @@ class GeneratorModeView extends SlidableView {
                 resource = Rez.Drawables.ic_hex;
                 break;
             default:
-                resource = null;
+                resource = Rez.Drawables.ic_unknown;
         }
-        if (resource != null) {
-            return Application.loadResource(resource);
-        } else {
-            return null;
-        }
+        return Application.loadResource(resource);
     }
 
     private function resolveTitle(generatorMode as GeneratorType) {

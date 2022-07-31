@@ -5,4 +5,5 @@
 	<bitmap id="ic_num_fixed" filename="ic_num_fixed.png" />
 	<bitmap id="ic_hex" filename="ic_hex.png" />
 	<bitmap id="ic_alphanum" filename="ic_alphanum.png" />
+	<bitmap id="ic_unknown" filename="ic_unknown.png" />
 </drawables>

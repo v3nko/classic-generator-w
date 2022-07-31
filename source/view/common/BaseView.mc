@@ -17,4 +17,9 @@ class BaseView extends Ui.View {
         View.onHide();
         lifecycleHandler.onHide();
     }
+
+    function showMenu(menu, delegate, animation) {
+        lifecycleHandler.suppressExitTimer();
+        Ui.pushView(menu, delegate, animation);
+    }
 }

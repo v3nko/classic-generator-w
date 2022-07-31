@@ -2,6 +2,7 @@ using Toybox.WatchUi as Ui;
 using Toybox.Graphics as Gfx;
 using Toybox.System as System;
 using Generator as Gen;
+using Di;
 
 class GeneratorView extends BaseView {
 
@@ -16,6 +17,8 @@ class GeneratorView extends BaseView {
     private var recentResultView as GeneratorRecentResultView;
 
     private var generatorController as GeneratorController;
+
+    private var timeFormatter;
     
     private const BUTTON_INDICATOR_WIDTH = 12;
     private const BUTTON_INDICATOR_THIKNESS = 4;
@@ -23,9 +26,10 @@ class GeneratorView extends BaseView {
     private const BUTTON_INDICATOR_ANGLE_UP = 180;
     private const BUTTON_INDICATOR_ANGLE_DOWN = 210;
 
-    function initialize(generatorController, lifecycleHandler) {
+    function initialize(generatorController, lifecycleHandler, timeFormatter) {
 		BaseView.initialize(lifecycleHandler);
         me.generatorController = generatorController;
+        me.timeFormatter = timeFormatter;
 	}
 
     function onLayout(dc) {
@@ -139,6 +143,25 @@ class GeneratorView extends BaseView {
         } else {
             generateNewValue();
         }
+    }
+
+
+    function navigateToMenu() {
+        var menu = new Ui.Menu2({ :title => Rez.Strings.menu_title_results_history });
+        var history = generatorController.getHistory();
+        for (var i = 0; i < history.size(); i++) {
+            var record = history[i];
+            menu.addItem(
+                new Ui.MenuItem(
+                    record.data,
+                    timeFormatter.formatDateTimeNumeric(record.time),
+                    null,
+                    null
+                )
+            );
+        }
+        BaseView.showMenu(menu, new HistoryMenuInputdelegate(), Ui.SLIDE_IMMEDIATE);
+        return true;
     }
 
     class ButtonIndicatorDrawer {

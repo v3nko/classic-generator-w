@@ -9,17 +9,23 @@ class GeneratorDelegate extends Ui.BehaviorDelegate {
         Ui.BehaviorDelegate.initialize();
     }
 
-    function onKey(keyEvent) {
-        switch(keyEvent.getKey()) {
-            case Ui.KEY_ENTER:
-                generatorView.generateNewValue();
-                break;
-            case Ui.KEY_UP:
-                generatorView.switchToPreviousMode();
-                break;
-            case Ui.KEY_DOWN:
-                generatorView.switchToNextMode();
-                break;
-        }
+    function onSelect() {
+        generatorView.generateNewValue();
+        return true;
+    }
+
+    function onPreviousPage() {
+        generatorView.switchToPreviousMode();
+        return true;
+    }
+
+    function onNextPage() {
+        generatorView.switchToNextMode();
+        return true;
+    }
+
+    function onMenu() {
+        generatorView.navigateToMenu();
+        return true;
     }
 }

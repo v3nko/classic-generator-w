@@ -90,6 +90,15 @@ class GeneratorController {
         historyUpdateCallback = callback;
     }
 
+    function getHistory() {
+        var history = generatorStore.getGeneratorHistory().reverse();
+        var mappedHistory = [];
+        for (var i = 0; i < history.size(); i++) {
+            mappedHistory.add(generatorStore.parseHistoryRecord(history[i]));
+        }
+        return mappedHistory;
+    }
+
     class GeneratorMode {
         private const DEFAULT_GENERATOR_MODE = Gen.GENERATOR_NUM_FIXED;
         private var generatorModes = [

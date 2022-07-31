@@ -19,7 +19,8 @@ class CGApp extends App.AppBase {
     function getInitialView() {
         var view = new GeneratorView(
             registry.getGeneratorController(), 
-            registry.getViewLifecycleHandler()
+            registry.getViewLifecycleHandler(),
+            registry.getDateTimeFormatter()
         );
         return [view, new GeneratorDelegate(view)];
     }
