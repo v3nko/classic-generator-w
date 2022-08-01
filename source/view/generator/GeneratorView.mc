@@ -153,7 +153,7 @@ class GeneratorView extends BaseView {
             var record = history[i];
             menu.addItem(
                 new Ui.MenuItem(
-                    record.data,
+                    Lang.format("$1$ | $2$", [resolveTextIndicator(record.type), record.data]),
                     timeFormatter.formatDateTimeNumeric(record.time),
                     null,
                     null
@@ -162,6 +162,30 @@ class GeneratorView extends BaseView {
         }
         BaseView.showMenu(menu, new HistoryMenuInputdelegate(), Ui.SLIDE_IMMEDIATE);
         return true;
+    }
+
+    private function resolveTextIndicator(generatorMode as Gen.GeneratorType) {
+        var indicator;
+        switch (generatorMode) {
+            case Gen.GENERATOR_NUM:
+                indicator = Rez.Strings.gen_title_num_short;
+                break;
+            case Gen.GENERATOR_RANGE:
+                indicator = Rez.Strings.gen_title_num_range_short;
+                break;
+            case Gen.GENERATOR_NUM_FIXED:
+                indicator = Rez.Strings.gen_title_num_fixed_short;
+                break;
+            case Gen.GENERATOR_ALPHANUM:
+                indicator = Rez.Strings.gen_title_alphanum_short;
+                break;
+            case Gen.GENARATOR_HEX:
+                indicator = Rez.Strings.gen_title_hex_short;
+                break;
+            default:
+                indicator = Rez.Strings.gen_title_unknown_short;
+        }
+        return Application.loadResource(indicator);
     }
 
     class ButtonIndicatorDrawer {

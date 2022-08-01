@@ -5,7 +5,13 @@
     <string id="gen_title_alphanum">Alphanumeric</string>
     <string id="gen_title_num_range">Range</string>
     <string id="gen_title_num_fixed">Numeric fixed</string>
-    <string id="gen_title_hex">Hexadecimal</string>
+    <string id="gen_title_hex">Hexadecimal</string>    
+    <string id="gen_title_num_short">N</string>
+    <string id="gen_title_alphanum_short">A</string>
+    <string id="gen_title_num_range_short">R</string>
+    <string id="gen_title_num_fixed_short">F</string>
+    <string id="gen_title_hex_short">H</string>
+    <string id="gen_title_unknown_short">?</string>
 
     <string id="settings_num_max">Numeric max</string>
     <string id="settings_range_min">Range min</string>

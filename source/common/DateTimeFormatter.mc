@@ -9,9 +9,9 @@ class DateTimerFormatter {
             "$1$-$2$-$3$ $4$:$5$:$6$",
             [
                 timeFormat.year,
-                timeFormat.month,
-                timeFormat.day,
-                timeFormat.hour,
+                timeFormat.month.format("%02d"),
+                timeFormat.day.format("%02d"),
+                timeFormat.hour.format("%02d"),
                 timeFormat.min.format("%02d"),
                 timeFormat.sec.format("%02d")
             ]
