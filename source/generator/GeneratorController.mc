@@ -27,7 +27,10 @@ class GeneratorController {
     }
 
     function loadHistory() {
-        notifyHistoryUpdate();
+        if (notifyHistoryUpdate(true) == 0) {
+            // Generate initial value if history is empty
+            generate();
+        }
     }
 
     function generate() as Result<String> {
@@ -54,19 +57,24 @@ class GeneratorController {
         }
         if (result instanceof Success) {
             generatorStore.appenHistoryRecord(result.data, mode, Time.now().value());
-            notifyHistoryUpdate();
+            notifyHistoryUpdate(false);
         }
         return result;
     }
 
-    private function notifyHistoryUpdate() {
+    private function notifyHistoryUpdate(suppressEmpty) {
         if (historyUpdateCallback != null) {
             var history = generatorStore.getGeneratorHistory().slice(-2, null);
             var mappedHistory = [];
             for (var i = 0; i < history.size(); i++) {
                 mappedHistory.add(generatorStore.parseHistoryRecord(history[i]));
             }
-            historyUpdateCallback.invoke(mappedHistory.reverse());
+            if (history.size() > 0 || !suppressEmpty) {
+                historyUpdateCallback.invoke(mappedHistory.reverse());
+            }
+            return mappedHistory.size();
+        } else {
+            return null;
         }
     }
 

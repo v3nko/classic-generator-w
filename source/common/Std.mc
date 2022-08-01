@@ -58,3 +58,11 @@ function splitFirst(src, delimiter, segmentsLimit) {
 function split(src, delimiter) {
     splitFirst(src, delimiter, src.length());
 }
+
+function getOrNull(array as Array, index as Number) {
+    if (array.size() > index) {
+        return array[index];
+    } else {
+        return null;
+    }
+}

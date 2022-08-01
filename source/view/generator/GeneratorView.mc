@@ -140,16 +140,8 @@ class GeneratorView extends BaseView {
     }
 
     function onHistoryUpdate(resultHistory) {
-        if (resultHistory.size() > 0) {
-            resultView.pushResult(resultHistory[0]);
-            if (resultHistory.size() > 1) {
-                recentResultView.pushRecentResult(resultHistory[1]);
-            } else {
-                recentResultView.pushRecentResult(null);
-            }
-        } else {
-            generateNewValue();
-        }
+        resultView.pushResult(getOrNull(resultHistory, 0));
+        recentResultView.pushRecentResult(getOrNull(resultHistory, 1));
     }
 
 
