@@ -45,4 +45,8 @@ class GeneratorStore {
             );
         }
     }
+
+    function clearHistory() {
+        Storage.deleteValue(KEY_GEN_HISTORY);
+    }
 }

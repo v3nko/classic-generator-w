@@ -2,13 +2,13 @@ using Toybox.Application as App;
 using Di;
 
 class CGApp extends App.AppBase {
-    private var registry;
+    private var serviceLocator;
     private var lifecycleHandler;
 
     function initialize() {
         AppBase.initialize();
-        registry = Di.provideServiceRegistry();
-        lifecycleHandler = registry.getViewLifecycleHandler();
+        serviceLocator = Di.provideServiceRegistry();
+        lifecycleHandler = serviceLocator.getViewLifecycleHandler();
     }
 
     function onStop(state) {
@@ -17,11 +17,7 @@ class CGApp extends App.AppBase {
     }
 
     function getInitialView() {
-        var view = new GeneratorView(
-            registry.getGeneratorController(), 
-            registry.getViewLifecycleHandler(),
-            registry.getDateTimeFormatter()
-        );
+        var view = new GeneratorView(serviceLocator);
         return [view, new GeneratorDelegate(view)];
     }
 }

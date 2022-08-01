@@ -21,6 +21,8 @@
     <string id="settings_hex_len">Hexadecimal length</string>
 
     <string id="menu_title_results_history">Results</string>
+    
+    <string id="dialog_title_clear_history">Clear history?</string>
 
     <string id="error_general">Something went wrong</string>
     <string id="error_invalid_generator_arguments">Invalid generator arguments</string>

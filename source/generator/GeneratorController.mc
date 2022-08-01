@@ -99,6 +99,10 @@ class GeneratorController {
         return mappedHistory;
     }
 
+    function clearHistory() {
+        generatorStore.clearHistory();
+    }
+
     class GeneratorMode {
         private const DEFAULT_GENERATOR_MODE = Gen.GENERATOR_NUM_FIXED;
         private var generatorModes = [

@@ -16,6 +16,8 @@ class GeneratorView extends BaseView {
     private var buttonIndicatorDrawer as ButtonIndicatorDrawer;
     private var recentResultView as GeneratorRecentResultView;
 
+    private var serviceLocator;
+
     private var generatorController as GeneratorController;
 
     private var timeFormatter;
@@ -26,10 +28,11 @@ class GeneratorView extends BaseView {
     private const BUTTON_INDICATOR_ANGLE_UP = 180;
     private const BUTTON_INDICATOR_ANGLE_DOWN = 210;
 
-    function initialize(generatorController, lifecycleHandler, timeFormatter) {
-		BaseView.initialize(lifecycleHandler);
-        me.generatorController = generatorController;
-        me.timeFormatter = timeFormatter;
+    function initialize(serviceLocator) {
+		BaseView.initialize(serviceLocator.getViewLifecycleHandler());
+        me.serviceLocator = serviceLocator;
+        me.generatorController = serviceLocator.getGeneratorController();
+        me.timeFormatter = serviceLocator.getDateTimeFormatter();
 	}
 
     function onLayout(dc) {
@@ -42,7 +45,6 @@ class GeneratorView extends BaseView {
         recentResultView = View.findDrawableById("generator_recent_result");
         generatorController.loadSettings();
         generatorController.setOnHistoryUpdate(method(:onHistoryUpdate));
-        generatorController.loadHistory();
 
         updateMode(generatorController.getCurrentMode(), SlidableView.SLIDE_NONE);
     }
@@ -61,13 +63,18 @@ class GeneratorView extends BaseView {
             System.println("Unknown generator error occured");
             messageId = Rez.Strings.error_generator_general;
         }
-        var alert = new Alert(lifecycleHandler,  {:text => Application.loadResource(messageId)});
+        var alert = new Alert(serviceLocator,  {:text => Application.loadResource(messageId)});
         alert.pushView();
     }
 
     function onUpdate(dc) {
         View.onUpdate(dc);
         drawButtonIndicators(dc);
+    }
+    
+    function onShow() {
+        BaseView.onShow();
+        generatorController.loadHistory();
     }
 
     private function drawButtonIndicators(dc) {
@@ -126,7 +133,7 @@ class GeneratorView extends BaseView {
         System.println("Unable to swtich generator mode: " + argText);
 
         var alert = new Alert(
-            lifecycleHandler,
+            serviceLocator,
             { :text => Application.loadResource(Rez.Strings.error_mode_switch_general) }
         );
         alert.pushView();
@@ -160,7 +167,7 @@ class GeneratorView extends BaseView {
                 )
             );
         }
-        BaseView.showMenu(menu, new HistoryMenuInputdelegate(), Ui.SLIDE_IMMEDIATE);
+        BaseView.showMenu(menu, new HistoryMenuInputdelegate(serviceLocator), Ui.SLIDE_IMMEDIATE);
         return true;
     }
 
