@@ -1,0 +1,11 @@
+<layout id="about">
+    <text-area
+        id="about_text"
+        y="center"
+        x="center"
+        justification="Gfx.TEXT_JUSTIFY_CENTER | Gfx.TEXT_JUSTIFY_VCENTER"
+        font="Graphics.FONT_XTINY"
+        width="80%"
+        height="fill"
+    />
+</layout>

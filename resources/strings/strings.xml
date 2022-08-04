@@ -1,5 +1,6 @@
 <strings>
     <string id="app_name">Classic Generator</string>
+    <string id="app_version">0.0.1</string>
 
     <string id="gen_title_num">Numeric</string>
     <string id="gen_title_alphanum">Alphanumeric</string>
@@ -28,4 +29,6 @@
     <string id="error_invalid_generator_arguments">Invalid generator arguments</string>
     <string id="error_generator_general">Unkown generator error</string>
     <string id="error_mode_switch_general">Unable to switch mode</string>
+
+    <string id="about_text_template">$1$\nVersion: $2$\n© 2022 Victor K\nhi@venko.me</string>
 </strings>
