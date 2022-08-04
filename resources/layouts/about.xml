@@ -8,4 +8,5 @@
         width="80%"
         height="fill"
     />
+    <bitmap id="logo" x="center" y="7%" filename="../drawables/launcher_icon.png" />
 </layout>
