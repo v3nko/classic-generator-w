@@ -4,7 +4,7 @@ using Toybox.Graphics as Gfx;
 class AboutView extends BaseView {
     
     function initialize(serviceLocator) {
-        BaseView.initialize(serviceLocator.getViewLifecycleHandler());
+        BaseView.initialize();
     }
 
     function onLayout(dc) {

@@ -58,7 +58,7 @@ class Alert extends BaseView {
     hidden var height;
 
     function initialize(serviceLocator, params) {
-        BaseView.initialize(serviceLocator.getViewLifecycleHandler());
+        BaseView.initialize();
 
         text = params.get(:text);
         if (text == null) {

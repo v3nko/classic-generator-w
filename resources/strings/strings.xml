@@ -31,4 +31,7 @@
     <string id="error_mode_switch_general">Unable to switch mode</string>
 
     <string id="about_text_template">$1$\nVersion: $2$\n© 2022 Victor K\nhi@venko.me</string>
+
+    <string id="menu_main_history">Results</string>
+    <string id="menu_main_about">About</string>
 </strings>

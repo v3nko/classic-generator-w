@@ -1,0 +1,4 @@
+<menu2 id="main" title="@Strings.app_name">
+    <menu-item id="history" label="@Strings.menu_main_history"></menu-item>
+    <menu-item id="about" label="@Strings.menu_main_about"></menu-item>
+</menu2>

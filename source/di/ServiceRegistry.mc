@@ -28,15 +28,6 @@ module Di {
             return new GeneratorController(getGenerator(), getSettingsStore(), getGeneratorStore());
         }
 
-        function getViewLifecycleHandler() {
-            var handler = container.get(KEY_VIEW_LIFECYCLE_HANDLER);
-            if (handler == null) {
-                handler = new ViewLifecycleHandler();
-                container.put(KEY_VIEW_LIFECYCLE_HANDLER, handler);
-            }
-            return handler;
-        }
-
         function getDateTimeFormatter() {
             return new DateTimerFormatter();
         }

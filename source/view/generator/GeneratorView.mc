@@ -20,8 +20,6 @@ class GeneratorView extends BaseView {
 
     private var generatorController as GeneratorController;
 
-    private var timeFormatter;
-    
     private const BUTTON_INDICATOR_WIDTH = 12;
     private const BUTTON_INDICATOR_THIKNESS = 4;
     private const BUTTON_INDICATOR_ANGLE_START = 30;
@@ -29,10 +27,9 @@ class GeneratorView extends BaseView {
     private const BUTTON_INDICATOR_ANGLE_DOWN = 210;
 
     function initialize(serviceLocator) {
-		BaseView.initialize(serviceLocator.getViewLifecycleHandler());
+		BaseView.initialize();
         me.serviceLocator = serviceLocator;
         me.generatorController = serviceLocator.getGeneratorController();
-        me.timeFormatter = serviceLocator.getDateTimeFormatter();
 	}
 
     function onLayout(dc) {
@@ -146,45 +143,8 @@ class GeneratorView extends BaseView {
 
 
     function navigateToMenu() {
-        var menu = new Ui.Menu2({ :title => Rez.Strings.menu_title_results_history });
-        var history = generatorController.getHistory();
-        for (var i = 0; i < history.size(); i++) {
-            var record = history[i];
-            menu.addItem(
-                new Ui.MenuItem(
-                    Lang.format("$1$ | $2$", [resolveTextIndicator(record.type), record.data]),
-                    timeFormatter.formatDateTimeNumeric(record.time),
-                    null,
-                    null
-                )
-            );
-        }
-        BaseView.showMenu(menu, new HistoryMenuInputdelegate(serviceLocator), Ui.SLIDE_IMMEDIATE);
+        Ui.pushView(new Rez.Menus.main(), new MainMenuDelegate(serviceLocator), Ui.SLIDE_IMMEDIATE);
         return true;
-    }
-
-    private function resolveTextIndicator(generatorMode as Gen.GeneratorType) {
-        var indicator;
-        switch (generatorMode) {
-            case Gen.GENERATOR_NUM:
-                indicator = Rez.Strings.gen_title_num_short;
-                break;
-            case Gen.GENERATOR_RANGE:
-                indicator = Rez.Strings.gen_title_num_range_short;
-                break;
-            case Gen.GENERATOR_NUM_FIXED:
-                indicator = Rez.Strings.gen_title_num_fixed_short;
-                break;
-            case Gen.GENERATOR_ALPHANUM:
-                indicator = Rez.Strings.gen_title_alphanum_short;
-                break;
-            case Gen.GENARATOR_HEX:
-                indicator = Rez.Strings.gen_title_hex_short;
-                break;
-            default:
-                indicator = Rez.Strings.gen_title_unknown_short;
-        }
-        return Application.loadResource(indicator);
     }
 
     class ButtonIndicatorDrawer {
