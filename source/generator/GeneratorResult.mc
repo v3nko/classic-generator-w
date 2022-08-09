@@ -15,4 +15,21 @@ class GeneratorResult {
             [type, time.value(), data]
         );
     }
+
+    function equals(other) {
+        if (other == null) {
+            return false;
+        }
+        if (other instanceof GeneratorResult) {
+            return data.equals(other.data) && 
+                type.equals(other.type) && 
+                time.compare(other.time) == 0;
+        } else {
+            return false;
+        }
+    }
+
+    function hashCode() {
+        return data.hashCode() ^ type.hashCode() ^ time.value().hashCode();
+    }
 }

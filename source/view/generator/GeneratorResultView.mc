@@ -8,6 +8,7 @@ class GeneratorResultView extends SlidableView {
 
     private var generatorValueFont;
     private var valueHeight;
+    private var currentResult;
 
     function initialize(params as Dictionary) {
         var horizontalBias = params.get(:horizontalBias);
@@ -26,6 +27,10 @@ class GeneratorResultView extends SlidableView {
     }
 
     function pushResult(result as GeneratorResult) {
+        if (currentResult != null && currentResult.equals(result)) {
+            return;
+        }
+        currentResult = result;
         if (result != null) {
             pushDrawable(
                 new Ui.Text(

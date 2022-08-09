@@ -8,6 +8,7 @@ class GeneratorRecentResultView extends SlidableView {
     private const RESULT_FONT = Gfx.FONT_TINY;
 
     private var resultHeight;
+    private var currentResult;
 
     function initialize(params as Dictionary) {
         var horizontalBias = params.get(:horizontalBias);
@@ -23,6 +24,10 @@ class GeneratorRecentResultView extends SlidableView {
     }
 
     function pushRecentResult(result as GeneratorResult) {
+        if (currentResult != null && currentResult.equals(result)) {
+            return;
+        }
+        currentResult = result;
         if (result != null) {
             var resultText = new Ui.Text(
                 {
