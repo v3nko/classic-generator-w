@@ -78,9 +78,12 @@ module UniTimer {
                     if (entry.getRepeat()) {
                         entry.incrementNextTick();
                     } else {
-                        expiredTimers.add(scheduledTimers.keys()[i]);
                         expired = true;
                     }
+                }
+
+                if (expired) {
+                    expiredTimers.add(ongoingTimerKeys[i]);
                 }
             }
             for (var i = 0; i < expiredTimers.size(); i++) {
