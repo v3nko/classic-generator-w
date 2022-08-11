@@ -2,25 +2,31 @@ using Toybox.Graphics as Gfx;
 using Toybox.WatchUi as Ui;
 using UniTimer;
 
-class AlertDelegate extends Ui.InputDelegate {
+class AlertDelegate extends Ui.BehaviorDelegate {
     hidden var view;
 
     function initialize(view) {
-        InputDelegate.initialize();
+        BehaviorDelegate.initialize();
         self.view = view;
     }
 
-    function onKey(evt) {
-        switch(evt.getKey()) {
-            case Ui.KEY_UP:
-                view.scrollUp();
-                break;
-            case Ui.KEY_DOWN:
-                view.scrollDown();
-                break;
-            default:
-                view.dismiss();
-        }
+    function onNextPage() {
+        view.scrollDown();
+        return true;
+    }
+
+    function onPreviousPage() {
+        view.scrollUp();
+        return;
+    }
+
+    function onSelect() {
+        view.dismiss();
+        return true;
+    }
+
+    function onBack() {
+        view.dismiss();
         return true;
     }
 
@@ -41,16 +47,19 @@ class Alert extends BaseView {
     private const VERTICAL_OFFSET_PERCENT = 0.12;
     private const PADDING_BOTTOM = 10;
     private var timerKey = "altert_" + hashCode();
+    private var autoScrollDelayKey = "auto_scroll_delay_" + hashCode();
 
     hidden var paddingTop;
 
-    hidden var timer;
+    hidden var timer = UniTimer.getTimer();
     hidden var timeout;
     hidden var text;
     hidden var font;
     hidden var textColor;
     hidden var backgroundColor;
     hidden var strokeColor;
+    hidden var autoScrollEnabled;
+    hidden var autoScrollDelay;
 
     hidden var textArea;
 
@@ -88,7 +97,14 @@ class Alert extends BaseView {
         timeout = params.get(:timeout);
         if (timeout == null) {
             timeout = TIMEOUT_DEFAULT;
-            timer = UniTimer.getTimer();
+        }
+
+        autoScrollEnabled = params.get(:autoScrollEnabled);
+        autoScrollDelay = params.get(:autoScrollDelay);
+        if (autoScrollEnabled && autoScrollDelay != null) {
+            startAutoScrollTimer();
+        } else {
+            autoScrollEnabled = false;
         }
     }
 
@@ -125,19 +141,28 @@ class Alert extends BaseView {
     }
 
     private function resetDismissTimer() {
-        if (timer != null) {
-            timer.stop(timerKey);
+        timer.stop(timerKey);
+        if (!autoScrollEnabled) {
             timer.start(timerKey, method(:dismiss), timeout, false);
         }
     }
 
     private function stopDismissTimer() {
-        if (timer != null) {
-            timer.stop(timerKey);
-        }
+        timer.stop(timerKey);
+    }
+
+    private function startAutoScrollTimer() {
+        timer.start(autoScrollDelayKey, method(:startAutoScroll), autoScrollDelay, false);
+    }
+    
+    function startAutoScroll() {
+        textArea.requestAutoScroll();
     }
 
     function onScrollEnd() {
+        if (autoScrollEnabled) {
+            autoScrollEnabled = false;
+        }
         resetDismissTimer();
     }
 
@@ -152,6 +177,7 @@ class Alert extends BaseView {
     }
 
     function dismiss() {
+        textArea.reset();
         Ui.popView(Ui.SLIDE_UP);
     }
 
@@ -168,6 +194,7 @@ class Alert extends BaseView {
 	}
 
     private function handleScrollAction(activated) {
+        timer.stop(autoScrollDelayKey);
         if (activated) {
             stopDismissTimer();
         } else {
