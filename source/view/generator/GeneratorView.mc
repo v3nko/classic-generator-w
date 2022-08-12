@@ -8,8 +8,8 @@ class GeneratorView extends BaseView {
 
     // General positioning values
 
-	private var centerX;
-	private var centerY;
+    private var centerX;
+    private var centerY;
 
     private var resultView as GeneratorResultView;
     private var modeView as GeneratorModeView;
@@ -27,15 +27,15 @@ class GeneratorView extends BaseView {
     private const BUTTON_INDICATOR_ANGLE_DOWN = 210;
 
     function initialize(serviceLocator) {
-		BaseView.initialize();
+        BaseView.initialize();
         me.serviceLocator = serviceLocator;
         me.generatorController = serviceLocator.getGeneratorController();
-	}
+    }
 
     function onLayout(dc) {
         View.setLayout(Rez.Layouts.generator(dc));
-		centerX = dc.getWidth() / 2;
-		centerY = dc.getHeight() / 2;
+        centerX = dc.getWidth() / 2;
+        centerY = dc.getHeight() / 2;
         resultView = View.findDrawableById("generator_result");
         modeView = View.findDrawableById("generator_mode");
         buttonIndicatorDrawer = new ButtonIndicatorDrawer(centerX, centerY);
@@ -149,7 +149,7 @@ class GeneratorView extends BaseView {
 
     class ButtonIndicatorDrawer {
         private var centerX;
-	    private var centerY;
+        private var centerY;
 
         function initialize(centerX, centerY) {
             me.centerX = centerX;

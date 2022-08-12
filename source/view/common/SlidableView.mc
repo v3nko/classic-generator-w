@@ -11,8 +11,8 @@ class SlidableView extends Ui.Drawable {
 
     // General positioning values
 
-	private var centerX;
-	private var centerY;
+    private var centerX;
+    private var centerY;
     private var currentDrawablePositionY;
     private var drawableHeight;
 

@@ -1,9 +1,9 @@
 <drawables>
-	<bitmap id="LauncherIcon" filename="launcher_icon.png" />
-	<bitmap id="ic_num" filename="ic_num.png" />
-	<bitmap id="ic_range" filename="ic_range.png" />
-	<bitmap id="ic_num_fixed" filename="ic_num_fixed.png" />
-	<bitmap id="ic_hex" filename="ic_hex.png" />
-	<bitmap id="ic_alphanum" filename="ic_alphanum.png" />
-	<bitmap id="ic_unknown" filename="ic_unknown.png" />
+    <bitmap id="LauncherIcon" filename="launcher_icon.png" />
+    <bitmap id="ic_num" filename="ic_num.png" />
+    <bitmap id="ic_range" filename="ic_range.png" />
+    <bitmap id="ic_num_fixed" filename="ic_num_fixed.png" />
+    <bitmap id="ic_hex" filename="ic_hex.png" />
+    <bitmap id="ic_alphanum" filename="ic_alphanum.png" />
+    <bitmap id="ic_unknown" filename="ic_unknown.png" />
 </drawables>

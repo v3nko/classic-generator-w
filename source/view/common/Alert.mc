@@ -44,8 +44,11 @@ class Alert extends BaseView {
     private const TEXT_COLOR_DEFAULT = Gfx.COLOR_WHITE;
     private const BG_COLOR_DEFAULT = Gfx.COLOR_BLACK;
     private const STROKE_COLOR_DEFAULT = TEXT_COLOR_DEFAULT;
+    private const AUTO_SCROLL_ENABLED_DEFAULT = false;
+    private const MANUAL_SCROLL_ENABLED_DEFAULT = true;
     private const VERTICAL_OFFSET_PERCENT = 0.12;
     private const PADDING_BOTTOM = 10;
+    
     private var timerKey = "altert_" + hashCode();
     private var autoScrollDelayKey = "auto_scroll_delay_" + hashCode();
 
@@ -60,6 +63,7 @@ class Alert extends BaseView {
     hidden var strokeColor;
     hidden var autoScrollEnabled;
     hidden var autoScrollDelay;
+    hidden var manualScrollEnabled;
 
     hidden var textArea;
 
@@ -104,7 +108,12 @@ class Alert extends BaseView {
         if (autoScrollEnabled && autoScrollDelay != null) {
             startAutoScrollTimer();
         } else {
-            autoScrollEnabled = false;
+            autoScrollEnabled = AUTO_SCROLL_ENABLED_DEFAULT;
+        }
+
+        manualScrollEnabled = params.get(:manualScrollEnabled);
+        if (manualScrollEnabled == null) {
+            manualScrollEnabled = MANUAL_SCROLL_ENABLED_DEFAULT;
         }
     }
 
@@ -135,8 +144,8 @@ class Alert extends BaseView {
         textArea.setText(text);
         textArea.setOnScrollEnd(method(:onScrollEnd));
         var settings = System.getDeviceSettings();
-		me.width = settings.screenWidth;
-		me.height = settings.screenHeight;
+        me.width = settings.screenWidth;
+        me.height = settings.screenHeight;
         textArea.width = me.width;
     }
 
@@ -186,12 +195,16 @@ class Alert extends BaseView {
     }
 
     public function scrollDown() {
-        handleScrollAction(textArea.scrollDown());
-	}
+        if (manualScrollEnabled) {
+            handleScrollAction(textArea.scrollDown());
+        }
+    }
 
-	public function scrollUp() {
-		handleScrollAction(textArea.scrollUp());
-	}
+    public function scrollUp() {
+        if (manualScrollEnabled) {
+            handleScrollAction(textArea.scrollUp());
+        }
+    }
 
     private function handleScrollAction(activated) {
         timer.stop(autoScrollDelayKey);
