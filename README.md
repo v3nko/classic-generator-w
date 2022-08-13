@@ -64,6 +64,16 @@ timer.isActive("timer-key"); // Unique timer identifier
 
 UniTimer minimum delay is limited by the same value as the system timer (50 ms in most cases). This limitation may decrease precision if multiple timers use a minimum or close to minimum delay values and/or the timer ticks fall into this time window.
 
+### [Alert](source/view/common/Alert.mc)
+
+Simple alert dialog for displaying information, warning, or error messages. Supports multiline text that exceeds screen viewport. Can be scrolled manually or/and automatically. Alert view wraps the text with consideration of device shape. On the round device screen, the alert view will wrap text to fit into a visible viewport. Supports configurable displaying timeout.
+
+Example:
+
+Short text | Long text |
+------- | ------- |
+![Short text](screenshots/cg-alert-text-short.png) | ![Long text](screenshots/cg-alert-text-long.png)
+
 ## License
 
 [Mozilla Public License Version 2.0](/LICENSE)
