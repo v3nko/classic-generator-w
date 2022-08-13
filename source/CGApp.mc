@@ -1,24 +1,16 @@
 using Toybox.Application as App;
-using Toybox.Timer as Timer;
 using Di;
 
 class CGApp extends App.AppBase {
+    private var serviceLocator;
+
     function initialize() {
         AppBase.initialize();
-    }
-    
-    function onStart(state) {
-        
-    }
-
-    function onStop(state) {
-
+        serviceLocator = Di.provideServiceRegistry();
     }
 
     function getInitialView() {
-        var registry = Di.provideServiceRegistry();
-
-        var view = new GeneratorView(registry.getGeneratorController());
+        var view = new GeneratorView(serviceLocator);
         return [view, new GeneratorDelegate(view)];
     }
 }

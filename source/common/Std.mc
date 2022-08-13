@@ -41,3 +41,28 @@ class Error {
         return me;
     }
 }
+
+function splitFirst(src, delimiter, segmentsLimit) {
+    var tokens = [];
+    var segment = src.find(delimiter);
+    while (segment != null && tokens.size() < segmentsLimit) {
+        var token = src.substring(0, segment);
+        tokens.add(token);
+        src = src.substring(segment + delimiter.length(), src.length());
+        segment = src.find(delimiter);
+    }
+    tokens.add(src);
+    return tokens;
+}
+
+function split(src, delimiter) {
+    splitFirst(src, delimiter, src.length());
+}
+
+function getOrNull(array as Array, index as Number) {
+    if (array.size() > index) {
+        return array[index];
+    } else {
+        return null;
+    }
+}

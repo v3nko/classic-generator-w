@@ -1,0 +1,25 @@
+<settings>
+    <setting propertyKey="@Properties.num_max" title="@Strings.settings_num_max">        
+        <settingConfig type="numeric" required="true" min="1" max="999999" />        
+    </setting>
+    
+    <setting propertyKey="@Properties.range_min" title="@Strings.settings_range_min">        
+        <settingConfig type="numeric" required="true" min="-999999" max="999999" />        
+    </setting>
+    
+    <setting propertyKey="@Properties.range_max" title="@Strings.settings_range_max">        
+        <settingConfig type="numeric" required="true" min="-999999" max="999999" />        
+    </setting>
+    
+    <setting propertyKey="@Properties.num_fixed_len" title="@Strings.settings_num_fixed_len">        
+        <settingConfig type="numeric" required="true" min="1" max="6" />        
+    </setting>
+
+    <setting propertyKey="@Properties.alphanum_len" title="@Strings.settings_alphanum_len">        
+        <settingConfig type="numeric" required="true" min="1" max="6" />        
+    </setting>
+    
+    <setting propertyKey="@Properties.hex_len" title="@Strings.settings_hex_len">        
+        <settingConfig type="numeric" required="true" min="1" max="6" />        
+    </setting>
+</settings>

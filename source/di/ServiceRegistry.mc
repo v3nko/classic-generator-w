@@ -4,6 +4,10 @@ module Di {
 
     class ServiceRegistry {
 
+        private const KEY_VIEW_LIFECYCLE_HANDLER = "view_lifecycle_handler";
+
+        var container = {};
+
         function getGeneratorOptionsValidator() {
             return new GeneratorOptionsValidator();
         }
@@ -16,8 +20,16 @@ module Di {
             return new SettingsStore();
         }
 
+        function getGeneratorStore() {
+            return new GeneratorStore();
+        }
+
         function getGeneratorController() {
-            return new GeneratorController(getGenerator(), getSettingsStore());
+            return new GeneratorController(getGenerator(), getSettingsStore(), getGeneratorStore());
+        }
+
+        function getDateTimeFormatter() {
+            return new DateTimerFormatter();
         }
     }
 

@@ -1,0 +1,8 @@
+<properties>
+    <property id="num_max" type="number">100</property>
+    <property id="range_min" type="number">0</property>
+    <property id="range_max" type="number">100</property>
+    <property id="num_fixed_len" type="number">2</property>
+    <property id="alphanum_len" type="number">2</property>
+    <property id="hex_len" type="number">2</property>
+</properties>

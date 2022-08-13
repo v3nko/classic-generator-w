@@ -1,73 +1,77 @@
 using Toybox.WatchUi as Ui;
 using Toybox.Graphics as Gfx;
 using Toybox.System as System;
-using Toybox.Timer;
 using Generator as Gen;
+using Di;
 
-class GeneratorView extends Ui.View {
+class GeneratorView extends BaseView {
 
     // General positioning values
 
-	private var centerX;
-	private var centerY;
+    private var centerX;
+    private var centerY;
 
-    private var generatorResultView as GeneratorResultView;
-    private var generatorModeView as GeneratorModeView;
+    private var resultView as GeneratorResultView;
+    private var modeView as GeneratorModeView;
     private var buttonIndicatorDrawer as ButtonIndicatorDrawer;
+    private var recentResultView as GeneratorRecentResultView;
+
+    private var serviceLocator;
 
     private var generatorController as GeneratorController;
-    
-    private const MODE_POSITION_FACTOR = 0.16;
+
     private const BUTTON_INDICATOR_WIDTH = 12;
     private const BUTTON_INDICATOR_THIKNESS = 4;
     private const BUTTON_INDICATOR_ANGLE_START = 30;
     private const BUTTON_INDICATOR_ANGLE_UP = 180;
     private const BUTTON_INDICATOR_ANGLE_DOWN = 210;
 
-    function initialize(generatorController) {
-		View.initialize();
-        me.generatorController = generatorController;
-	}
+    function initialize(serviceLocator) {
+        BaseView.initialize();
+        me.serviceLocator = serviceLocator;
+        me.generatorController = serviceLocator.getGeneratorController();
+    }
 
     function onLayout(dc) {
-		centerX = dc.getWidth() / 2;
-		centerY = dc.getHeight() / 2;
-        generatorResultView = new GeneratorResultView(centerX, centerY);
-        var modePositionY = dc.getHeight() * MODE_POSITION_FACTOR;
-        generatorModeView = new GeneratorModeView(centerX, modePositionY);
+        View.setLayout(Rez.Layouts.generator(dc));
+        centerX = dc.getWidth() / 2;
+        centerY = dc.getHeight() / 2;
+        resultView = View.findDrawableById("generator_result");
+        modeView = View.findDrawableById("generator_mode");
         buttonIndicatorDrawer = new ButtonIndicatorDrawer(centerX, centerY);
+        recentResultView = View.findDrawableById("generator_recent_result");
         generatorController.loadSettings();
+        generatorController.setOnHistoryUpdate(method(:onHistoryUpdate));
 
         updateMode(generatorController.getCurrentMode(), SlidableView.SLIDE_NONE);
-
-        generateNewValue();
     }
 
     function generateNewValue() {
         generatorController.generate()
-            .onSuccess(method(:updateResult))
             .onError(method(:handleGenerationError));
     }
 
-    function updateResult(result) {
-        generatorResultView.pushNewResult(result);
-    }
-
     function handleGenerationError(arg) {
-        generatorResultView.shake();
+        var messageId;
         if (arg instanceof Gen.InvalidArgumentError) {
             System.println("Generator error occured: " + arg.reason);
+            messageId = Rez.Strings.error_invalid_generator_arguments;
         } else {
             System.println("Unknown generator error occured");
+            messageId = Rez.Strings.error_generator_general;
         }
+        var alert = new Alert(serviceLocator,  {:text => Application.loadResource(messageId)});
+        alert.pushView();
     }
 
     function onUpdate(dc) {
-        dc.setColor(Gfx.COLOR_TRANSPARENT, Gfx.COLOR_BLACK);
-        dc.clear();
-        generatorResultView.onUpdate(dc);
-        generatorModeView.onUpdate(dc);
+        View.onUpdate(dc);
         drawButtonIndicators(dc);
+    }
+    
+    function onShow() {
+        BaseView.onShow();
+        generatorController.loadHistory();
     }
 
     private function drawButtonIndicators(dc) {
@@ -115,29 +119,37 @@ class GeneratorView extends Ui.View {
     }
 
     private function updateMode(generatorMode as Gen.GeneratorType, animation as PushAnimation) {
-        generatorModeView.pushNewMode(generatorMode, animation);
+        modeView.pushMode(generatorMode, animation);
     }
 
     function handleModeSwitchError(arg) {
-        generatorModeView.shake();
         var argText = "null";
         if (arg != null) {
             argText = arg.toString();
         }
         System.println("Unable to swtich generator mode: " + argText);
+
+        var alert = new Alert(
+            serviceLocator,
+            { :text => Application.loadResource(Rez.Strings.error_mode_switch_general) }
+        );
+        alert.pushView();
     }
 
-	function onShow() {
-        // no-op
-	}
+    function onHistoryUpdate(resultHistory) {
+        resultView.pushResult(getOrNull(resultHistory, 0));
+        recentResultView.pushRecentResult(getOrNull(resultHistory, 1));
+    }
 
-    function onHide() {
-        // no-op
-	}
+
+    function navigateToMenu() {
+        Ui.pushView(new Rez.Menus.main(), new MainMenuDelegate(serviceLocator), Ui.SLIDE_IMMEDIATE);
+        return true;
+    }
 
     class ButtonIndicatorDrawer {
         private var centerX;
-	    private var centerY;
+        private var centerY;
 
         function initialize(centerX, centerY) {
             me.centerX = centerX;
