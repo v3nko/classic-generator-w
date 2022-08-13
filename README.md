@@ -29,6 +29,41 @@ App contains custom `SlidableView` view with a couple animation modes:
 
 Slide animation is used for generator mode switching and generated result reveal. Shake animation is used for mode switching and generation errors indication.
 
+## Concepts
+
+The project introduces multiple concepts that may be useful for Connect IQ app development.
+
+### [UniTimer](source/common/UniTimer.mc)
+
+Unified Timer. Performs multiple timers orchestration to make timer usage unified across the app without the need to worry about the OS limit for 3 timers. The timer instance is intended to be used as a singleton. UniTimer allows launching repeatable as well as non-repeatable timers. Each timer should be identified with a unique key. Uses single `Toybox.Timer` instance. Behavior is the same as the `Toybox.Timer`.
+
+#### Start timer
+
+```monkey-c
+timer.start(
+    "timer-key", // Unique timer identifier
+    method(:onTimerTick), // Timer tick callback
+    750, // Timer tick delay, ms
+    true // Repeat (true | false)
+);
+```
+
+#### Stop timer
+
+```monkey-c
+timer.stop("timer-key"); // Unique timer identifier
+```
+
+#### Check if timer is active
+
+```monkey-c
+timer.isActive("timer-key"); // Unique timer identifier
+```
+
+#### Limitations
+
+UniTimer minimum delay is limited by the same value as the system timer (50 ms in most cases). This limitation may decrease precision if multiple timers use a minimum or close to minimum delay values and/or the timer ticks fall into this time window.
+
 ## License
 
 [Mozilla Public License Version 2.0](/LICENSE)
