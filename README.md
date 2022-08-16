@@ -66,13 +66,64 @@ UniTimer minimum delay is limited by the same value as the system timer (50 ms i
 
 ### [Alert](source/view/common/Alert.mc)
 
-Simple alert dialog for displaying information, warning, or error messages. Supports multiline text that exceeds screen viewport. Can be scrolled manually or/and automatically. Alert view wraps the text with consideration of device shape. On the round device screen, the alert view will wrap text to fit into a visible viewport. Supports configurable displaying timeout.
+Simple alert dialog for displaying information, warning, or error messages. Supports multiline text that exceeds screen viewport. Can be scrolled manually and/or automatically. Alert view wraps the text with consideration of device screen shape. On the round device screen, the alert view will wrap text to fit into a visible viewport. Supports configurable displaying timeout.
+
+The component is based on [WrapText](https://gitlab.com/harryonline/fortune-quote/-/blob/1e70f80fa07028d6adcf2c39b79c80f0f538db36/source/WrapText.mc) (credits to [Harry Oosterveen](https://gitlab.com/harryonline)). WrapText was refactored in an object-oriented manner and extended to support manual scrolling along with automatic. Some parts were optimized to improve performance and memory efficiency.
 
 Example:
 
 Short text | Long text |
 ------- | ------- |
 ![Short text](screenshots/cg-alert-text-short.png) | ![Long text](screenshots/cg-alert-text-long.png)
+
+#### Usage sample
+
+```monkey-c
+var alert = new Alert(
+    {
+        :text => Application.loadResource(messageId), // Required, message text
+        :font => Gfx.FONT_SYSTEM_TINY, // Optional, message font
+        :textColor => Gfx.COLOR_WHITE, // Optional, message text color
+        :backgroundColor => Gfx.COLOR_BLACK, // Optional, background color
+        :strokeColor => Gfx.COLOR_WHITE, // Optional, bottom stroke color
+        :timeout => 60 * 1000, // Optional, dialog display timeout, ms
+        :autoScrollEnabled => false, // Optional, auto-scrolling enabled
+        :autoScrollDelay => 3 * 1000, // Optional, delay before auto-scrolling starts, ms
+        :manualScrollEnabled => true // Optional, manual scrolling enabled
+    }
+);
+alert.pushView();
+```
+
+#### Manual scrolling
+
+Manual scrolling is enabled by default
+
+```monkey-c
+var alert = new Alert({ :text => Application.loadResource(messageId) });
+alert.pushView();
+```
+
+<!-- markdownlint-disable MD034 -->
+https://user-images.githubusercontent.com/3258374/184990942-65755dfc-b6b4-43a2-a590-7a70b6082644.mp4
+<!-- markdownlint-enable MD034 -->
+
+#### Automatic scrolling
+
+```monkey-c
+var alert = new Alert(
+    {
+        :text => Application.loadResource(messageId),
+        :autoScrollEnabled => true,
+        :autoScrollDelay => 3 * 1000
+    }
+);
+alert.pushView();
+```
+
+<!-- markdownlint-disable MD034 -->
+https://user-images.githubusercontent.com/3258374/184990492-0a16b9b2-97ee-4378-9ed4-f506adb43b36.mp4
+<!-- markdownlint-enable MD034 -->
 
 ## License
 
