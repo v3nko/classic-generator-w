@@ -1,5 +1,5 @@
 <drawables>
-    <bitmap id="LauncherIcon" filename="launcher_icon.png" />
+    <bitmap id="ic_launcher" filename="ic_launcher.png" />
     <bitmap id="ic_num" filename="ic_num.png" />
     <bitmap id="ic_range" filename="ic_range.png" />
     <bitmap id="ic_num_fixed" filename="ic_num_fixed.png" />
