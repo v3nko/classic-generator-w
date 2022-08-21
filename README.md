@@ -97,7 +97,7 @@ alert.pushView();
 
 #### Manual scrolling
 
-Manual scrolling is enabled by default
+Manual scrolling is enabled by default. Scrolling is controlled by up/down buttons.
 
 ```monkey-c
 var alert = new Alert({ :text => Application.loadResource(messageId) });
@@ -109,6 +109,8 @@ https://user-images.githubusercontent.com/3258374/184990942-65755dfc-b6b4-43a2-a
 <!-- markdownlint-enable MD034 -->
 
 #### Automatic scrolling
+
+Activated after a certain configurable delay. When enabled along with manual scrolling, will be canceled by manual scrolling controls. Dialog timeout countdown will start after scrolling completes.
 
 ```monkey-c
 var alert = new Alert(
