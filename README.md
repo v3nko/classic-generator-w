@@ -8,7 +8,9 @@ This app is developed as a playground for applying various interesting technolog
 
 ## Screenshots
 
-![Alphanumeric generator](screenshots/cg-alphanum.png)
+Single result | Latest + recent result | App menu | Results history
+------- | ------- | ------- | ------- |
+![Alphanumeric generator](screenshots/cg-alphanum.png) | ![Range generator](screenshots/cg-range-plus-recent.png) | ![Menu](screenshots/cg-menu.png) | ![History](screenshots/cg-history.png)
 
 ## Features
 
@@ -19,6 +21,8 @@ There are 5 generator modes available:
 * numeric fixed (non-normalized numeric with fixed length)
 * alphanumeric (supports custom symbols)
 * hexadecimal
+
+Generator mode options can be configured using Garmin Connect IQ application.
 
 Controls:
 
