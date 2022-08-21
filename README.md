@@ -28,13 +28,6 @@ Controls:
 
 The last used generator mode and generated results history (limited) are preserved between app launches.
 
-App contains custom `SlidableView` view with a couple animation modes:
-
-* slide (up/down) animation
-* shake animation
-
-Slide animation is used for generator mode switching and generated result reveal. Shake animation is used for mode switching and generation errors indication.
-
 ## Concepts
 
 The project introduces multiple concepts that may be useful for Connect IQ app development.
@@ -132,6 +125,44 @@ alert.pushView();
 <!-- markdownlint-disable MD034 -->
 https://user-images.githubusercontent.com/3258374/184990492-0a16b9b2-97ee-4378-9ed4-f506adb43b36.mp4
 <!-- markdownlint-enable MD034 -->
+
+### [SlidableView](/source/view/common/SlidableView.mc)
+
+Custom view (extends WatchUi.Drawable) that animates transition between any `Drawable` elements.
+
+Supported animations:
+
+* slide (up/down)
+* shake (can be used as error/validation indication)
+
+[`GeneratorResultView`](/source/view/generator/GeneratorResultView.mc), [`GeneratorRecentResultView`](/source/view/generator/GeneratorRecentResultView.mc) and [`GeneratorRecentResultView`](/source/view/generator/GeneratorModeView.mc) are utilizing `SlidableView` functionality to display generator mode, current and recent result changes.
+
+#### Slide animation
+
+Pushing a new drawable object using `pushDrawable` will activate slide animation. If the view is already displaying drawable, a new drawable will "push" it away by sliding out of the visible area.
+
+```monkey-c
+slidableView.pushDrawable(
+    drawable, // Drawable to display
+    SlidableView.SLIDE_DOWN // Animation direction
+);
+```
+
+<!-- markdownlint-disable MD034 -->
+https://user-images.githubusercontent.com/3258374/185804183-0dee181e-c5ea-4715-9742-b461707495c7.mp4
+<!-- markdownlint-enable MD034 -->
+
+#### Shake animation
+
+Can be used as visualized error or validation failure indication.
+
+```monkey-c
+slidableView.shake();
+```
+
+<!-- markdownlint-disable MD034 -->
+https://user-images.githubusercontent.com/3258374/185804439-0255c223-2287-4adf-8e2a-96489f26c3a5.mp4
+<!-- markdownlint-disable MD034 -->
 
 ## License
 
