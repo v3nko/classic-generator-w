@@ -20,7 +20,13 @@ There are 5 generator modes available:
 * alphanumeric (supports custom symbols)
 * hexadecimal
 
-The generator mode can be switched by the "up"/"down" buttons. The "Start" button generates a new value. The last used generator mode is preserved between app launches.
+Controls:
+
+* "up"/"down" (including swipes): switch generator mode
+* "start": generate new value
+* "menu" long press: application menu
+
+The last used generator mode and generated results history (limited) are preserved between app launches.
 
 App contains custom `SlidableView` view with a couple animation modes:
 
