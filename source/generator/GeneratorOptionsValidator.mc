@@ -37,4 +37,8 @@ class GeneratorOptionsValidator {
     private function getLength(value as Integer) as Integer {
         return Math.floor(1 + Math.log(value.abs(), 10));
     }
+
+    function getMaxArgLength() {
+        return MAX_ARG_LENGTH;
+    }
 }
