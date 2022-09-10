@@ -15,6 +15,15 @@ module Generator {
         GENARATOR_HEX
     }
 
+    enum GeneratorOption {
+        NUM_MAX,
+        RANGE_MIN,
+        RANGE_MAX,
+        NUM_FIXED_LEN,
+        ALPHANUM_LEN,
+        HEX_LEN
+    }
+
     class RandomGenerator {
 
         private const CHARS = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
