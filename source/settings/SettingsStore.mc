@@ -42,4 +42,28 @@ class SettingsStore {
     function getHexLen() as Integer {
         return Properties.getValue(KEY_HEX_LEN);
     }
+
+    function saveNumMax(value as Integer) as Integer {
+        return Properties.setValue(KEY_NUM_MAX, value);
+    }
+
+    function saveRangeMin(value as Integer) as Integer {
+        return Properties.setValue(KEY_RANGE_MIN, value);
+    }
+
+    function saveRangeMax(value as Integer) as Integer {
+        return Properties.setValue(KEY_RANGE_MAX, value);
+    }
+
+    function saveNumFixedLen(value as Integer) as Integer {
+        return Properties.setValue(KEY_NUM_FIXED_LEN, value);
+    }
+
+    function saveAlphanumLen(value as Integer) as Integer {
+        return Properties.setValue(KEY_ALPHANUM_LEN, value);
+    }
+
+    function saveHexLen(value as Integer) as Integer {
+        return Properties.setValue(KEY_HEX_LEN, value);
+    }
 }

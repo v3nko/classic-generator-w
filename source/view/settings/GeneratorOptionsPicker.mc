@@ -8,14 +8,14 @@ class GeneratorOptionsPicker extends Ui.Picker {
     private const sign = "-";
 
     private var serviceLocator;
-    private var validator;
+    private var settingsController;
 
     hidden var option;
     hidden var title;
 
     public function initialize(serviceLocator, params) {
         me.serviceLocator = serviceLocator;
-        validator = serviceLocator.getGeneratorOptionsValidator();
+        settingsController = serviceLocator.getSettingsController();
         option = params.get(:option);
 
         title = new Ui.Text(
@@ -42,7 +42,7 @@ class GeneratorOptionsPicker extends Ui.Picker {
                 break;
             case Gen.RANGE_MIN:
             case Gen.RANGE_MAX:
-                for (var i = 0; i < validator.getMaxArgLength() + 1; i++) {
+                for (var i = 0; i < settingsController.getMaxArgLength() + 1; i++) {
                     factories.add(new CharacterFactory(valueSet + sign));
                 }
                 break;
@@ -65,6 +65,24 @@ class GeneratorOptionsPicker extends Ui.Picker {
     public function setTitle(titleText) {
         title.setText(titleText);
     }
+
+    function onAccept(value) {
+        switch (option) {
+            case Gen.NUM_MAX:
+                break;
+            case Gen.RANGE_MIN:
+                settingsController.saveRangeMin(value);
+                break;
+            case Gen.RANGE_MAX:
+                settingsController.saveRangeMax(value);
+                break;
+            case Gen.NUM_FIXED_LEN:
+            case Gen.ALPHANUM_LEN:
+            case Gen.HEX_LEN:
+                break;
+        }
+        Ui.popView(Ui.SLIDE_IMMEDIATE);
+    }
 }
 
 class GeneratorOptionsPickerDelegate extends Ui.PickerDelegate {
@@ -78,7 +96,7 @@ class GeneratorOptionsPickerDelegate extends Ui.PickerDelegate {
     }
 
     public function onCancel() as Boolean {
-        WatchUi.popView(WatchUi.SLIDE_IMMEDIATE);
+        Ui.popView(WatchUi.SLIDE_IMMEDIATE);
         return true;
     }
 
@@ -91,10 +109,10 @@ class GeneratorOptionsPickerDelegate extends Ui.PickerDelegate {
         try {
             value = argValue.toNumber();
         } catch(e) {
-            System.println("Unable to parse picke value: " + e);
+            System.println("Unable to parse picker value: " + e);
         }
         if (value != null) {
-            picker.setTitle(value.toString());
+            picker.onAccept(value);
             return true;
         } else {
             var alert = new Alert(

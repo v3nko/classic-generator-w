@@ -31,6 +31,10 @@ module Di {
         function getDateTimeFormatter() {
             return new DateTimerFormatter();
         }
+
+        function getSettingsController() {
+            return new SettingsController(getSettingsStore(), getGeneratorOptionsValidator());
+        }
     }
 
     var registry;
