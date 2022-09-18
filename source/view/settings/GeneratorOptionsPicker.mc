@@ -3,9 +3,11 @@ using Toybox.Lang;
 using Generator as Gen;
 
 class GeneratorOptionsPicker extends Ui.Picker {
-    private const valueSet = "0123456789";
-    private const lenSet = "123456";
-    private const sign = "+-";
+    private const VALUE_SET = "0123456789";
+    private const LEN_SET = "123456";
+    private const SIGN_POSITIVE = '+';
+    private const SIGN_NEGATIVE = '-';
+    private const SIGN_SET = SIGN_POSITIVE + SIGN_NEGATIVE;
 
     private var serviceLocator;
     private var settingsController;
@@ -30,7 +32,8 @@ class GeneratorOptionsPicker extends Ui.Picker {
         Picker.initialize(
             { 
                 :title => title,
-                :pattern => getPickerFactories()
+                :pattern => getPickerFactories(),
+                :defaults => getDefaultPickerValues()
             }
         );
     }
@@ -42,9 +45,9 @@ class GeneratorOptionsPicker extends Ui.Picker {
                 break;
             case Gen.RANGE_MIN:
             case Gen.RANGE_MAX:
-                factories.add(new CharacterFactory(sign));
+                factories.add(new CharacterFactory(SIGN_SET));
                 for (var i = 0; i < settingsController.getMaxArgLength(); i++) {
-                    factories.add(new CharacterFactory(valueSet));
+                    factories.add(new CharacterFactory(VALUE_SET));
                 }
                 break;
             case Gen.NUM_FIXED_LEN:
@@ -55,6 +58,71 @@ class GeneratorOptionsPicker extends Ui.Picker {
                 throw new Lang.UnexpectedTypeException("Unknown or unspecified generator mode");
         }
         return factories;
+    }
+
+    private function getDefaultPickerValues() {
+        var defaults = [];
+        switch (option) {
+            case Gen.NUM_MAX:
+                break;
+            case Gen.RANGE_MIN:
+                break;
+            case Gen.RANGE_MAX:
+                defaults = decomposeRangeValue(settingsController.getRangeMax());
+                break;
+            case Gen.NUM_FIXED_LEN:
+            case Gen.ALPHANUM_LEN:
+            case Gen.HEX_LEN:
+                break;
+            default:
+                throw new Lang.UnexpectedTypeException("Unknown or unspecified generator mode");
+        }
+        return defaults;
+    }
+
+    private function decomposeRangeValue(rawValue as Integer) as Array {
+        var sign = SIGN_SET.toCharArray();
+        var signIndex;
+        if (rawValue < 0) {
+            signIndex = sign.indexOf(SIGN_NEGATIVE);
+        } else {
+            signIndex = sign.indexOf(SIGN_POSITIVE);
+        }
+        var value = alignRangeValue(
+            decomposeSettingsValue(rawValue.abs().toString(), VALUE_SET),
+            signIndex
+        );
+        return value;
+    }
+
+    private function alignRangeValue(value as Array, signIndex as Integer) as Array {
+        var gap = settingsController.getMaxArgLength() - value.size();
+        var alignedValue = [signIndex];
+        if (gap > 0) {
+            for (var i = 0; i < gap; i++) {
+                alignedValue.add(0);
+            }
+            alignedValue.addAll(value);
+        } else if (gap < 0) {
+            alignedValue.addAll(value.slice(0, settingsController.getMaxArgLength()));
+        } else {
+            alignedValue.addAll(value);
+        }
+        return alignedValue;
+    }
+
+    private function decomposeSettingsValue(value as String, charSet as String) as Array {
+        var valueArray = value.toCharArray();
+        var charSetArray = charSet.toCharArray();
+        var result = [];
+        for (var i = 0; i < valueArray.size(); i++) {
+            var index = charSetArray.indexOf(valueArray[i]);
+            if (index < 0) {
+                index = 0;
+            }
+            result.add(index);
+        }
+        return result;
     }
 
     public function onUpdate(dc as Dc) as Void {
