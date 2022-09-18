@@ -5,7 +5,7 @@ using Generator as Gen;
 class GeneratorOptionsPicker extends Ui.Picker {
     private const valueSet = "0123456789";
     private const lenSet = "123456";
-    private const sign = "-";
+    private const sign = "+-";
 
     private var serviceLocator;
     private var settingsController;
@@ -42,8 +42,9 @@ class GeneratorOptionsPicker extends Ui.Picker {
                 break;
             case Gen.RANGE_MIN:
             case Gen.RANGE_MAX:
-                for (var i = 0; i < settingsController.getMaxArgLength() + 1; i++) {
-                    factories.add(new CharacterFactory(valueSet + sign));
+                factories.add(new CharacterFactory(sign));
+                for (var i = 0; i < settingsController.getMaxArgLength(); i++) {
+                    factories.add(new CharacterFactory(valueSet));
                 }
                 break;
             case Gen.NUM_FIXED_LEN:
