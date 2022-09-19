@@ -66,6 +66,7 @@ class GeneratorOptionsPicker extends Ui.Picker {
             case Gen.NUM_MAX:
                 break;
             case Gen.RANGE_MIN:
+                defaults = decomposeRangeValue(settingsController.getRangeMin());
                 break;
             case Gen.RANGE_MAX:
                 defaults = decomposeRangeValue(settingsController.getRangeMax());
