@@ -3,11 +3,11 @@ using Toybox.Lang;
 using Generator as Gen;
 
 class GeneratorOptionsPicker extends Ui.Picker {
-    private const VALUE_SET = "0123456789";
-    private const LEN_SET = "123456";
+    private const VALUE_SET = "0123456789".toCharArray();
+    private const LEN_SET = "123456".toCharArray();
     private const SIGN_POSITIVE = '+';
     private const SIGN_NEGATIVE = '-';
-    private const SIGN_SET = SIGN_POSITIVE + SIGN_NEGATIVE;
+    private const SIGN_SET = [SIGN_POSITIVE, SIGN_NEGATIVE];
 
     private var serviceLocator;
     private var settingsController;
@@ -82,12 +82,11 @@ class GeneratorOptionsPicker extends Ui.Picker {
     }
 
     private function decomposeRangeValue(rawValue as Integer) as Array {
-        var sign = SIGN_SET.toCharArray();
         var signIndex;
         if (rawValue < 0) {
-            signIndex = sign.indexOf(SIGN_NEGATIVE);
+            signIndex = SIGN_SET.indexOf(SIGN_NEGATIVE);
         } else {
-            signIndex = sign.indexOf(SIGN_POSITIVE);
+            signIndex = SIGN_SET.indexOf(SIGN_POSITIVE);
         }
         var value = alignRangeValue(
             decomposeSettingsValue(rawValue.abs().toString(), VALUE_SET),
@@ -112,12 +111,11 @@ class GeneratorOptionsPicker extends Ui.Picker {
         return alignedValue;
     }
 
-    private function decomposeSettingsValue(value as String, charSet as String) as Array {
+    private function decomposeSettingsValue(value as String, charSet as Array) as Array {
         var valueArray = value.toCharArray();
-        var charSetArray = charSet.toCharArray();
         var result = [];
-        for (var i = 0; i < valueArray.size(); i++) {
-            var index = charSetArray.indexOf(valueArray[i]);
+        for (var i = 0; i < value.length(); i++) {
+            var index = charSet.indexOf(valueArray[i]);
             if (index < 0) {
                 index = 0;
             }
