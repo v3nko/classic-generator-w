@@ -61,6 +61,9 @@ class GeneratorOptionsPicker extends Ui.Picker {
         var factories = [];
         switch (option) {
             case Gen.NUM_MAX:
+                for (var i = 0; i < settingsController.getMaxArgLength(); i++) {
+                    factories.add(new CharacterFactory(VALUE_SET));
+                }
                 break;
             case Gen.RANGE_MIN:
             case Gen.RANGE_MAX:
@@ -83,6 +86,7 @@ class GeneratorOptionsPicker extends Ui.Picker {
         var defaults = [];
         switch (option) {
             case Gen.NUM_MAX:
+                defaults = decomposeMaxValue(settingsController.getNumMax());
                 break;
             case Gen.RANGE_MIN:
                 defaults = decomposeRangeValue(settingsController.getRangeMin());
@@ -114,9 +118,14 @@ class GeneratorOptionsPicker extends Ui.Picker {
         return value;
     }
 
-    private function alignRangeValue(value as Array, signIndex as Integer) as Array {
+    private function alignRangeValue(value as Array, signIndex as Integer or Null) as Array {
         var gap = settingsController.getMaxArgLength() - value.size();
-        var alignedValue = [signIndex];
+        var alignedValue;
+        if (signIndex != null) {
+            alignedValue = [signIndex];
+        } else {
+            alignedValue = [];
+        }
         if (gap > 0) {
             for (var i = 0; i < gap; i++) {
                 alignedValue.add(0);
@@ -128,6 +137,10 @@ class GeneratorOptionsPicker extends Ui.Picker {
             alignedValue.addAll(value);
         }
         return alignedValue;
+    }
+
+    private function decomposeMaxValue(rawValue as Integer) as Array {
+        return alignRangeValue(decomposeSettingsValue(rawValue.toString(), VALUE_SET), null);
     }
 
     private function decomposeSettingsValue(value as String, charSet as Array) as Array {
@@ -152,6 +165,7 @@ class GeneratorOptionsPicker extends Ui.Picker {
     function onAccept(value) {
         switch (option) {
             case Gen.NUM_MAX:
+                settingsController.saveNumMax(value);
                 break;
             case Gen.RANGE_MIN:
                 settingsController.saveRangeMin(value);
