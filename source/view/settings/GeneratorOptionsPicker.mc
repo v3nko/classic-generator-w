@@ -22,7 +22,7 @@ class GeneratorOptionsPicker extends Ui.Picker {
 
         title = new Ui.Text(
             {
-                :text => "Gen options", 
+                :text => getTitle(), 
                 :locX => Ui.LAYOUT_HALIGN_CENTER,
                 :locY => Ui.LAYOUT_VALIGN_BOTTOM,
                 :color => Graphics.COLOR_WHITE
@@ -36,6 +36,25 @@ class GeneratorOptionsPicker extends Ui.Picker {
                 :defaults => getDefaultPickerValues()
             }
         );
+    }
+
+    private function getTitle() {
+        switch (option) {
+            case Gen.NUM_MAX:
+                return Application.loadResource(Rez.Strings.settings_num_max);
+            case Gen.RANGE_MIN:
+                return Application.loadResource(Rez.Strings.settings_range_min);
+            case Gen.RANGE_MAX:
+                return Application.loadResource(Rez.Strings.settings_range_max);
+            case Gen.NUM_FIXED_LEN:
+                return Application.loadResource(Rez.Strings.settings_num_fixed_len);
+            case Gen.ALPHANUM_LEN:
+                return Application.loadResource(Rez.Strings.settings_alphanum_len);
+            case Gen.HEX_LEN:
+                return Application.loadResource(Rez.Strings.settings_hex_len);
+            default:
+                throw new Lang.UnexpectedTypeException("Unknown or unspecified generator mode");
+        }
     }
 
     private function getPickerFactories() {
@@ -128,10 +147,6 @@ class GeneratorOptionsPicker extends Ui.Picker {
         dc.setColor(Graphics.COLOR_BLACK, Graphics.COLOR_BLACK);
         dc.clear();
         Picker.onUpdate(dc);
-    }
-
-    public function setTitle(titleText) {
-        title.setText(titleText);
     }
 
     function onAccept(value) {
