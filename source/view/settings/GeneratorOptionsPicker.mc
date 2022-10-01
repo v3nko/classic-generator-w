@@ -75,6 +75,7 @@ class GeneratorOptionsPicker extends Ui.Picker {
             case Gen.NUM_FIXED_LEN:
             case Gen.ALPHANUM_LEN:
             case Gen.HEX_LEN:
+                factories.add(new CharacterFactory(LEN_SET));
                 break;
             default:
                 throw new Lang.UnexpectedTypeException("Unknown or unspecified generator mode");
@@ -95,8 +96,13 @@ class GeneratorOptionsPicker extends Ui.Picker {
                 defaults = decomposeRangeValue(settingsController.getRangeMax());
                 break;
             case Gen.NUM_FIXED_LEN:
+                defaults = decomposeLenValue(settingsController.getNumFixedLen());
+                break;
             case Gen.ALPHANUM_LEN:
+                defaults = decomposeLenValue(settingsController.getAlphanumLen());
+                break;
             case Gen.HEX_LEN:
+                defaults = decomposeLenValue(settingsController.getHexLen());
                 break;
             default:
                 throw new Lang.UnexpectedTypeException("Unknown or unspecified generator mode");
@@ -156,6 +162,10 @@ class GeneratorOptionsPicker extends Ui.Picker {
         return result;
     }
 
+    private function decomposeLenValue(rawValue as String) as Array {
+        return decomposeSettingsValue(rawValue.toString(), LEN_SET);
+    }
+
     public function onUpdate(dc as Dc) as Void {
         dc.setColor(Graphics.COLOR_BLACK, Graphics.COLOR_BLACK);
         dc.clear();
@@ -174,8 +184,13 @@ class GeneratorOptionsPicker extends Ui.Picker {
                 settingsController.saveRangeMax(value);
                 break;
             case Gen.NUM_FIXED_LEN:
+                settingsController.saveNumFixedLen(value);
+                break;
             case Gen.ALPHANUM_LEN:
+                settingsController.saveAlphanumLen(value);
+                break;
             case Gen.HEX_LEN:
+                settingsController.saveHexLen(value);
                 break;
         }
         Ui.popView(Ui.SLIDE_IMMEDIATE);
