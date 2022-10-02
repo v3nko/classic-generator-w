@@ -193,18 +193,27 @@ class GeneratorOptionsPicker extends Ui.Picker {
                 settingsController.saveHexLen(value);
                 break;
         }
-        Ui.popView(Ui.SLIDE_IMMEDIATE);
+    }
+
+    function getOption() {
+        return option;
     }
 }
 
 class GeneratorOptionsPickerDelegate extends Ui.PickerDelegate {
     private var picker as GeneratorOptionsPicker;
     private var serviceLocator;
+    private var onAcceptCallback;
 
-    public function initialize(serviceLocator, picker as GeneratorOptionsPicker) {
+    public function initialize(
+        serviceLocator, 
+        picker as GeneratorOptionsPicker, 
+        onAcceptCallback as Method
+    ) {
         PickerDelegate.initialize();
         me.picker = picker;
         me.serviceLocator = serviceLocator;
+        me.onAcceptCallback = onAcceptCallback;
     }
 
     public function onCancel() as Boolean {
@@ -225,6 +234,8 @@ class GeneratorOptionsPickerDelegate extends Ui.PickerDelegate {
         }
         if (value != null) {
             picker.onAccept(value);
+            onAcceptCallback.invoke(picker.getOption());
+            Ui.popView(Ui.SLIDE_IMMEDIATE);
             return true;
         } else {
             var alert = new Alert(

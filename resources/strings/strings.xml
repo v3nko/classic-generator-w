@@ -22,6 +22,7 @@
     <string id="settings_hex_len">Hexadecimal length</string>
 
     <string id="menu_title_results_history">Results</string>
+    <string id="menu_title_settings">Settings</string>
     
     <string id="dialog_title_clear_history">Clear history?</string>
 
@@ -33,5 +34,6 @@
     <string id="about_text_template">$1$\nVersion: $2$\n© 2022 Victor K\nhi@venko.me</string>
 
     <string id="menu_main_history">Results</string>
+    <string id="menu_main_settings">Settings</string>
     <string id="menu_main_about">About</string>
 </strings>

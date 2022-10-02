@@ -5,12 +5,14 @@ class MainMenuDelegate extends Ui.Menu2InputDelegate {
 
     private var serviceLocator;
     private var generatorController;
+    private var settingsController;
     private var timeFormatter;
 
     function initialize(serviceLocator) {
         Menu2InputDelegate.initialize();
         me.serviceLocator = serviceLocator;
         generatorController = serviceLocator.getGeneratorController();
+        settingsController = serviceLocator.getSettingsController();
         timeFormatter = serviceLocator.getDateTimeFormatter();
     }
 
@@ -18,6 +20,9 @@ class MainMenuDelegate extends Ui.Menu2InputDelegate {
         switch (item.getId()) {
             case :history:
                 navigateToHistory();
+                break;
+            case :settings:
+                navigateToSettings();
                 break;
             case :about:
                 navigateToAbout();
@@ -65,6 +70,57 @@ class MainMenuDelegate extends Ui.Menu2InputDelegate {
                 indicator = Rez.Strings.gen_title_unknown_short;
         }
         return Application.loadResource(indicator);
+    }
+
+    private function navigateToSettings() {
+        var menu = new Ui.Menu2({ :title => Rez.Strings.menu_title_settings });
+        addSettingsItem(menu, Gen.NUM_MAX);
+        addSettingsItem(menu, Gen.RANGE_MIN);
+        addSettingsItem(menu, Gen.RANGE_MAX);
+        addSettingsItem(menu, Gen.NUM_FIXED_LEN);
+        addSettingsItem(menu, Gen.ALPHANUM_LEN);
+        addSettingsItem(menu, Gen.HEX_LEN);
+        Ui.pushView(menu, new SettingsMenuDelegate(serviceLocator, menu), Ui.SLIDE_IMMEDIATE);
+    }
+
+    private function addSettingsItem(menu, option as Generatoroption) {
+        menu.addItem(
+            new Ui.MenuItem(
+                resolveGeneratorOptionTitle(option),
+                resolveGeneratorOptionValue(option),
+                option,
+                null
+            )
+        );
+    }
+
+    private function resolveGeneratorOptionTitle(option as GeneratorOption) {
+        var titleId;
+        switch (option) {
+            case Gen.NUM_MAX:
+                titleId = Rez.Strings.settings_num_max;
+                break;
+            case Gen.RANGE_MIN:
+                titleId = Rez.Strings.settings_range_min;
+                break;
+            case Gen.RANGE_MAX:
+                titleId = Rez.Strings.settings_range_max;
+                break;
+            case Gen.NUM_FIXED_LEN:
+                titleId = Rez.Strings.settings_num_fixed_len;
+                break;
+            case Gen.ALPHANUM_LEN:
+                titleId = Rez.Strings.settings_alphanum_len;
+                break;
+            case Gen.HEX_LEN:
+                titleId = Rez.Strings.settings_hex_len;
+                break;
+        }
+        return Application.loadResource(titleId);
+    }
+
+    private function resolveGeneratorOptionValue(option as GeneratorOption) {
+        return settingsController.getGeneratorOptionValue(option).toString();
     }
 
     private function navigateToAbout() {

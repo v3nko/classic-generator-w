@@ -61,4 +61,29 @@ class SettingsController {
     function saveHexLen(value as Integer) as Integer {
         return settings.saveHexLen(value);
     }
+
+    function getGeneratorOptionValue(option as GeneratorOption) {
+        var value;
+        switch (option) {
+            case Gen.NUM_MAX:
+                value = getNumMax();
+                break;
+            case Gen.RANGE_MIN:
+                value = getRangeMin();
+                break;
+            case Gen.RANGE_MAX:
+                value = getRangeMax();
+                break;
+            case Gen.NUM_FIXED_LEN:
+                value = getNumFixedLen();
+                break;
+            case Gen.ALPHANUM_LEN:
+                value = getAlphanumLen();
+                break;
+            case Gen.HEX_LEN:
+                value = getHexLen();
+                break;
+        }
+        return  value;
+    }
 }
