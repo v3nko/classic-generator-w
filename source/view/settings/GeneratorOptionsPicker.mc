@@ -217,7 +217,7 @@ class GeneratorOptionsPickerDelegate extends Ui.PickerDelegate {
     }
 
     public function onCancel() as Boolean {
-        Ui.popView(WatchUi.SLIDE_IMMEDIATE);
+        Ui.popView(Ui.SLIDE_RIGHT);
         return true;
     }
 
@@ -235,7 +235,7 @@ class GeneratorOptionsPickerDelegate extends Ui.PickerDelegate {
         if (value != null) {
             picker.onAccept(value);
             onAcceptCallback.invoke(picker.getOption());
-            Ui.popView(Ui.SLIDE_IMMEDIATE);
+            Ui.popView(Ui.SLIDE_RIGHT);
             return true;
         } else {
             var alert = new Alert(

@@ -16,12 +16,12 @@ class HistoryMenuInputdelegate extends Ui.Menu2InputDelegate {
         Ui.pushView(
             dialog,
             new ClearHistoryDialogDelegate(serviceLocator, method(:onClearHistory)),
-            Ui.SLIDE_IMMEDIATE
+            Ui.SLIDE_LEFT
         );
         return true;
     }
 
     function onClearHistory() {
-        Ui.popView(Ui.SLIDE_IMMEDIATE);
+        Ui.popView(Ui.SLIDE_RIGHT);
     }
 }

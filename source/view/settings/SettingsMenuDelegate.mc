@@ -19,7 +19,7 @@ class SettingsMenuDelegate extends Ui.Menu2InputDelegate {
         Ui.pushView(
             picker, 
             new GeneratorOptionsPickerDelegate(serviceLocator, picker, method(:onPickerAccept)),
-            WatchUi.SLIDE_IMMEDIATE
+            WatchUi.SLIDE_LEFT
         );
         return false;
     }

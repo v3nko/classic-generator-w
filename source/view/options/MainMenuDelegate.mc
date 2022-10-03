@@ -45,7 +45,7 @@ class MainMenuDelegate extends Ui.Menu2InputDelegate {
                 )
             );
         }
-        Ui.pushView(menu, new HistoryMenuInputdelegate(serviceLocator), Ui.SLIDE_IMMEDIATE);
+        Ui.pushView(menu, new HistoryMenuInputdelegate(serviceLocator), Ui.SLIDE_LEFT);
     }
 
     private function resolveTextIndicator(generatorMode as Gen.GeneratorType) {
@@ -80,7 +80,7 @@ class MainMenuDelegate extends Ui.Menu2InputDelegate {
         addSettingsItem(menu, Gen.NUM_FIXED_LEN);
         addSettingsItem(menu, Gen.ALPHANUM_LEN);
         addSettingsItem(menu, Gen.HEX_LEN);
-        Ui.pushView(menu, new SettingsMenuDelegate(serviceLocator, menu), Ui.SLIDE_IMMEDIATE);
+        Ui.pushView(menu, new SettingsMenuDelegate(serviceLocator, menu), Ui.SLIDE_LEFT);
     }
 
     private function addSettingsItem(menu, option as Generatoroption) {
@@ -124,6 +124,6 @@ class MainMenuDelegate extends Ui.Menu2InputDelegate {
     }
 
     private function navigateToAbout() {
-        Ui.pushView(new AboutView(serviceLocator), null, Ui.SLIDE_IMMEDIATE);
+        Ui.pushView(new AboutView(serviceLocator), null, Ui.SLIDE_LEFT);
     }
 }

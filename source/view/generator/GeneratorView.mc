@@ -143,7 +143,7 @@ class GeneratorView extends BaseView {
 
 
     function navigateToMenu() {
-        Ui.pushView(new Rez.Menus.main(), new MainMenuDelegate(serviceLocator), Ui.SLIDE_IMMEDIATE);
+        Ui.pushView(new Rez.Menus.main(), new MainMenuDelegate(serviceLocator), Ui.SLIDE_LEFT);
         return true;
     }
 
