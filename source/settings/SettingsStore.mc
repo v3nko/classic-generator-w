@@ -11,59 +11,59 @@ class SettingsStore {
     private static const KEY_ALPHANUM_LEN = "alphanum_len";
     private static const KEY_HEX_LEN = "hex_len";
 
-    function getGeneratorMode() as Integer {
+    function getGeneratorMode() as Number {
         return Storage.getValue(KEY_GENERATOR_MODE);
     }
 
-    function saveGeneratorMode(value as Integer) {
+    function saveGeneratorMode(value as Number) {
         Storage.setValue(KEY_GENERATOR_MODE, value);
     }
 
-    function getNumMax() as Integer {
+    function getNumMax() as Number {
         return Properties.getValue(KEY_NUM_MAX);
     }
 
-    function getRangeMin() as Integer {
+    function getRangeMin() as Number {
         return Properties.getValue(KEY_RANGE_MIN);
     }
 
-    function getRangeMax() as Integer {
+    function getRangeMax() as Number {
         return Properties.getValue(KEY_RANGE_MAX);
     }
 
-    function getNumFixedLen() as Integer {
+    function getNumFixedLen() as Number {
         return Properties.getValue(KEY_NUM_FIXED_LEN);
     }
 
-    function getAlphanumLen() as Integer {
+    function getAlphanumLen() as Number {
         return Properties.getValue(KEY_ALPHANUM_LEN);
     }
 
-    function getHexLen() as Integer {
+    function getHexLen() as Number {
         return Properties.getValue(KEY_HEX_LEN);
     }
 
-    function saveNumMax(value as Integer) as Integer {
+    function saveNumMax(value as Number) as Number {
         return Properties.setValue(KEY_NUM_MAX, value);
     }
 
-    function saveRangeMin(value as Integer) as Integer {
+    function saveRangeMin(value as Number) as Number {
         return Properties.setValue(KEY_RANGE_MIN, value);
     }
 
-    function saveRangeMax(value as Integer) as Integer {
+    function saveRangeMax(value as Number) as Number {
         return Properties.setValue(KEY_RANGE_MAX, value);
     }
 
-    function saveNumFixedLen(value as Integer) as Integer {
+    function saveNumFixedLen(value as Number) as Number {
         return Properties.setValue(KEY_NUM_FIXED_LEN, value);
     }
 
-    function saveAlphanumLen(value as Integer) as Integer {
+    function saveAlphanumLen(value as Number) as Number {
         return Properties.setValue(KEY_ALPHANUM_LEN, value);
     }
 
-    function saveHexLen(value as Integer) as Integer {
+    function saveHexLen(value as Number) as Number {
         return Properties.setValue(KEY_HEX_LEN, value);
     }
 }

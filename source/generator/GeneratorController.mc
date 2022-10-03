@@ -121,7 +121,7 @@ class GeneratorController {
            Gen.GENARATOR_HEX
         ];
         private var currentMode as Gen.GeneratorType;
-        private var currentModeIndex as Integer;
+        private var currentModeIndex as Number;
 
         function getCurrentMode() as GeneratorType {
             ensureModeSet();

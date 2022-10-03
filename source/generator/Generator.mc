@@ -1,10 +1,10 @@
 module Generator {
     typedef Generator as interface {
-        function generateNum(max as Integer) as Result;
-        function generateRange(min as Integer, max as Integer) as Result;
-        function generateNumFixed(len as Integer) as Result;
-        function generateAlphanum(len as Integer) as Result;
-        function generateHex(len as Integer) as Result;
+        function generateNum(max as Number) as Result;
+        function generateRange(min as Number, max as Number) as Result;
+        function generateNumFixed(len as Number) as Result;
+        function generateAlphanum(len as Number) as Result;
+        function generateHex(len as Number) as Result;
     };
 
     enum GeneratorType {
@@ -37,11 +37,11 @@ module Generator {
             me.validator = validator;
         }
 
-        function generateNum(max as Integer) as Result {
+        function generateNum(max as Number) as Result {
             return generateRange(0, max);
         }
 
-        function generateRange(min as Integer, max as Integer) as Result {
+        function generateRange(min as Number, max as Number) as Result {
             var validationResult = validator.validateRange(min, max);
             if (validationResult == VALIDATION_OK) {
                 return new Success((nextInt(max - min + 1) + min).toString());
@@ -50,7 +50,7 @@ module Generator {
             }
         }
         
-        function generateNumFixed(len as Integer) as Result {
+        function generateNumFixed(len as Number) as Result {
             var validationResult = validator.validateFixedLen(len);
             if (validationResult == VALIDATION_OK) {
                 var result = "";
@@ -63,18 +63,18 @@ module Generator {
             }
         }
 
-        function generateAlphanum(len as Integer) as Result {
+        function generateAlphanum(len as Number) as Result {
             return generateFixedLenFromPool(len, CHARS, CHARS.size());
         }
 
-        function generateHex(len as Integer) as Result {
+        function generateHex(len as Number) as Result {
             return generateFixedLenFromPool(len, CHARS, HEX_CHARS_SUBSTRING_LENGTH);
         }
 
         private function generateFixedLenFromPool(
-            len as Integer, 
+            len as Number, 
             pool as Array<Char>, 
-            poolUpBoundary as Integer
+            poolUpBoundary as Number
         ) as Result {
             var validationResult = validator.validateFixedLen(len);
             if (validationResult == VALIDATION_OK) {
@@ -88,11 +88,14 @@ module Generator {
             }
         }
 
-        private function generateCharFromPool(pool as Array<Char>, poolUpBoundary as Integer) as Char {
+        private function generateCharFromPool(
+            pool as Array<Char>,
+            poolUpBoundary as Number
+        ) as Char {
             return pool[nextInt(poolUpBoundary)];
         }
 
-        private function nextInt(limit as Integer) as Integer {
+        private function nextInt(limit as Number) as Number {
             return Math.rand() % limit;
         }
 

@@ -10,7 +10,7 @@ class GeneratorOptionsValidator {
 
     private const MAX_ARG_LENGTH = 6;
 
-    function validateFixedLen(len as Integer) as ValidationResult {
+    function validateFixedLen(len as Number) as ValidationResult {
         if (len == null) {
             return VALIDATION_ERROR_NULL;
         } else if (len <= 0) {
@@ -22,7 +22,7 @@ class GeneratorOptionsValidator {
         }
     }
 
-    function validateRange(min as Integer, max as Integer) as validationResult {
+    function validateRange(min as Number, max as Number) as ValidationResult {
         if (min == null || max == null) {
             return VALIDATION_ERROR_NULL;
         } else if (min >= max) {
@@ -34,7 +34,7 @@ class GeneratorOptionsValidator {
         }
     }
 
-    private function getLength(value as Integer) as Integer {
+    private function getLength(value as Number) as Number {
         return Math.floor(1 + Math.log(value.abs(), 10));
     }
 

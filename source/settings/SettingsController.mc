@@ -14,51 +14,51 @@ class SettingsController {
         return validator.getMaxArgLength();
     }
 
-    function getNumMax() as Integer {
+    function getNumMax() as Number {
         return settings.getNumMax();
     }
 
-    function getRangeMin() as Integer {
+    function getRangeMin() as Number {
         return settings.getRangeMin();
     }
 
-    function getRangeMax() as Integer {
+    function getRangeMax() as Number {
         return settings.getRangeMax();
     }
 
-    function getNumFixedLen() as Integer {
+    function getNumFixedLen() as Number {
         return settings.getNumFixedLen();
     }
 
-    function getAlphanumLen() as Integer {
+    function getAlphanumLen() as Number {
         return settings.getAlphanumLen();
     }
 
-    function getHexLen() as Integer {
+    function getHexLen() as Number {
         return settings.getHexLen();
     }
 
-    function saveNumMax(value as Integer) as Integer {
+    function saveNumMax(value as Number) as Number {
         return settings.saveNumMax(value);
     }
 
-    function saveRangeMin(value as Integer) as Integer {
+    function saveRangeMin(value as Number) as Number {
         return settings.saveRangeMin(value);
     }
 
-    function saveRangeMax(value as Integer) as Integer {
+    function saveRangeMax(value as Number) as Number {
         return settings.saveRangeMax(value);
     }
 
-    function saveNumFixedLen(value as Integer) as Integer {
+    function saveNumFixedLen(value as Number) as Number {
         return settings.saveNumFixedLen(value);
     }
 
-    function saveAlphanumLen(value as Integer) as Integer {
+    function saveAlphanumLen(value as Number) as Number {
         return settings.saveAlphanumLen(value);
     }
 
-    function saveHexLen(value as Integer) as Integer {
+    function saveHexLen(value as Number) as Number {
         return settings.saveHexLen(value);
     }
 

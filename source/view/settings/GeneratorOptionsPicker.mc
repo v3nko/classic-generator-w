@@ -110,7 +110,7 @@ class GeneratorOptionsPicker extends Ui.Picker {
         return defaults;
     }
 
-    private function decomposeRangeValue(rawValue as Integer) as Array {
+    private function decomposeRangeValue(rawValue as Number) as Array {
         var signIndex;
         if (rawValue < 0) {
             signIndex = SIGN_SET.indexOf(SIGN_NEGATIVE);
@@ -124,7 +124,7 @@ class GeneratorOptionsPicker extends Ui.Picker {
         return value;
     }
 
-    private function alignRangeValue(value as Array, signIndex as Integer or Null) as Array {
+    private function alignRangeValue(value as Array, signIndex as Number or Null) as Array {
         var gap = settingsController.getMaxArgLength() - value.size();
         var alignedValue;
         if (signIndex != null) {
@@ -145,7 +145,7 @@ class GeneratorOptionsPicker extends Ui.Picker {
         return alignedValue;
     }
 
-    private function decomposeMaxValue(rawValue as Integer) as Array {
+    private function decomposeMaxValue(rawValue as Number) as Array {
         return alignRangeValue(decomposeSettingsValue(rawValue.toString(), VALUE_SET), null);
     }
 
