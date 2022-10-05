@@ -25,7 +25,8 @@ class GeneratorOptionsPicker extends Ui.Picker {
                 :text => getTitle(), 
                 :locX => Ui.LAYOUT_HALIGN_CENTER,
                 :locY => Ui.LAYOUT_VALIGN_BOTTOM,
-                :color => Graphics.COLOR_WHITE
+                :color => Graphics.COLOR_WHITE,
+                :font => Graphics.FONT_SMALL
             }
         );
 

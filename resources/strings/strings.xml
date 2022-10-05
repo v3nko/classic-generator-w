@@ -17,9 +17,9 @@
     <string id="settings_num_max">Numeric max</string>
     <string id="settings_range_min">Range min</string>
     <string id="settings_range_max">Range max</string>
-    <string id="settings_num_fixed_len">Numeric fixed length</string>
-    <string id="settings_alphanum_len">Alphanumeric length</string>
-    <string id="settings_hex_len">Hexadecimal length</string>
+    <string id="settings_num_fixed_len">Num. fixed length</string>
+    <string id="settings_alphanum_len">Alphanum. length</string>
+    <string id="settings_hex_len">Hex. length</string>
 
     <string id="menu_title_results_history">Results</string>
     <string id="menu_title_settings">Settings</string>
