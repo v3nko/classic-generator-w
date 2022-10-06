@@ -1,3 +1,9 @@
+<!-- markdownlint-disable MD033 -->
+<!-- markdownlint-disable MD041 -->
+<img align="left" width="140" height="140" src="https://user-images.githubusercontent.com/3258374/194433155-f19fb786-9c06-4391-a4ea-9504ee42c471.png" />
+<!-- markdownlint-enable MD041 -->
+<!-- markdownlint-enable MD033 -->
+
 # Classic Generator W
 
 [![License: MPL 2.0](https://img.shields.io/badge/License-MPL_2.0-brightgreen.svg)](https://opensource.org/licenses/MPL-2.0)
@@ -19,7 +25,7 @@ There are 5 generator modes available:
 * numeric (from 0 to your value)
 * range (supports negative values)
 * numeric fixed (non-normalized numeric with fixed length)
-* alphanumeric (supports custom symbols)
+* alphanumeric
 * hexadecimal
 
 Generator mode options can be configured using Garmin Connect IQ application.
@@ -166,7 +172,7 @@ slidableView.shake();
 
 <!-- markdownlint-disable MD034 -->
 https://user-images.githubusercontent.com/3258374/185804439-0255c223-2287-4adf-8e2a-96489f26c3a5.mp4
-<!-- markdownlint-disable MD034 -->
+<!-- markdownlint-enable MD034 -->
 
 ## License
 
