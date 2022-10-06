@@ -34,4 +34,12 @@ class SettingsMenuDelegate extends Ui.Menu2InputDelegate {
     private function resolveGeneratorOptionValue(option as GeneratorOption) {
         return settingsController.getGeneratorOptionValue(option).toString();
     }
+
+    function onBack() {
+        Ui.popView(Ui.SLIDE_RIGHT);
+    }
+
+    function onDone() {
+        onBack();
+    }
 }

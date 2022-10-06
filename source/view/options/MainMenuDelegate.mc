@@ -126,4 +126,12 @@ class MainMenuDelegate extends Ui.Menu2InputDelegate {
     private function navigateToAbout() {
         Ui.pushView(new AboutView(serviceLocator), null, Ui.SLIDE_LEFT);
     }
+
+    function onBack() {
+        Ui.popView(Ui.SLIDE_RIGHT);
+    }
+
+    function onDone() {
+        onBack();
+    }
 }

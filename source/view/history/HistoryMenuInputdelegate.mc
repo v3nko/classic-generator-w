@@ -22,6 +22,14 @@ class HistoryMenuInputdelegate extends Ui.Menu2InputDelegate {
     }
 
     function onClearHistory() {
+        onBack();
+    }
+
+    function onBack() {
         Ui.popView(Ui.SLIDE_RIGHT);
+    }
+
+    function onDone() {
+        onBack();
     }
 }
