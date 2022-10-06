@@ -187,11 +187,11 @@ class Alert extends BaseView {
 
     function dismiss() {
         textArea.reset();
-        Ui.popView(Ui.SLIDE_UP);
+        Ui.popView(Ui.SLIDE_IMMEDIATE);
     }
 
     function pushView() {
-        Ui.pushView(self, new AlertDelegate(self), Ui.SLIDE_DOWN);
+        Ui.pushView(self, new AlertDelegate(self), Ui.SLIDE_IMMEDIATE);
     }
 
     public function scrollDown() {
