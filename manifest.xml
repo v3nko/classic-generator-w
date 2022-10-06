@@ -5,7 +5,6 @@
         <iq:products>
             <iq:product id="d2air"/>
             <iq:product id="d2airx10"/>
-            <iq:product id="d2deltapx"/>
             <iq:product id="d2deltas"/>
             <iq:product id="descentmk2"/>
             <iq:product id="descentmk2s"/>
@@ -13,7 +12,6 @@
             <iq:product id="fenix5"/>
             <iq:product id="fenix5s"/>
             <iq:product id="fenix5x"/>
-            <iq:product id="fenix6prosystem5preview"/>
             <iq:product id="fenix6xpro"/>
             <iq:product id="fenix7"/>
             <iq:product id="fenix7s"/>
@@ -39,9 +37,7 @@
             <iq:product id="marqexpedition"/>
             <iq:product id="venu2"/>
             <iq:product id="venu2s"/>
-            <iq:product id="venu2system5preview"/>
             <iq:product id="venud"/>
-            <iq:product id="vivoactive3"/>
             <iq:product id="vivoactive3m"/>
         </iq:products>
         <iq:permissions/>
