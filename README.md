@@ -1,16 +1,19 @@
 <!-- markdownlint-disable MD033 -->
 <!-- markdownlint-disable MD041 -->
-<img align="left" width="140" height="140" src="https://user-images.githubusercontent.com/3258374/194433155-f19fb786-9c06-4391-a4ea-9504ee42c471.png" />
+<a href="https://apps.garmin.com/en-US/apps/4e89a5ab-22fe-4ad3-a898-6a2624624a65">
+    <img align="left" width="140" height="140" src="https://user-images.githubusercontent.com/3258374/194433155-f19fb786-9c06-4391-a4ea-9504ee42c471.png" />
+</a>
 <!-- markdownlint-enable MD041 -->
 <!-- markdownlint-enable MD033 -->
 
 # Classic Generator W
 
 [![License: MPL 2.0](https://img.shields.io/badge/License-MPL_2.0-brightgreen.svg)](https://opensource.org/licenses/MPL-2.0)
+[![Garmin IQ Store](https://img.shields.io/badge/Garmin-Connect%20IQ-F13C85)](https://apps.garmin.com/en-US/apps/4e89a5ab-22fe-4ad3-a898-6a2624624a65)
 
 This repository contains a port of an Android App [Classic Generator](https://play.google.com/store/apps/details?id=me.venko.cg) for Garmin Watch devices. "W" stands for "Watch" or "Wearable" (on your choice).
 
-This app is developed as a playground for applying various interesting technologies and development concepts and getting familiar with [Connect IQ SDK](https://developer.garmin.com/connect-iq/overview/). The app is still in an active development phase, so please expect some bugs, incompleteness, and general jank.
+This app is developed as a playground for applying various interesting technologies and development concepts and getting familiar with [Connect IQ SDK](https://developer.garmin.com/connect-iq/overview/).
 
 ## Screenshots
 
