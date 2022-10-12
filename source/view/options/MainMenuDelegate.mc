@@ -34,18 +34,20 @@ class MainMenuDelegate extends Ui.Menu2InputDelegate {
     private function navigateToHistory() {
         var menu = new Ui.Menu2({ :title => Rez.Strings.menu_title_results_history });
         var history = generatorController.getHistory();
-        for (var i = 0; i < history.size(); i++) {
-            var record = history[i];
-            menu.addItem(
-                new Ui.MenuItem(
-                    Lang.format("$1$ | $2$", [resolveTextIndicator(record.type), record.data]),
-                    timeFormatter.formatDateTimeNumeric(record.time),
-                    null,
-                    null
-                )
-            );
+        if (history.size() != 0) {
+            for (var i = 0; i < history.size(); i++) {
+                var record = history[i];
+                menu.addItem(
+                    new Ui.MenuItem(
+                        Lang.format("$1$ | $2$", [resolveTextIndicator(record.type), record.data]),
+                        timeFormatter.formatDateTimeNumeric(record.time),
+                        null,
+                        null
+                    )
+                );
+            }
+            Ui.pushView(menu, new HistoryMenuInputdelegate(serviceLocator), Ui.SLIDE_LEFT);
         }
-        Ui.pushView(menu, new HistoryMenuInputdelegate(serviceLocator), Ui.SLIDE_LEFT);
     }
 
     private function resolveTextIndicator(generatorMode as Gen.GeneratorType) {
