@@ -1,4 +1,5 @@
 <properties>
+    <property id="startup_gen" type="boolean">false</property>
     <property id="num_max" type="number">100</property>
     <property id="range_min" type="number">0</property>
     <property id="range_max" type="number">100</property>

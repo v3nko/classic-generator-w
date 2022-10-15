@@ -24,6 +24,9 @@ class GeneratorController {
 
     function loadSettings() {
         generatorMode.setCurrentMode(settings.getGeneratorMode());
+        if (settings.getStartupGen()) {
+            generate();
+        }
     }
 
     function loadHistory() {

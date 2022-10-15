@@ -14,6 +14,7 @@
     <string id="gen_title_hex_short">H</string>
     <string id="gen_title_unknown_short">?</string>
 
+    <string id="settings_startup_gen">Generate on launch</string>
     <string id="settings_num_max">Numeric max</string>
     <string id="settings_range_min">Range min</string>
     <string id="settings_range_max">Range max</string>
