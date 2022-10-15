@@ -148,7 +148,7 @@ Supported animations:
 * slide (up/down)
 * shake (can be used as error/validation indication)
 
-[`GeneratorResultView`](/source/view/generator/GeneratorResultView.mc), [`GeneratorRecentResultView`](/source/view/generator/GeneratorRecentResultView.mc) and [`GeneratorRecentResultView`](/source/view/generator/GeneratorModeView.mc) are utilizing `SlidableView` functionality to display generator mode, current and recent result changes.
+[`GeneratorResultView`](/source/view/generator/GeneratorResultView.mc), [`GeneratorRecentResultView`](/source/view/generator/GeneratorRecentResultView.mc) and [`GeneratorModeView`](/source/view/generator/GeneratorModeView.mc) are utilizing `SlidableView` functionality to display generator mode, current and recent result changes.
 
 #### Slide animation
 
