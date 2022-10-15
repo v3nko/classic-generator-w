@@ -1,5 +1,5 @@
 <settings>
-    <setting propertyKey="@Properties.startup_gen" title="@Strings.settings_startup_gen">
+    <setting propertyKey="@Properties.startup_gen_enabled" title="@Strings.settings_startup_gen">
         <settingConfig type="boolean" />
     </setting>
 

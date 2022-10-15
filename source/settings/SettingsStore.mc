@@ -3,7 +3,7 @@ using Toybox.Application.Properties as Properties;
 
 class SettingsStore {
 
-    private static const KEY_STARTUP_GEN = "startup_gen";
+    private static const KEY_STARTUP_GEN_ENABLED = "startup_gen_enabled";
     private static const KEY_GENERATOR_MODE = "generator_mode";
     private static const KEY_NUM_MAX = "num_max";
     private static const KEY_RANGE_MIN = "range_min";
@@ -12,12 +12,12 @@ class SettingsStore {
     private static const KEY_ALPHANUM_LEN = "alphanum_len";
     private static const KEY_HEX_LEN = "hex_len";
 
-    function getStartupGen() as Boolean {
-        return Properties.getValue(KEY_STARTUP_GEN);
+    function getStartupGenEnabled() as Boolean {
+        return Properties.getValue(KEY_STARTUP_GEN_ENABLED);
     }
 
-    function saveStartupGen(value as Boolean) {
-        Properties.setValue(KEY_STARTUP_GEN, value);
+    function saveStartupGenEnabled(value as Boolean) as Boolean {
+        return Properties.setValue(KEY_STARTUP_GEN_ENABLED, value);
     }
 
     function getGeneratorMode() as Number {

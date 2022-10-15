@@ -15,13 +15,16 @@ class SettingsMenuDelegate extends Ui.Menu2InputDelegate {
     }
 
     function onSelect(item as WatchUi.MenuItem) {
-        var picker = new GeneratorOptionsPicker(serviceLocator, { :option => item.getId() });
-        Ui.pushView(
-            picker, 
-            new GeneratorOptionsPickerDelegate(serviceLocator, picker, method(:onPickerAccept)),
-            WatchUi.SLIDE_LEFT
-        );
-        return false;
+        if (item.getId() == :startupGenEnabled) {
+            settingsController.saveStartupGenEnabled(item.isEnabled());
+        } else {
+            var picker = new GeneratorOptionsPicker(serviceLocator, { :option => item.getId() });
+            Ui.pushView(
+                picker, 
+                new GeneratorOptionsPickerDelegate(serviceLocator, picker, method(:onPickerAccept)),
+                WatchUi.SLIDE_LEFT
+            );
+        }
     }
 
     function onPickerAccept(itemId) {

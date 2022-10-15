@@ -76,16 +76,28 @@ class MainMenuDelegate extends Ui.Menu2InputDelegate {
 
     private function navigateToSettings() {
         var menu = new Ui.Menu2({ :title => Rez.Strings.menu_title_settings });
-        addSettingsItem(menu, Gen.NUM_MAX);
-        addSettingsItem(menu, Gen.RANGE_MIN);
-        addSettingsItem(menu, Gen.RANGE_MAX);
-        addSettingsItem(menu, Gen.NUM_FIXED_LEN);
-        addSettingsItem(menu, Gen.ALPHANUM_LEN);
-        addSettingsItem(menu, Gen.HEX_LEN);
+        addToggleSettingsItem(
+            menu,
+            Rez.Strings.settings_startup_gen,
+            settingsController.getStartupGenEnabled(),
+            :startupGenEnabled
+        );
+        addGeneratorSettingsItem(menu, Gen.NUM_MAX);
+        addGeneratorSettingsItem(menu, Gen.RANGE_MIN);
+        addGeneratorSettingsItem(menu, Gen.RANGE_MAX);
+        addGeneratorSettingsItem(menu, Gen.NUM_FIXED_LEN);
+        addGeneratorSettingsItem(menu, Gen.ALPHANUM_LEN);
+        addGeneratorSettingsItem(menu, Gen.HEX_LEN);
         Ui.pushView(menu, new SettingsMenuDelegate(serviceLocator, menu), Ui.SLIDE_LEFT);
     }
 
-    private function addSettingsItem(menu, option as Generatoroption) {
+    private function addToggleSettingsItem(menu, titleId, value as Boolean, itemId) {
+        menu.addItem(
+            new Ui.ToggleMenuItem(Application.loadResource(titleId), null, itemId, value, null)
+        );
+    }
+
+    private function addGeneratorSettingsItem(menu, option as Generatoroption) {
         menu.addItem(
             new Ui.MenuItem(
                 resolveGeneratorOptionTitle(option),

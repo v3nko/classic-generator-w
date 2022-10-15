@@ -10,6 +10,14 @@ class SettingsController {
         me.validator = validator;
     }
 
+    function getStartupGenEnabled() as Boolean {
+        return settings.getStartupGenEnabled();
+    }
+
+    function saveStartupGenEnabled(value as Boolean) as Boolean {
+        return settings.saveStartupGenEnabled(value);
+    }
+
     function getMaxArgLength() {
         return validator.getMaxArgLength();
     }
