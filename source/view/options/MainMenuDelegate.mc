@@ -16,7 +16,7 @@ class MainMenuDelegate extends Ui.Menu2InputDelegate {
         timeFormatter = serviceLocator.getDateTimeFormatter();
     }
 
-    function onSelect(item as WatchUi.MenuItem) {
+    function onSelect(item as Ui.MenuItem) {
         switch (item.getId()) {
             case :history:
                 navigateToHistory();

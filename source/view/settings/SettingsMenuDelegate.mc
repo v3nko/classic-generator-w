@@ -14,7 +14,7 @@ class SettingsMenuDelegate extends Ui.Menu2InputDelegate {
         me.menu = menu;
     }
 
-    function onSelect(item as WatchUi.MenuItem) {
+    function onSelect(item as Ui.MenuItem) {
         if (item.getId() == :startupGenEnabled) {
             settingsController.saveStartupGenEnabled(item.isEnabled());
         } else {
@@ -22,7 +22,7 @@ class SettingsMenuDelegate extends Ui.Menu2InputDelegate {
             Ui.pushView(
                 picker, 
                 new GeneratorOptionsPickerDelegate(serviceLocator, picker, method(:onPickerAccept)),
-                WatchUi.SLIDE_LEFT
+                Ui.SLIDE_LEFT
             );
         }
     }

@@ -37,8 +37,8 @@ class GeneratorResultView extends SlidableView {
                     {
                         :text => result.data,
                         :font => generatorValueFont,
-                        :locX => WatchUi.LAYOUT_HALIGN_CENTER,
-                        :locY => WatchUi.LAYOUT_VALIGN_CENTER,
+                        :locX => Ui.LAYOUT_HALIGN_CENTER,
+                        :locY => Ui.LAYOUT_VALIGN_CENTER,
                         :justification => Gfx.TEXT_JUSTIFY_CENTER,
                         :height => valueHeight
                     }

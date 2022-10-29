@@ -9,7 +9,7 @@ class HistoryMenuInputdelegate extends Ui.Menu2InputDelegate {
         me.serviceLocator = serviceLocator;
     }
 
-    function onSelect(item as WatchUi.MenuItem) {
+    function onSelect(item as Ui.MenuItem) {
         var dialog = new Ui.Confirmation(
             Application.loadResource(Rez.Strings.dialog_title_clear_history)
         );
