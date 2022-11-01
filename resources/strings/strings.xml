@@ -1,6 +1,6 @@
 <strings>
     <string id="app_name">Classic Generator</string>
-    <string id="app_version">1.0.0</string>
+    <string id="app_version">1.0.1</string>
 
     <string id="gen_title_num">Numeric</string>
     <string id="gen_title_alphanum">Alphanumeric</string>
