@@ -22,7 +22,7 @@ class GeneratorResultView extends SlidableView {
         );
         setPrimaryColor(COLOR_PRIMARY);
         setAltColor(COLOR_ALT);
-        generatorValueFont = Ui.loadResource(Rez.Fonts.rajdhani_bold_104);
+        generatorValueFont = Ui.loadResource(Rez.Fonts.result_xlarge);
         valueHeight = Gfx.getFontHeight(generatorValueFont);
     }
 
